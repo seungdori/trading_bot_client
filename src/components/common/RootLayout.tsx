@@ -5,7 +5,6 @@ import { EXCHANGE } from '@/constants/exchange.ts';
 export default function RootLayout() {
   const { pathname } = useLocation();
   const isLoginPage = pathname === '/login';
-  console.log(`[Current pathname]`, pathname);
 
   return (
     <div className="container w-full h-screen">

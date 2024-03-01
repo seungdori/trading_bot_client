@@ -1,4 +1,3 @@
-import * as React from 'react';
 import ScrollableTable from '@/components/table/ScrollableTable.tsx';
 import { ColumnDef } from '@tanstack/react-table';
 import DataTable from '@/components/table/DataTable.tsx';
