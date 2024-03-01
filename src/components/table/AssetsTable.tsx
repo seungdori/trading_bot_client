@@ -2,57 +2,129 @@ import * as React from 'react';
 import ScrollableTable from '@/components/table/ScrollableTable.tsx';
 import { ColumnDef } from '@tanstack/react-table';
 import DataTable from '@/components/table/DataTable.tsx';
-import { IAssetsTable } from '@/types/tableTypes';
+import { AssetsData } from '@/types/tableTypes';
+import { Button } from '@/components/ui/button.tsx';
+import { ArrowUpDown } from 'lucide-react';
 
-type Props = { className?: string };
+const mockColumns: ColumnDef<AssetsData>[] = [
+  {
+    accessorKey: 'coinName',
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          코인명
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: 'initPrice',
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          진입가격
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: 'currentPrice',
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          현재가격
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: 'amount',
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          보유수량
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: 'rateOfReturn',
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          수익률
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: 'sellPrice',
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          손절가
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: 'tp1',
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          TP1
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: 'tp2',
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          TP2
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: 'tp3',
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          TP3
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: 'value',
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+          가치
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+];
 
-export default function AssetsTable({ className }: Props) {
-  const mockColumns: ColumnDef<IAssetsTable>[] = [
-    {
-      accessorKey: 'coinName',
-      header: '코인명',
-    },
-    {
-      accessorKey: 'initPrice',
-      header: '진입가격',
-    },
-    {
-      accessorKey: 'currentPrice',
-      header: '현재가격',
-    },
-    {
-      accessorKey: 'amount',
-      header: '보유수량',
-    },
-    {
-      accessorKey: 'rateOfReturn',
-      header: '수익률',
-    },
-    {
-      accessorKey: 'sellPrice',
-      header: '손절가',
-    },
-    {
-      accessorKey: 'tp1',
-      header: 'TP1',
-    },
-    {
-      accessorKey: 'tp2',
-      header: 'TP2',
-    },
-    {
-      accessorKey: 'tp3',
-      header: 'TP3',
-    },
-    {
-      accessorKey: 'value',
-      header: '가치',
-    },
-  ];
+type Props = { assetsData: AssetsData[] };
 
+export default function AssetsTable({ assetsData }: Props) {
   return (
-    <ScrollableTable className={className}>
-      <DataTable columns={mockColumns} data={[]} />
+    <ScrollableTable>
+      <DataTable columns={mockColumns} data={assetsData} />
     </ScrollableTable>
   );
 }

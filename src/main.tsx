@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ThemeProvider } from '@/components/ThemeProvider.tsx';
 import RootLayout from '@/components/common/RootLayout.tsx';
-import './global.css';
 import { routes } from '@/routes.tsx';
+import QueryProvider from '@/components/reactQuery/QueryProvider.tsx';
+import './global.css';
 
 const router = createBrowserRouter([
   {
@@ -16,11 +17,12 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <ThemeProvider>
-      <>
-        <RouterProvider router={router} />
-      </>
-    </ThemeProvider>
-    ,
+    <QueryProvider>
+      <ThemeProvider>
+        <>
+          <RouterProvider router={router} />
+        </>
+      </ThemeProvider>
+    </QueryProvider>
   </React.StrictMode>,
 );

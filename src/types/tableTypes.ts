@@ -1,10 +1,10 @@
-export type IDataTable = {
-  id: 'history' | 'assets';
+export type InfoTab = {
+  id: 'history' | 'assets'; // 거래 기록, 자산 목록
   displayName: string;
   component: React.ReactNode;
 };
 
-export type IAssetsTable = {
+export type AssetsData = {
   coinName: string; // 코인명
   initPrice: number; // 진입가격
   currentPrice: number; // 현재가

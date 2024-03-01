@@ -1,57 +1,35 @@
-import * as React from 'react';
-import { IDataTable } from '@/types/tableTypes.ts';
-
-import TableTabs from '@/components/table/TableTabs.tsx';
-import HistoryTable from '@/components/table/HistoryTable.tsx';
-import AssetsTable from '@/components/table/AssetsTable.tsx';
-import DataTable from '@/components/table/DataTable.tsx';
-import { ColumnDef } from '@tanstack/react-table';
-import { getMockAssetsData, getMockHistoryData, MockData } from '@/components/api/DesktopClient.tsx';
+import { InfoTab } from '@/types/tableTypes.ts';
+import InfoTabs from '@/components/table/InfoTabs.tsx';
+import AssetsTableWrapper from '@/components/table/AssetsTableWrapper.tsx';
+import TransactionLogWrapper from '@/components/transaction/TransactionLogWrapper.tsx';
 
 type Props = { className?: string };
 
 export default function DataTablesWrapper({ className }: Props) {
-  // const dataTables = React.use(buildTables());
-  console.log('[dataTables]', dataTables);
-  return <TableTabs className={className} defaultTableId={dataTables.defaultId} tables={dataTables.tables} />;
+  const tabs = buildTabs();
+  return (
+    <div className={className}>
+      <InfoTabs defaultTableId={tabs.defaultId} tables={tabs.tabs} />;
+    </div>
+  );
 }
 
-async function buildTables(): Promise<{
-  defaultId: IDataTable['id'];
-  tables: IDataTable[];
-}> {
-  const mockColumns: ColumnDef<MockData>[] = [
-    {
-      accessorKey: 'id',
-      header: 'ID',
-    },
-    {
-      accessorKey: 'name',
-      header: 'Name',
-    },
-    {
-      accessorKey: 'age',
-      header: 'AGE',
-    },
-  ];
-
-  const historyMockData = await getMockHistoryData();
-  const assetsMockData = await getMockAssetsData();
-
+function buildTabs(): {
+  defaultId: InfoTab['id'];
+  tabs: InfoTab[];
+} {
   return {
     defaultId: 'history',
-    tables: [
+    tabs: [
       {
         id: 'history',
         displayName: '거래 기록',
-        component: <DataTable columns={mockColumns} data={historyMockData} />,
-        // component: <HistoryTable className="w-full h-2/5" />,
+        component: <TransactionLogWrapper className="h-[30vh] md:h-[40vh]" />,
       },
       {
         id: 'assets',
         displayName: '자산 목록',
-        component: <DataTable columns={mockColumns} data={assetsMockData} />,
-        // component: <AssetsTable className="w-full h-2/5" />,
+        component: <AssetsTableWrapper />,
       },
     ],
   };
