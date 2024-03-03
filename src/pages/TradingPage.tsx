@@ -1,32 +1,27 @@
-import { useParams } from 'react-router-dom';
-import DarkModeToggle from '@/components/DarkModeToggle.tsx';
-import SettingsButton from '@/components/settings/SettingsButton.tsx';
 import DataTablesWrapper from '@/components/table/DataTablesWrapper.tsx';
-import StrategyCard from '@/components/strategy/StrategyCard.tsx';
+import CustomStrategyCard from '@/components/strategy/CustomStrategyCard.tsx';
 import WalletCardWrapper from '@/components/wallet/WalletCardWrapper.tsx';
+import StrategyPanel from '@/components/strategy/StrategyPanel.tsx';
+import ExchangePanel from '@/components/strategy/ExchangePanel.tsx';
 
 export default function TradingPage() {
-  const params = useParams();
-
   return (
-    <main className="flex flex-col w-full h-full">
-      <div className="flex flex-col flex-1">
-        <h1>{`${Object.values(params)}`}</h1>
-        <DarkModeToggle />
-        <div className="container grid grid-cols-4">
-          <div className="col-span-1">
-            <WalletCardWrapper />
-          </div>
-          <div className="col-span-2">
-            <WalletCardWrapper />
-          </div>
-          <div className="col-span-1">
-            <StrategyCard />
-          </div>
-        </div>
-        <SettingsButton className="w-full" />
-      </div>
-      <DataTablesWrapper />
+    <main className="grid grid-cols-12 w-full h-full gap-2">
+      <section className="col-span-3">
+        <WalletCardWrapper className="h-full" />
+      </section>
+      <section className="col-span-6">
+        <StrategyPanel className="h-full" />
+      </section>
+      <section className="col-span-3">
+        <CustomStrategyCard className="h-full" />
+      </section>
+      <section className="col-span-9">
+        <DataTablesWrapper className="h-full" />
+      </section>
+      <section className="col-span-3">
+        <ExchangePanel className="h-full" />
+      </section>
     </main>
   );
 }

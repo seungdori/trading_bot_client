@@ -7,7 +7,7 @@ type CustomRoute = RouteObject;
 export const routes: CustomRoute[] = [
   {
     path: '/',
-    element: <Navigate to={`/login`} replace={true} />,
+    element: <Navigate to={`/trading/upbit`} replace={true} />,
   },
   {
     path: '/login',

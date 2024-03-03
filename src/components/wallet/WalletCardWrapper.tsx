@@ -3,14 +3,20 @@ import WalletCard from '@/components/wallet/WalletCard.tsx';
 import { useStrategyStore } from '@/hooks/useStrategyStore.ts';
 import { z } from 'zod';
 import { ExchangeSchema } from '@/schemas/exchangeSchema.ts';
+import { useWallet } from '@/hooks/useWallet.ts';
 
-export default function WalletCardWrapper() {
+type Props = { className?: string };
+
+export default function WalletCardWrapper({ className }: Props) {
   const strategyStore = useStrategyStore();
+  const { isLoading, data: wallet } = useWallet();
+
   const title = getExchangeName(strategyStore.exchange);
-  const balance = '$258.71';
+  const mockBalance = '1000000';
+  const balance = wallet?.exchange !== 'upbit' ? mockBalance : wallet.krw.balance;
 
   return (
-    <WalletCard title={title} description={'지갑 정보'}>
+    <WalletCard className={className} title={title} description={'지갑 정보'}>
       <WalletCardContent balance={balance} />
     </WalletCard>
   );

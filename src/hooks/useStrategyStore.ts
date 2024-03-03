@@ -4,6 +4,8 @@ import { TradingSearchParamsSchema } from '@/schemas/searchParamsSchema.ts';
 
 export const useStrategyStore = () => {
   const params = useParams();
+  console.log(`params: ${JSON.stringify(params)}`);
+
   const { exchange } = TradingSearchParamsSchema.parse(params);
 
   const binanceStrategyStore = useBinanceStrategyStore();

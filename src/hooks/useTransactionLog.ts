@@ -1,9 +1,9 @@
 import { useParams } from 'react-router-dom';
 import { TradingSearchParamsSchema } from '@/schemas/searchParamsSchema.ts';
 import { useQuery } from '@tanstack/react-query';
-import { getTransactionLog } from '@/components/api/DesktopClient.tsx';
+import { getTransactionLog } from '@/components/api/desktopClient.ts';
 
-const TRANSACTION_LOG_FETCH_INTERVAL_MS = 10000;
+const TRANSACTION_LOG_FETCH_INTERVAL_MS = 100000;
 
 export const useTransactionLog = () => {
   const params = useParams();

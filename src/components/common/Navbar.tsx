@@ -4,6 +4,7 @@
  */
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import SettingsGroup from '@/components/settings/SettingsGroup.tsx';
 
 export type NavbarRouteProps = {
   name: string;
@@ -18,10 +19,10 @@ type NavbarProps = {
 export default function Navbar({ routes, className }: NavbarProps) {
   return (
     <header className={cn('flex h-16 w-full items-center justify-between border-b', className)}>
-      <nav>
-        <ul className="flex items-center gap-8">
+      <nav className="w-full flex justify-between">
+        <ul className="flex space-x-12">
           {routes.map((route) => (
-            <li key={route.name}>
+            <li key={route.name} className="whitespace-nowrap items-center w-full flex">
               <NavLink
                 to={route.path}
                 className={({ isActive, isPending }) =>
@@ -37,6 +38,7 @@ export default function Navbar({ routes, className }: NavbarProps) {
             </li>
           ))}
         </ul>
+        <SettingsGroup className="grid grid-cols-2 items-center space-x-2 p-4" />
       </nav>
     </header>
   );

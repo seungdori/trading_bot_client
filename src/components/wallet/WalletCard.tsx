@@ -16,7 +16,7 @@ type Props = {
 
 export default function WalletCard({ title, description, children, className }: Props) {
   return (
-    <Card className={cn('w-full max-w-lg', className)}>
+    <Card className={cn('w-full', className)}>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>

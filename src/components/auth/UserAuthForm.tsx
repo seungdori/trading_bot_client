@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { LucideMail } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { mockLogin } from '@/components/api/DesktopClient.tsx';
+import { mockLogin } from '@/components/api/desktopClient.ts';
 import { EXCHANGE } from '@/constants/exchange.ts';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
@@ -28,7 +28,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       if (isLoggedIn) {
         navigate(`/trading/${EXCHANGE.BINANCE.PATH}`, { replace: true });
       }
-    }, 3000);
+    }, 2000);
   }
 
   return (

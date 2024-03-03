@@ -10,7 +10,7 @@ export default function WalletCardContent({ balance, className }: Props) {
   return (
     <div className={className}>
       <CardContent className="flex flex-col justify-center space-y-2 p-6">
-        <div className="text-3xl font-bold">{balance}</div>
+        <div className="text-3xl font-bold">{balance} ₩</div>
         <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Available balance</div>
       </CardContent>
       <Separator />

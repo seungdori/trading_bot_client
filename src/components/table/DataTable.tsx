@@ -9,6 +9,7 @@ import {
 } from '@tanstack/react-table';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import TableSkeleton from '@/components/table/TableSkeleton.tsx';
 
 type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -58,7 +59,7 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
               ) : (
                 <TableRow>
                   <TableCell colSpan={columns.length} className="h-24 text-center">
-                    No results.
+                    <TableSkeleton />
                   </TableCell>
                 </TableRow>
               )}

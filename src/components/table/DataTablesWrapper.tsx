@@ -7,11 +7,7 @@ type Props = { className?: string };
 
 export default function DataTablesWrapper({ className }: Props) {
   const tabs = buildTabs();
-  return (
-    <div className={className}>
-      <InfoTabs defaultTableId={tabs.defaultId} tables={tabs.tabs} />;
-    </div>
-  );
+  return <InfoTabs className={className} defaultTableId={tabs.defaultId} tables={tabs.tabs} />;
 }
 
 function buildTabs(): {

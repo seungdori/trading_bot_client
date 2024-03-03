@@ -9,7 +9,7 @@ import { useStrategyStore } from '@/hooks/useStrategyStore.ts';
 
 type Props = { className?: string };
 
-export default function StrategyDropdownMenu({ className }: Props) {
+export default function CustomStrategyDropdownMenu({ className }: Props) {
   const { customStrategy, setCustomStrategy } = useStrategyStore();
 
   return (
