@@ -1,51 +1,11 @@
 import { z } from 'zod';
-import { AssetsData } from '@/types/tableTypes.ts';
-import { generateRandomAssetsTableRow, getnerateRandomTransactionLog } from '@/helper/typia/generated/mock.ts';
+import { fetch } from '@tauri-apps/api/http';
+import { getnerateRandomTransactionLog } from '@/helper/typia/generated/mock.ts';
 import { TradingSearchParamsSchema } from '@/schemas/searchParamsSchema.ts';
 import { StrategyState } from '@/store/strategyStore.ts';
-import { getUpbitWallet } from '@/components/api/upbitClient.ts';
-import BigNumber from 'bignumber.js';
-
-// Todo: refactor
-export async function getAssetsData(): Promise<AssetsData[]> {
-  const data: AssetsData[] = Array.from({ length: 30 }, () => generateRandomAssetsTableRow());
-  await new Promise((res) => setTimeout(res, 1000));
-
-  const { exchange, krw, withOutKrw } = await getUpbitWallet();
-
-  console.log(`[ASSETS DATA]`, krw, withOutKrw);
-
-  const krwAsset: AssetsData = {
-    coinName: 'KRW',
-    initPrice: 1,
-    currentPrice: +krw.balance,
-    amount: BigNumber(+krw.balance),
-    rateOfReturn: 1,
-    sellPrice: 1,
-    tp1: 1,
-    tp2: 1,
-    tp3: 1,
-    value: +krw.balance,
-  };
-  const assets: AssetsData[] = withOutKrw.map((item) => {
-    return {
-      coinName: item.currency,
-      initPrice: +(+item.avg_buy_price).toFixed(5),
-      currentPrice: +(+item.balance).toFixed(5),
-      amount: BigNumber(+(+item.balance)),
-      rateOfReturn: +(+item.avg_buy_price).toFixed(5),
-      sellPrice: +(+item.avg_buy_price).toFixed(5),
-      tp1: +(+item.avg_buy_price).toFixed(5),
-      tp2: +(+item.avg_buy_price).toFixed(5),
-      tp3: +(+item.avg_buy_price).toFixed(5),
-      value: +item.balance * +item.avg_buy_price,
-    };
-  });
-
-  console.log(`[getAssetsData] data`, data);
-  return [krwAsset, ...assets]; // Todo: remove
-  // return data;
-}
+import { Upbit } from '@/types/exchangeTypes.ts';
+import { TradingDataResponseSchema, TradingDataSchema } from '@/schemas/backendSchema.ts';
+import { ResponseDto } from '@/types/backendTypes.ts';
 
 export function mockLogin({ username, password }: { username: string; password: string }) {
   console.log(`[mockLogin] username, password`, username, password);
@@ -62,4 +22,42 @@ export async function getTransactionLog(exchange: z.infer<typeof TradingSearchPa
 export async function startAiSearch({ exchange, enterStrategy }: Pick<StrategyState, 'exchange' | 'enterStrategy'>) {
   console.log(`[startAiSearch] exchange, enterStrategy`, exchange, enterStrategy);
   return true;
+}
+
+/**
+ * @description Fetch trading data from Upbit
+ * @param exchange - 'upbit'
+ * @param symbols - e.g. ['KRW-BTC', 'KRW-ETH', 'KRW-DOGE']
+ */
+export async function fetchUpbitTradingData(
+  exchange: Upbit,
+  symbols: string[],
+): Promise<z.infer<typeof TradingDataResponseSchema>> {
+  const endpoint = `http://localhost:8000/trading/${exchange}`;
+  // const url = new URL(endpoint);
+  const searchParams = symbols.join(',');
+
+  // url.searchParams.append('market_codes', searchParams);
+  console.log(`[SEARCH PARAMS]`, searchParams);
+
+  const response = await fetch<ResponseDto<z.infer<typeof TradingDataResponseSchema>>>(
+    `${endpoint}/?market_codes=${searchParams}`,
+    {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      // query: { market_codes: symbols },
+    },
+  );
+
+  const backendResponse = response.data;
+
+  console.log(`[UPBIT TRADING DATA FROM BACKEND]`, backendResponse);
+
+  if (backendResponse.success) {
+    return backendResponse.data as z.infer<typeof TradingDataSchema>;
+  } else {
+    // Todo: handle error
+    // throw new Error(backendResponse.message);
+    return {};
+  }
 }
