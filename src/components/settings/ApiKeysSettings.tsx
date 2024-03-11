@@ -1,96 +1,182 @@
 import { Button } from '@/components/ui/button.tsx';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from '@/components/ui/card.tsx';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card.tsx';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group.tsx';
 import { Label } from '@/components/ui/label';
-import { Icons } from '@/components/common/Icons';
 import { Input } from '@/components/ui/input';
 import { useSettingsStore } from '@/store/settingsStore.ts';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Exchange } from '@/types/exchangeTypes.ts';
+import { useExchangeStore } from '@/store/exchangeStore.ts';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form.tsx';
+import { toast } from '@/components/ui/use-toast.ts';
+import { useEffect } from 'react';
+import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
+import { Checkbox } from '@/components/ui/checkbox';
+import BinanceLogo from '@/assets/binance.svg';
+import BithumbLogo from '@/assets/bithumb.svg';
+import UpbitLogo from '@/assets/upbit.svg';
+
+const FormSchema = z.object({
+  apiKey: z.string(),
+  secret: z.string(),
+});
 
 export default function ApiKeysSettings() {
+  const { exchange, setExchange } = useExchangeStore();
+  const [showApiKeys, setShowApiKeys] = useQueryParam('showApiKeys', withDefault(BooleanParam, false));
+  const { API_KEY, SECRET } = buildLocalStorageKeys(exchange);
   const settingsStore = useSettingsStore();
+  const { apiKey, secret }: z.infer<typeof FormSchema> = {
+    apiKey: settingsStore.get(API_KEY) ?? '',
+    secret: settingsStore.get(SECRET) ?? '',
+  };
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      apiKey,
+      secret,
+    },
+  });
 
-  const handleSaveString = async (key: string, value: string) => {
-    await settingsStore.set(key, value);
+  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    settingsStore.set(API_KEY, data.apiKey);
+    settingsStore.set(SECRET, data.secret);
+    toast({ title: 'API Keys saved!' });
   };
 
-  const getString = async (key: string) => {
-    return await settingsStore.get<string>(key);
-  };
+  useEffect(() => {
+    form.reset({ apiKey, secret });
+  }, [apiKey, secret]);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Payment Method</CardTitle>
-        <CardDescription>Add a new payment method to your account.</CardDescription>
+        <CardTitle>Exchange api keys</CardTitle>
+        <CardDescription>Set exchange api key & api secret.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
-        <RadioGroup defaultValue="card" className="grid grid-cols-3 gap-4">
+        <RadioGroup
+          defaultValue={exchange}
+          onValueChange={(selectedValue) => {
+            setExchange(selectedValue as Exchange);
+          }}
+          className="grid grid-cols-3 gap-4"
+        >
           <div>
-            <RadioGroupItem value="card" id="card" className="peer sr-only" />
+            <RadioGroupItem value="binance" id="binance" className="peer sr-only" />
             <Label
-              htmlFor="card"
+              htmlFor="binance"
               className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="mb-3 h-6 w-6"
-              >
-                <rect width="20" height="14" x="2" y="5" rx="2" />
-                <path d="M2 10h20" />
-              </svg>
-              Card
+              <img src={BinanceLogo} className="h-10 m-2" />
+              <span>Binance</span>
             </Label>
           </div>
           <div>
-            <RadioGroupItem value="paypal" id="paypal" className="peer sr-only" />
+            <RadioGroupItem value="bithumb" id="bithumb" className="peer sr-only" />
             <Label
-              htmlFor="paypal"
+              htmlFor="bithumb"
               className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
             >
-              <Icons.paypal className="mb-3 h-6 w-6" />
-              Paypal
+              <img src={BithumbLogo} className="h-10 m-2" />
+              <span>Bithumb</span>
             </Label>
           </div>
           <div>
-            <RadioGroupItem value="apple" id="apple" className="peer sr-only" />
+            <RadioGroupItem value="upbit" id="upbit" className="peer sr-only" />
             <Label
-              htmlFor="apple"
+              htmlFor="upbit"
               className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
             >
-              <Icons.apple className="mb-3 h-6 w-6" />
-              Apple
+              {/*<p className="">*/}
+              <img src={UpbitLogo} className="h-10 m-2" />
+              <span>Upbit</span>
             </Label>
           </div>
         </RadioGroup>
-        <div className="grid gap-2">
-          <Label htmlFor="name">Name</Label>
-          <Input id="name" placeholder="First Last" />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="number">Card number</Label>
-          <Input id="number" placeholder="" />
-        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="apiKey"
+                render={({ field }) => (
+                  <FormItem className="space-y-3 w-full">
+                    <FormLabel>API KEY</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="apiKey"
+                        type={showApiKeys ? 'text' : 'password'}
+                        placeholder="API KEY"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="secret"
+                render={({ field }) => (
+                  <FormItem className="space-y-3 w-full">
+                    <Label htmlFor="secret">API SECRET</Label>
+                    <FormControl>
+                      <Input
+                        id="secret"
+                        type={showApiKeys ? 'text' : 'password'}
+                        placeholder="API SECRET"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox id="showApiKeys" onCheckedChange={(checked) => setShowApiKeys(!!checked)} />
+              <Label
+                htmlFor="showApiKeys"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Show api keys
+              </Label>
+            </div>
+            <Button type="submit" className="w-full">
+              Save
+            </Button>
+          </form>
+        </Form>
       </CardContent>
-      <CardFooter>
-        <Button className="w-full" onClick={() => handleSaveString('MOCK', 'MOCK string')}>
-          Continue
-        </Button>
-
-        <Button
-          className="w-full"
-          onClick={() => {
-            getString('MOCK').then((str) => console.info(`[STORAGE]`, str));
-          }}
-        >
-          Continue
-        </Button>
-      </CardFooter>
     </Card>
   );
+}
+
+function buildLocalStorageKeys(exchange: Exchange) {
+  switch (exchange) {
+    case 'binance':
+      return {
+        API_KEY: 'BINANCE_API_KEY',
+        SECRET: 'BINANCE_SECRET',
+      };
+    case 'bithumb':
+      return {
+        API_KEY: 'BITHUMB_API_KEY',
+        SECRET: 'BITHUMB_SECRET',
+      };
+    case 'upbit':
+      return {
+        API_KEY: 'UPBIT_API_KEY',
+        SECRET: 'UPBIT_SECRET',
+      };
+  }
 }

@@ -13,7 +13,6 @@ export const routes: CustomRoute[] = [
   {
     path: '/login',
     element: <AuthPage />,
-    // element: <AuthenticationPage />,
   },
   {
     path: '/trading',
