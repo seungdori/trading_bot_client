@@ -13,14 +13,23 @@ const FormSchema = EnterSymbolSchema;
 type Props = { className?: string };
 
 export default function EnterSymbol({ className }: Props) {
-  const { enterSymbol, setEnterSymbol } = useStrategyStore();
+  const { store, setStore } = useStrategyStore();
+  const { enterSymbolCount, enterSymbolAmount } = store;
+  // enterSymbol, setEnterSymbol
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      enterSymbolCount: enterSymbol.enterSymbolCount,
-      enterSymbolAmount: enterSymbol.enterSymbolAmount,
+      enterSymbolCount,
+      enterSymbolAmount,
     },
   });
+
+  const handleEtnerSymbolCount = (changed: typeof enterSymbolCount) => {
+    setStore({ enterSymbolCount: changed });
+  };
+  const handleEnterSymbolAmount = (changed: typeof enterSymbolAmount) => {
+    setStore({ enterSymbolAmount: changed });
+  };
 
   return (
     <div className={cn('container', className)}>
@@ -41,13 +50,14 @@ export default function EnterSymbol({ className }: Props) {
                         placeholder="진입 종목 개수"
                         autoCapitalize="none"
                         autoCorrect="off"
-                        value={enterSymbol.enterSymbolCount.toString()}
+                        value={enterSymbolCount.toString()}
                         onChange={(e) => {
                           const enterSymbolCount = +e.target.value;
-                          setEnterSymbol({
-                            ...enterSymbol,
-                            enterSymbolCount,
-                          });
+                          // setEnterSymbol({
+                          //   ...enterSymbol,
+                          //   enterSymbolCount,
+                          // });
+                          handleEtnerSymbolCount(enterSymbolCount);
                           field.onChange(enterSymbolCount);
                         }}
                       />
@@ -71,13 +81,14 @@ export default function EnterSymbol({ className }: Props) {
                         placeholder="종목당 투입금"
                         autoCapitalize="none"
                         autoCorrect="off"
-                        value={enterSymbol.enterSymbolAmount.toString()}
+                        value={enterSymbolAmount.toString()}
                         onChange={(e) => {
                           const enterSymbolAmount = +e.target.value;
-                          setEnterSymbol({
-                            ...enterSymbol,
-                            enterSymbolAmount,
-                          });
+                          handleEnterSymbolAmount(enterSymbolAmount);
+                          // setEnterSymbol({
+                          //   ...enterSymbol,
+                          //   enterSymbolAmount,
+                          // });
                           field.onChange(enterSymbolAmount);
                         }}
                       />

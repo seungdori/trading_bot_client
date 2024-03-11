@@ -18,6 +18,9 @@ export default defineConfig(async () => ({
       // 3. tell vite to ignore watching `src-tauri`
       ignored: ['**/src-tauri/**'],
     },
+    fs: {
+      cachedChecks: false,
+    },
   },
   resolve: {
     alias: {

@@ -16,7 +16,7 @@ export async function getWallet(
     case 'upbit':
       return getUpbitWallet();
     case 'binance':
-      return getBinaceWallet(); // Todo: Impl
+      return getBinaceWallet();
     case 'bithumb':
       return getBithumbWallet(); // Todo: Impl
     default:

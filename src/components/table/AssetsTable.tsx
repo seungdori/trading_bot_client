@@ -1,11 +1,13 @@
 import ScrollableTable from '@/components/table/ScrollableTable.tsx';
 import { ColumnDef } from '@tanstack/react-table';
 import DataTable from '@/components/table/DataTable.tsx';
-import { AssetsData } from '@/types/tableTypes';
+// import { AssetsData } from '@/types/tableTypes';
 import { Button } from '@/components/ui/button.tsx';
 import { ArrowUpDown } from 'lucide-react';
+import { z } from 'zod';
+import { AssetsSchemaWithKey } from '@/schemas/exchangeSchema.ts';
 
-const mockColumns: ColumnDef<AssetsData>[] = [
+const mockColumns: ColumnDef<z.infer<typeof AssetsSchemaWithKey>>[] = [
   {
     accessorKey: 'coinName',
     header: ({ column }) => {
@@ -55,7 +57,7 @@ const mockColumns: ColumnDef<AssetsData>[] = [
     header: ({ column }) => {
       return (
         <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          수익률
+          수익률 %
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -118,7 +120,7 @@ const mockColumns: ColumnDef<AssetsData>[] = [
   },
 ];
 
-type Props = { assetsData: AssetsData[] };
+type Props = { assetsData: z.infer<typeof AssetsSchemaWithKey>[] };
 
 export default function AssetsTable({ assetsData }: Props) {
   return (

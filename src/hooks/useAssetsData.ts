@@ -1,38 +1,56 @@
 import { useWallet } from '@/hooks/useWallet.ts';
 import { AssetsSchemaWithKey } from '@/schemas/exchangeSchema.ts';
 import { z } from 'zod';
-import { UpbitWalletSchema } from '@/schemas/upbitSchema.ts';
-import { BinanceWalletSchema } from '@/schemas/binanceSchema.ts';
-import { BithumbWalletSchema } from '@/schemas/bithumbSchema.ts';
-import { useUpbitAccessToken } from '@/hooks/useUpbitAccessToken.ts';
-import { useUpbitWebSocket } from '@/hooks/useUpbitWebsocket.ts';
-import { buildUpbitSymbols } from '@/components/table/UseUpbitAssets.tsx';
-import { TradingDataSchema } from '@/schemas/backendSchema.ts';
-import { useFetchUpbitTradingData } from '@/hooks/useFetchUpbitTradingData.ts';
+import { TradingDataResponseSchema, TradingDataSchema } from '@/schemas/backendSchema.ts';
+import { useFetchTradingData } from '@/hooks/useFetchTradingData.ts';
+import { Wallet } from '@/types/exchangeTypes.ts';
+import { fetchPositions } from '@/components/api/desktopClient.ts';
+import { useQuery } from '@tanstack/react-query';
+import {
+  BinancePositionsResponse,
+  BithumbPositionsResponse,
+  PositionsResponse,
+  UpbitPositionsResponse,
+} from '@/types/backendTypes.ts';
+import { useExchangeStore } from '@/store/exchangeStore.ts';
+
+export const useFetchPositions = ({ wallet }: { wallet?: Wallet }) => {
+  return useQuery({
+    queryKey: ['positions', wallet?.exchange],
+    queryFn: () => fetchPositions({ wallet }),
+    refetchInterval: 1000,
+  });
+};
 
 export const useAssetsData = (): { isLoading: boolean; assets: z.infer<typeof AssetsSchemaWithKey>[] } => {
-  const { isLoading, data: wallet } = useWallet();
+  const { exchange } = useExchangeStore();
+  const { data: wallet } = useWallet();
+  const positionsQuery = useFetchPositions({ wallet });
+  const symbols = buildMarketSymbols(exchange, positionsQuery.data);
+  const tradingDataQuery = useFetchTradingData({ exchange, symbols });
 
-  if (isLoading) {
-    return { isLoading, assets: [] };
+  if (positionsQuery.isLoading || !positionsQuery.data) {
+    return {
+      isLoading: true,
+      assets: [],
+    };
   }
 
   switch (wallet?.exchange) {
     case 'upbit':
       return {
         isLoading: false,
-        assets: buildUpbitAssets(wallet),
-        // assets: buildUpbitAssets(wallet, upbitTickers),
+        assets: buildUpbitAssets(positionsQuery.data as UpbitPositionsResponse[], tradingDataQuery.data ?? []),
       };
     case 'binance':
       return {
         isLoading: false,
-        assets: buildBinanaceAssets(wallet),
+        assets: buildBinanceAssets(positionsQuery.data as BinancePositionsResponse[], tradingDataQuery.data ?? []),
       };
     case 'bithumb':
       return {
         isLoading: false,
-        assets: buildBithumbAssets(wallet),
+        assets: buildBithumbAssets(positionsQuery.data as BithumbPositionsResponse[], tradingDataQuery.data ?? []),
       };
     default:
       return {
@@ -41,71 +59,148 @@ export const useAssetsData = (): { isLoading: boolean; assets: z.infer<typeof As
       };
   }
 };
-// export const useAssetsData = () => {
-//
-//   const params = useParams();
-//   const { exchange } = TradingSearchParamsSchema.parse(params);
-//
-//   return useQuery({
-//     queryKey: ['assetsData', exchange],
-//     queryFn: getAssetsData,
-//     refetchInterval: ASSETS_FETCH_INTERVAL_MS,
-//   });
-// };
 
-function buildUpbitAssets(wallet: z.infer<typeof UpbitWalletSchema>): z.infer<typeof AssetsSchemaWithKey>[] {
-  const { withOutKrw } = wallet;
-  const accessTokenQuery = useUpbitAccessToken();
-  const symbols = buildUpbitSymbols(wallet);
-  const { upbitTickers: tickers } = useUpbitWebSocket({
-    symbols,
-    accessToken: accessTokenQuery.data ?? '',
-  });
-  const upbitTradingDataQuery = useFetchUpbitTradingData('upbit', symbols);
+export function buildMarketSymbols(exchange: Wallet['exchange'], positions?: PositionsResponse[]): string[] {
+  switch (exchange) {
+    case 'upbit':
+      return buildUpbitSymbols(positions as UpbitPositionsResponse[]);
+    case 'binance':
+      return buildBinanceSymbols(positions as BinancePositionsResponse[]);
+    case 'bithumb':
+      return []; // Todo: impl
+    default:
+      return [];
+  }
+}
 
-  if (!withOutKrw || withOutKrw.length === 0 || !upbitTradingDataQuery.data) {
+function buildUpbitSymbol(currency: string) {
+  return currency;
+}
+
+// e.g. ['BTC', 'ETH', 'DOGE'];
+export function buildUpbitSymbols(positions?: UpbitPositionsResponse[]): string[] {
+  if (!positions) {
     return [];
   }
 
-  console.log(`[TICKERS]`, tickers);
-  if (Object.keys(tickers).length === 0) {
+  return positions.map((position) => buildUpbitSymbol(position.currency));
+}
+
+function buildBinanceSymbol(symbol: string) {
+  return symbol;
+}
+
+export function buildBinanceSymbols(positions?: BinancePositionsResponse[]): string[] {
+  if (!positions) {
     return [];
   }
 
-  const assets: z.infer<typeof AssetsSchemaWithKey>[] = withOutKrw.map((item) => {
-    console.log(`[ASSETS]`, item, tickers[item.key]);
-    const ticker = tickers[item.key];
-    const initPrice = +item.avg_buy_price;
-    const currentPrice = ticker ? ticker.trade_price : 0;
-    const amount = item.balance;
+  return positions.map((position) => buildBinanceSymbol(position.symbol));
+}
+
+function buildUpbitAssets(
+  positions: UpbitPositionsResponse[],
+  tradingData: z.infer<typeof TradingDataResponseSchema>[],
+): z.infer<typeof AssetsSchemaWithKey>[] {
+  const tradingDataWithKey = tradingData.reduce(
+    (acc, item) => {
+      return {
+        ...acc,
+        [item.symbol]: item,
+      };
+    },
+    {} as Record<string, z.infer<typeof TradingDataResponseSchema>>,
+  );
+
+  const assets: z.infer<typeof AssetsSchemaWithKey>[] = positions.map((coin) => {
+    const key = coin.currency;
+    const coinName = coin.currency;
+    const amount = coin.balance;
+    const currentPrice = coin.current_price;
+    const initPrice = +coin.avg_buy_price;
     const rateOfReturn = +(((currentPrice - initPrice) / initPrice) * 100);
-    const fixedRateOfReturn = Number.isNaN(rateOfReturn) ? 0 : +rateOfReturn.toFixed();
     const value = Math.abs(+amount * currentPrice);
 
-    // Fetch from DB
-    const tradingData = TradingDataSchema.safeParse(upbitTradingDataQuery.data);
-    if (tradingData.success) {
+    const validatedTradingData = TradingDataSchema.safeParse(tradingData);
+    if (validatedTradingData.success) {
       return {
-        key: item.key,
-        coinName: item.currency,
-        initPrice,
-        currentPrice,
+        key,
         amount,
-        rateOfReturn: fixedRateOfReturn,
-        sellPrice: tradingData.data.long_sl_price.toFixed(2),
-        tp1: tradingData.data.long_tp1_price.toFixed(2),
-        tp2: tradingData.data.long_tp2_price.toFixed(2),
-        tp3: tradingData.data.long_tp3_price.toFixed(2),
+        coinName,
+        currentPrice,
+        initPrice,
+        rateOfReturn,
+        sellPrice: tradingDataWithKey[key].long_sl_price.toFixed(2),
+        tp1: tradingDataWithKey[key].long_tp1_price.toFixed(2),
+        tp2: tradingDataWithKey[key].long_tp2_price.toFixed(2),
+        tp3: tradingDataWithKey[key].long_tp3_price.toFixed(2),
         value,
       };
     } else {
       return {
-        key: item.key,
-        coinName: item.currency,
-        initPrice,
-        currentPrice,
+        key,
         amount,
-        rateOfReturn: fixedRateOfReturn,
+        coinName,
+        currentPrice,
+        initPrice,
+        rateOfReturn,
+        sellPrice: '',
+        tp1: '',
+        tp2: '',
+        tp3: '',
+        value,
+      };
+    }
+  });
+
+  return assets;
+}
+function buildBinanceAssets(
+  positions: BinancePositionsResponse[],
+  tradingData: z.infer<typeof TradingDataResponseSchema>[],
+): z.infer<typeof AssetsSchemaWithKey>[] {
+  const tradingDataWithKey = tradingData.reduce(
+    (acc, item) => {
+      return {
+        ...acc,
+        [item.symbol]: item,
+      };
+    },
+    {} as Record<string, z.infer<typeof TradingDataResponseSchema>>,
+  );
+
+  const assets: z.infer<typeof AssetsSchemaWithKey>[] = positions.map((coin) => {
+    const amount = coin.quantity.toString();
+    const coinName = coin.symbol;
+    const currentPrice = coin.mark_price;
+    const initPrice = coin.entry_price;
+    const key = coin.symbol;
+    const rateOfReturn = coin.profit_percent;
+    const value = coin.value;
+
+    const validatedTradingData = TradingDataSchema.safeParse(coin.trading_data);
+    if (validatedTradingData.success) {
+      return {
+        key,
+        amount,
+        coinName,
+        currentPrice,
+        initPrice,
+        rateOfReturn,
+        sellPrice: tradingDataWithKey[key].long_sl_price.toFixed(2),
+        tp1: tradingDataWithKey[key].long_tp1_price.toFixed(2),
+        tp2: tradingDataWithKey[key].long_tp2_price.toFixed(2),
+        tp3: tradingDataWithKey[key].long_tp3_price.toFixed(2),
+        value,
+      };
+    } else {
+      return {
+        key,
+        amount,
+        coinName,
+        currentPrice,
+        initPrice,
+        rateOfReturn,
         sellPrice: '',
         tp1: '',
         tp2: '',
@@ -118,10 +213,9 @@ function buildUpbitAssets(wallet: z.infer<typeof UpbitWalletSchema>): z.infer<ty
   return assets;
 }
 
-function buildBinanaceAssets(wallet: z.infer<typeof BinanceWalletSchema>): z.infer<typeof AssetsSchemaWithKey>[] {
-  return [];
-}
-
-function buildBithumbAssets(wallet: z.infer<typeof BithumbWalletSchema>): z.infer<typeof AssetsSchemaWithKey>[] {
+function buildBithumbAssets(
+  positions: BithumbPositionsResponse[],
+  tradingData: z.infer<typeof TradingDataResponseSchema>[],
+): z.infer<typeof AssetsSchemaWithKey>[] {
   return [];
 }

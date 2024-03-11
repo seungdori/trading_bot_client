@@ -1,23 +1,24 @@
-import { useParams } from 'react-router-dom';
-import { useBinanceStrategyStore, useBithumbStrategyStore, useUpbitStrategyStore } from '@/store/strategyStore.ts';
-import { TradingSearchParamsSchema } from '@/schemas/searchParamsSchema.ts';
+import {
+  ExchangeStateStore,
+  useBinanceStateStore,
+  useBithumbStateStore,
+  useUpbitStateStore,
+} from '@/store/strategyStore.ts';
+import { useExchangeStore } from '@/store/exchangeStore.ts';
 
-export const useStrategyStore = () => {
-  const params = useParams();
-  console.log(`params: ${JSON.stringify(params)}`);
+export const useStrategyStore = (): ExchangeStateStore => {
+  const { exchange } = useExchangeStore();
 
-  const { exchange } = TradingSearchParamsSchema.parse(params);
-
-  const binanceStrategyStore = useBinanceStrategyStore();
-  const bithumbStrategyStore = useBithumbStrategyStore();
-  const upbitStrategyStore = useUpbitStrategyStore();
+  const binanceStrategyStore = useBinanceStateStore();
+  const bithumbStrategyStore = useBithumbStateStore();
+  const upbitStrategyStore = useUpbitStateStore();
 
   switch (exchange) {
     case 'binance':
-      return binanceStrategyStore;
+      return { exchange, ...binanceStrategyStore };
     case 'bithumb':
-      return bithumbStrategyStore;
+      return { exchange, ...bithumbStrategyStore };
     case 'upbit':
-      return upbitStrategyStore;
+      return { exchange, ...upbitStrategyStore };
   }
 };

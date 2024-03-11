@@ -1,20 +1,22 @@
 import { Navigate, RouteObject } from 'react-router-dom';
 import SettingsPage from '@/pages/SettingsPage.tsx';
-import LoginPage from '@/pages/LoginPage.tsx';
+import AuthPage from '@/pages/AuthPage.tsx';
 import TradingPage from '@/pages/TradingPage.tsx';
+// import AuthenticationPage from '@/pages/AuthPage.tsx';
 
 type CustomRoute = RouteObject;
 export const routes: CustomRoute[] = [
   {
     path: '/',
-    element: <Navigate to={`/trading/upbit`} replace={true} />,
+    element: <Navigate to={'/login'} replace={true} />,
   },
   {
     path: '/login',
-    element: <LoginPage />,
+    element: <AuthPage />,
+    // element: <AuthenticationPage />,
   },
   {
-    path: '/trading/:exchange',
+    path: '/trading',
     element: <TradingPage />,
   },
   {

@@ -2,12 +2,19 @@ import { fetch } from '@tauri-apps/api/http';
 import * as uuid from 'uuid';
 import * as jose from 'jose';
 import { z } from 'zod';
-import { UpbitWalletAssetSchema, UpbitWalletResponseSchema, UpbitWalletSchema } from '@/schemas/upbitSchema.ts';
+import {
+  UpbitAssetResponseSchema,
+  UpbitMarketCodeSchema,
+  UpbitWalletAssetSchema,
+  UpbitWalletSchema,
+} from '@/schemas/upbitSchema.ts';
+import { TickerRequest } from '@/types/exchangeTypes.ts';
+import { UpbitTickersWithKey } from '@/types/upbitTypes.ts';
+import { useUpbitAvailableMarketsStore } from '@/store/upbitAvailableMarketsStore.ts';
 
-// UPBIT_OPEN_API_ACCESS_KEY=VAkx0co5MdTOYWTx5WViT2J3YU4DtvaTpFxwzbII
-// UPBIT_OPEN_API_SECRET_KEY=9fiLxPwcd8zA23t3IlxMU8vHFxcLZbMsgQaziOxS
 export const UPBIT_ACCESS_KEY = `VAkx0co5MdTOYWTx5WViT2J3YU4DtvaTpFxwzbII`;
 export const UPBIT_SECRET_KEY = `9fiLxPwcd8zA23t3IlxMU8vHFxcLZbMsgQaziOxS`;
+
 export const UPBIT_REST_API_URL = `https://api.upbit.com`;
 export const UPBIT_WS_URL = `wss://api.upbit.com/websocket/v1`;
 const alg = 'HS256';
@@ -18,37 +25,17 @@ export async function getUpbitAccessToken() {
     access_key: UPBIT_ACCESS_KEY,
     nonce: uuid.v4(),
   };
-
-  // const token = await new jose.SignJWT(payload).setProtectedHeader({ alg }).setIssuedAt().sign(secret);
   const token = await new jose.SignJWT(payload).setProtectedHeader({ alg }).setIssuedAt().sign(secret);
-  // const token = await new jose.SignJWT(payload)
-  //   .setProtectedHeader({ alg })
-  //   .setIssuedAt()
-  //   .setIssuer('urn:example:issuer')
-  //   .setAudience('urn:example:audience')
-  //   .setExpirationTime('2h')
-  //   .sign(secret);
-  // const response = await fetch<{ token: string }>('http://localhost:3000/token', {
-  //   method: 'GET',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  // });
-  //
-  // console.log(`[UPBIT TOKEN RESPONSE]`, response);
-  //
-  // const { token } = response.data;
-  // console.log(`[UPBIT TOKEN]`, token);
 
   return token;
 }
 
 export async function getUpbitWallet(): Promise<z.infer<typeof UpbitWalletSchema>> {
-  const endpoint = `${UPBIT_REST_API_URL}/v1/accounts`;
+  const endpoint = new URL('/v1/accounts', UPBIT_REST_API_URL);
   const accessToken = await getUpbitAccessToken();
 
   try {
-    const response = await fetch<z.infer<typeof UpbitWalletResponseSchema>[]>(endpoint, {
+    const response = await fetch<z.infer<typeof UpbitAssetResponseSchema>[]>(endpoint.href, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -56,7 +43,7 @@ export async function getUpbitWallet(): Promise<z.infer<typeof UpbitWalletSchema
     });
 
     const data = response.data;
-    console.log(`[UBPIT ACCOUNT INFO]`, data);
+    console.log(`[UPBIT ACCOUNT INFO]`, data);
 
     // If KRW not exist then set default KRW
     const foundKrw = data.find((item) => item.currency === 'KRW');
@@ -88,34 +75,64 @@ export async function getUpbitWallet(): Promise<z.infer<typeof UpbitWalletSchema
       withOutKrw,
     };
   } catch (e) {
-    console.error(`[UBPIT ACCOUNT INFO ERROR]`, e);
+    console.error(`[UPBIT ACCOUNT INFO ERROR]`, e);
     throw new Error(`${JSON.stringify(e)}`);
   }
 }
 
-// async connectToUpbit() {
-//   const payload = {
-//     access_key: this.UPBIT_OPEN_API_ACCESS_KEY,
-//     nonce: uuidv4(),
-//   };
-//
-//   const jwtToken = this.jwtService.sign(payload);
-//   this.wsClient = new WebSocket('wss://api.upbit.com/websocket/v1', {
-//     headers: {
-//       authorization: Bearer ${jwtToken}
-//     }
-//   });
-//
-//   this.wsClient.on('open', () => {
-//     const test = this.allTickers.map(item => "${item}")
-//     console.log(Connected to Upbit WebSocket API${test});
-//     this.wsClient.send([{"ticket":"test"},{"type":"ticker","codes":[${test}]}]);
-//   });
-//
-//   this.wsClient.on('message', (data) => {
-//     console.log(data.toString());
-//   });
-//
-//   this.wsClient.on('error', console.error);
-//   this.wsClient.on('close', () => console.log('WebSocket closed!'));
-// }
+export async function getUpbitAvailableMarkets(): Promise<string[]> {
+  const { availableMarkets, setAvailableMarkets } = useUpbitAvailableMarketsStore();
+
+  if (availableMarkets && availableMarkets.length > 0) {
+    return availableMarkets as string[];
+  }
+
+  const endpoint = new URL('v1/market/all', UPBIT_REST_API_URL);
+  try {
+    const response = await fetch<z.infer<typeof UpbitMarketCodeSchema>[]>(endpoint.href, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Todo: set available markets to url query params (cache)
+    const markets = response.data.map((item) => item.market);
+    setAvailableMarkets(markets);
+
+    return markets;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+export async function getUpbitTickers({ symbols }: Pick<TickerRequest, 'symbols'>): Promise<UpbitTickersWithKey> {
+  // Todo: Cache available markets
+  const availableMarkets = await getUpbitAvailableMarkets();
+  const markets = availableMarkets.filter((availableMarket) => symbols.includes(availableMarket));
+
+  const endpoint = new URL('v1/ticker', UPBIT_REST_API_URL);
+  endpoint.searchParams.append('markets', markets.join(','));
+  try {
+    const response = await fetch<Record<string, any>[]>(endpoint.href, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log(`[UPBIT RAW TICKER INFO]`, response.data);
+
+    const tickers = response.data.reduce((acc, item) => {
+      const key = item.market;
+      acc[key] = item;
+      return acc;
+    }, {} as UpbitTickersWithKey);
+    console.log(`[UPBIT TICKER INFO]`, tickers);
+
+    return tickers;
+  } catch (e) {
+    console.error(e);
+    throw new Error(`${JSON.stringify(e)}`);
+  }
+}

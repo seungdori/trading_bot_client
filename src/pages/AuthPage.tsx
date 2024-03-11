@@ -1,9 +1,18 @@
 import { Link } from 'react-router-dom';
-import { UserAuthForm } from '@/components/auth/UserAuthForm';
 import AuthPageLightImage from '@/assets/authentication-light.png';
 import AuthPageDarkImage from '@/assets/authentication-dark.png';
+import { useCheckUserExist } from '@/hooks/useCheckUserExist.ts';
+import { LoginForm } from '@/components/auth/LoginForm.tsx';
+import { SignupForm } from '@/components/auth/SignupForm.tsx';
 
-export default function AuthenticationPage() {
+export default function AuthPage() {
+  const { isLoading, data } = useCheckUserExist();
+
+  if (isLoading) {
+    // Todo: Loading page
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <div className="md:hidden">
@@ -40,11 +49,11 @@ export default function AuthenticationPage() {
         </div>
         <div className="lg:p-8">
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-            <div className="flex flex-col space-y-2 text-center">
-              <h1 className="text-2xl font-semibold tracking-tight">Login</h1>
-              <p className="text-sm text-muted-foreground">Enter your ID and Password to continue.</p>
-            </div>
-            <UserAuthForm />
+            {/*<div className="flex flex-col space-y-2 text-center">*/}
+            {/*  <h1 className="text-2xl font-semibold tracking-tight">Login</h1>*/}
+            {/*  <p className="text-sm text-muted-foreground">Enter your ID and Password to continue.</p>*/}
+            {/*</div>*/}
+            {data?.user_exist ? <LoginForm /> : <SignupForm />}
             <p className="px-8 text-center text-sm text-muted-foreground">
               By clicking continue, you agree to our{' '}
               <Link to="#" className="underline underline-offset-4 hover:text-primary">

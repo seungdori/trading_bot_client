@@ -1,19 +1,21 @@
 import WalletCardContent from '@/components/wallet/WalletCardContent.tsx';
 import WalletCard from '@/components/wallet/WalletCard.tsx';
-import { useStrategyStore } from '@/hooks/useStrategyStore.ts';
-import { z } from 'zod';
-import { ExchangeSchema } from '@/schemas/exchangeSchema.ts';
 import { useWallet } from '@/hooks/useWallet.ts';
+import { Exchange, Wallet } from '@/types/exchangeTypes.ts';
+import { Icons } from '@/components/common/Icons.tsx';
 
 type Props = { className?: string };
 
 export default function WalletCardWrapper({ className }: Props) {
-  const strategyStore = useStrategyStore();
+  console.log(`[RENDER WALLET CARD WRAPPER]`);
   const { isLoading, data: wallet } = useWallet();
 
-  const title = getExchangeName(strategyStore.exchange);
-  const mockBalance = '1000000';
-  const balance = wallet?.exchange !== 'upbit' ? mockBalance : wallet.krw.balance;
+  if (!wallet) {
+    return <Icons.spinner />;
+  }
+
+  const title = getExchangeName(wallet.exchange);
+  const balance = buildBalanceString(wallet);
 
   return (
     <WalletCard className={className} title={title} description={'지갑 정보'}>
@@ -22,7 +24,7 @@ export default function WalletCardWrapper({ className }: Props) {
   );
 }
 
-function getExchangeName(exchange: z.infer<typeof ExchangeSchema>) {
+function getExchangeName(exchange: Exchange) {
   switch (exchange) {
     case 'binance':
       return '바이낸스';
@@ -32,5 +34,18 @@ function getExchangeName(exchange: z.infer<typeof ExchangeSchema>) {
       return '업비트';
     default:
       throw new Error('Invalid exchange');
+  }
+}
+
+function buildBalanceString(wallet: Wallet | undefined) {
+  switch (wallet?.exchange) {
+    case 'binance':
+      return `${wallet.usdt.free} USDT`;
+    case 'upbit':
+      return `${wallet.krw.balance} 원`;
+    // case 'bithumb':
+    // Todo Impl
+    default:
+      return `Unknown`;
   }
 }

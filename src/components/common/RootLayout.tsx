@@ -12,7 +12,8 @@ export default function RootLayout() {
         <Navbar
           routes={Object.values(EXCHANGE).map((exchange) => ({
             name: exchange.NAME,
-            path: `/trading/${exchange.PATH}`,
+            exchange: exchange.EXCHANGE,
+            url: `/trading?exchange=${exchange.EXCHANGE}`,
           }))}
         />
       )}

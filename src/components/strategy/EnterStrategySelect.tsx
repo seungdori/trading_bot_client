@@ -17,7 +17,8 @@ const FormSchema = z.object({
 type Props = { className?: string };
 
 export default function EnterStrategySelect({ className }: Props) {
-  const { exchange, enterStrategy, setEnterStrategy } = useStrategyStore();
+  const { exchange, store, setStore } = useStrategyStore();
+  const { enterStrategy } = store;
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -28,7 +29,7 @@ export default function EnterStrategySelect({ className }: Props) {
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     console.log('[ENTER STRATEGY VALUE]', enterStrategy);
 
-    await startAiSearch({ enterStrategy, exchange });
+    await startAiSearch({ exchange, store });
     toast({
       title: 'You submitted the following values:',
       description: (
@@ -43,7 +44,7 @@ export default function EnterStrategySelect({ className }: Props) {
     <div className={className}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex space-y-6">
-          <div className="w-full grid grid-cols-2">
+          <div className="w-full flex">
             <FormField
               control={form.control}
               name="type"
@@ -54,7 +55,9 @@ export default function EnterStrategySelect({ className }: Props) {
                     <RadioGroup
                       value={enterStrategy}
                       onValueChange={(value) => {
-                        setEnterStrategy(value as z.infer<typeof EnterStrategySchema>);
+                        setStore({
+                          enterStrategy: value as z.infer<typeof EnterStrategySchema>,
+                        });
                         field.onChange(value);
                       }}
                       className="flex flex-col space-y-1"

@@ -9,7 +9,6 @@ import {
 } from '@tanstack/react-table';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import TableSkeleton from '@/components/table/TableSkeleton.tsx';
 
 type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -48,22 +47,35 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
-                    <TableSkeleton />
-                  </TableCell>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="text-center">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              )}
+              ))}
             </TableBody>
+            {/*<TableBody>*/}
+            {/*  {table.getRowModel().rows?.length ? (*/}
+            {/*    table.getRowModel().rows.map((row) => (*/}
+            {/*      <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>*/}
+            {/*        {row.getVisibleCells().map((cell) => (*/}
+            {/*          <TableCell key={cell.id} className="text-center">*/}
+            {/*            {flexRender(cell.column.columnDef.cell, cell.getContext())}*/}
+            {/*          </TableCell>*/}
+            {/*        ))}*/}
+            {/*      </TableRow>*/}
+            {/*    ))*/}
+            {/*  ) : (*/}
+            {/*    <TableRow>*/}
+            {/*      <TableCell colSpan={columns.length} className="h-24 text-center">*/}
+            {/*        <TableSkeleton />*/}
+            {/*      </TableCell>*/}
+            {/*    </TableRow>*/}
+            {/*  )}*/}
+            {/*</TableBody>*/}
           </Table>
         </div>
       </div>

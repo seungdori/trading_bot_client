@@ -5,10 +5,12 @@
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import SettingsGroup from '@/components/settings/SettingsGroup.tsx';
+import { useExchangeStore } from '@/store/exchangeStore.ts';
 
 export type NavbarRouteProps = {
+  url: string;
   name: string;
-  path: string;
+  exchange: string;
 };
 
 type NavbarProps = {
@@ -17,6 +19,7 @@ type NavbarProps = {
 };
 
 export default function Navbar({ routes, className }: NavbarProps) {
+  const { exchange } = useExchangeStore();
   return (
     <header className={cn('flex h-16 w-full items-center justify-between border-b', className)}>
       <nav className="w-full flex justify-between">
@@ -24,11 +27,11 @@ export default function Navbar({ routes, className }: NavbarProps) {
           {routes.map((route) => (
             <li key={route.name} className="whitespace-nowrap items-center w-full flex">
               <NavLink
-                to={route.path}
+                to={route.url}
                 className={({ isActive, isPending }) =>
                   isPending
                     ? 'font-bold text-purple-500'
-                    : isActive
+                    : isActive && exchange === route.exchange
                       ? 'font-bold text-red-500'
                       : 'font-bold text-green-500'
                 }
