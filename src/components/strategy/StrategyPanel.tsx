@@ -12,7 +12,7 @@ export default function StrategyPanel({ className }: Props) {
 
   return (
     <Card className={cn('container w-full flex flex-col space-y-4', className)}>
-      <EnterStrategySelect className="w-full" />
+      <EnterStrategySelect className="w-full p-4" />
       <Separator />
       <EnterSymbol />
       <Separator />

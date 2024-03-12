@@ -33,7 +33,7 @@ export default function Navbar({ routes, className }: NavbarProps) {
                     ? 'font-bold text-purple-500'
                     : isActive && exchange === route.exchange
                       ? 'font-bold text-red-500'
-                      : 'font-bold text-green-500'
+                      : 'font-bold text-bg-primary'
                 }
               >
                 {route.name}

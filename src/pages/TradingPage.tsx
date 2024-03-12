@@ -1,5 +1,5 @@
 import DataTablesWrapper from '@/components/table/DataTablesWrapper.tsx';
-import CustomStrategyCard from '@/components/strategy/CustomStrategyCard.tsx';
+import CustomStrategyWrapper from '@/components/strategy/CustomStrategyWrapper.tsx';
 import WalletCardWrapper from '@/components/wallet/WalletCardWrapper.tsx';
 import StrategyPanel from '@/components/strategy/StrategyPanel.tsx';
 import ExchangePanel from '@/components/strategy/ExchangePanel.tsx';
@@ -14,7 +14,7 @@ export default function TradingPage() {
         <StrategyPanel className="h-full" />
       </section>
       <section className="col-span-3">
-        <CustomStrategyCard className="h-full" />
+        <CustomStrategyWrapper className="h-full" />
       </section>
       <section className="col-span-9">
         <DataTablesWrapper className="h-full" />

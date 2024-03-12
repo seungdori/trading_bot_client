@@ -16,7 +16,6 @@ type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 type SignupFormInput = z.infer<typeof SignupSchema>;
 
 export function SignupForm({ className, ...props }: UserAuthFormProps) {
-  // const [signupMutation.isPending, setIsLoading] = React.useState<boolean>(false);
   const signupMutation = useSignup();
   const { register, handleSubmit } = useForm<SignupFormInput>({
     defaultValues: {

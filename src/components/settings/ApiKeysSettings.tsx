@@ -3,8 +3,6 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/com
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group.tsx';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { useSettingsStore } from '@/store/settingsStore.ts';
-import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Exchange } from '@/types/exchangeTypes.ts';
@@ -17,32 +15,24 @@ import { Checkbox } from '@/components/ui/checkbox';
 import BinanceLogo from '@/assets/binance.svg';
 import BithumbLogo from '@/assets/bithumb.svg';
 import UpbitLogo from '@/assets/upbit.svg';
-
-const FormSchema = z.object({
-  apiKey: z.string(),
-  secret: z.string(),
-});
+import { ApiKeysSchema } from '@/schemas/settingsSchema.ts';
+import { useApiKeysStore } from '@/hooks/useApiKeysStore.ts';
+import { ApiKeys } from '@/types/settingsTypes.ts';
 
 export default function ApiKeysSettings() {
   const { exchange, setExchange } = useExchangeStore();
   const [showApiKeys, setShowApiKeys] = useQueryParam('showApiKeys', withDefault(BooleanParam, false));
-  const { API_KEY, SECRET } = buildLocalStorageKeys(exchange);
-  const settingsStore = useSettingsStore();
-  const { apiKey, secret }: z.infer<typeof FormSchema> = {
-    apiKey: settingsStore.get(API_KEY) ?? '',
-    secret: settingsStore.get(SECRET) ?? '',
-  };
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      apiKey,
-      secret,
-    },
+  const {
+    keys: { apiKey, secret },
+    updateApiKeys,
+  } = useApiKeysStore(exchange);
+  const form = useForm<ApiKeys>({
+    resolver: zodResolver(ApiKeysSchema),
+    defaultValues: { apiKey, secret },
   });
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    settingsStore.set(API_KEY, data.apiKey);
-    settingsStore.set(SECRET, data.secret);
+  const onSubmit = (inputs: ApiKeys) => {
+    updateApiKeys(inputs);
     toast({ title: 'API Keys saved!' });
   };
 
@@ -159,24 +149,4 @@ export default function ApiKeysSettings() {
       </CardContent>
     </Card>
   );
-}
-
-function buildLocalStorageKeys(exchange: Exchange) {
-  switch (exchange) {
-    case 'binance':
-      return {
-        API_KEY: 'BINANCE_API_KEY',
-        SECRET: 'BINANCE_SECRET',
-      };
-    case 'bithumb':
-      return {
-        API_KEY: 'BITHUMB_API_KEY',
-        SECRET: 'BITHUMB_SECRET',
-      };
-    case 'upbit':
-      return {
-        API_KEY: 'UPBIT_API_KEY',
-        SECRET: 'UPBIT_SECRET',
-      };
-  }
 }

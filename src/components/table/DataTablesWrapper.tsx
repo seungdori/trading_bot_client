@@ -2,10 +2,12 @@ import { InfoTab } from '@/types/tableTypes.ts';
 import InfoTabs from '@/components/table/InfoTabs.tsx';
 import AssetsTableWrapper from '@/components/table/AssetsTableWrapper.tsx';
 import TransactionLogWrapper from '@/components/transaction/TransactionLogWrapper.tsx';
+import { useFetchPositions } from '@/hooks/useAssetsData.ts';
 
 type Props = { className?: string };
 
 export default function DataTablesWrapper({ className }: Props) {
+  cachePositions();
   const tabs = buildTabs();
   return <InfoTabs className={className} defaultTableId={tabs.defaultId} tables={tabs.tabs} />;
 }
@@ -29,4 +31,13 @@ function buildTabs(): {
       },
     ],
   };
+}
+
+/**
+ * @description fetches positions from exchanges and caches them.
+ */
+function cachePositions() {
+  useFetchPositions('binance');
+  useFetchPositions('upbit');
+  // useFetchPositions('bithumb');
 }

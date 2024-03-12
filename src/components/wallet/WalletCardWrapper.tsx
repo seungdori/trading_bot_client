@@ -49,3 +49,14 @@ function buildBalanceString(wallet: Wallet | undefined) {
       return `Unknown`;
   }
 }
+
+// 수익률/100x보유수량x현재가격
+function buildUnrealizedProfit({
+  profit,
+  quantity,
+  currentPrice,
+}: {
+  profit: number;
+  quantity: number;
+  currentPrice: number;
+}) {}

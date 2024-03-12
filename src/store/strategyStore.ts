@@ -3,11 +3,8 @@ import { CustomStrategySchema, EnterStrategySchema } from '@/schemas/exchangeSch
 import { createEnumParam, NumberParam, useQueryParams, withDefault } from 'use-query-params';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
 
-// type Exchange = z.infer<typeof ExchangeSchema>;
 type EnterStrategy = z.infer<typeof EnterStrategySchema>;
 type CustomStrategy = z.infer<typeof CustomStrategySchema>;
-// type Leverage = number;
-// type EnterSymbol = z.infer<typeof EnterSymbolSchema>;
 
 const LEVERAGE_KEY = 'leverage';
 const DEFAULT_LEVERAGE = 10;
@@ -27,11 +24,14 @@ export function defaultLeverage(): number {
   return DEFAULT_LEVERAGE;
 }
 
+export const CustomStrategist = ['전략1', '전략2', '전략3'] as const;
+const EnterStrategist = ['long', 'short', 'long-short'] as const;
+
 export const useBinanceStateStore = () => {
   const [query, setQuery] = useQueryParams({
     leverage: withDefault(NumberParam, defaultLeverage()),
-    enterStrategy: withDefault(createEnumParam<EnterStrategy>(['long', 'short', 'long-short']), 'long' as const),
-    customStrategy: withDefault(createEnumParam<CustomStrategy>(['전략1', '전략2', '전략3']), '전략1' as const),
+    enterStrategy: withDefault(createEnumParam<EnterStrategy>([...EnterStrategist]), 'long' as const),
+    customStrategy: withDefault(createEnumParam<CustomStrategy>([...CustomStrategist]), '전략1' as const),
     enterSymbolAmount: withDefault(NumberParam, 10),
     enterSymbolCount: withDefault(NumberParam, 500),
   });
@@ -47,8 +47,8 @@ export type BinanceStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setEx
 
 export const useUpbitStateStore = () => {
   const [query, setQuery] = useQueryParams({
-    enterStrategy: withDefault(createEnumParam<EnterStrategy>(['long', 'short', 'long-short']), 'long' as const),
-    customStrategy: withDefault(createEnumParam<CustomStrategy>(['전략1', '전략2', '전략3']), '전략1' as const),
+    enterStrategy: withDefault(createEnumParam<EnterStrategy>([...EnterStrategist]), 'long' as const),
+    customStrategy: withDefault(createEnumParam<CustomStrategy>([...CustomStrategist]), '전략1' as const),
     enterSymbolAmount: withDefault(NumberParam, 10),
     enterSymbolCount: withDefault(NumberParam, 500),
   });
@@ -64,8 +64,8 @@ export type UpbitStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExch
 
 export const useBithumbStateStore = () => {
   const [query, setQuery] = useQueryParams({
-    enterStrategy: withDefault(createEnumParam<EnterStrategy>(['long', 'short', 'long-short']), 'long' as const),
-    customStrategy: withDefault(createEnumParam<CustomStrategy>(['전략1', '전략2', '전략3']), '전략1' as const),
+    enterStrategy: withDefault(createEnumParam<EnterStrategy>([...EnterStrategist]), 'long' as const),
+    customStrategy: withDefault(createEnumParam<CustomStrategy>([...CustomStrategist]), '전략1' as const),
     enterSymbolAmount: withDefault(NumberParam, 10),
     enterSymbolCount: withDefault(NumberParam, 500),
   });
@@ -78,41 +78,5 @@ export const useBithumbStateStore = () => {
 
 export type BithumbStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
   ReturnType<typeof useBithumbStateStore>;
-//
-// export const useBinanceStrategyStore = create<ExchangeStateStore>((set) => ({
-//   exchange: 'binance',
-//   leverage: 1,
-//   enterStrategy: 'long',
-//   customStrategy: '전략1',
-//   enterSymbol: { enterSymbolAmount: 10, enterSymbolCount: 500 },
-//   setLeverage: (leverage) => set({ leverage }),
-//   setEnterSymbol: (enterSymbol) => set({ enterSymbol }),
-//   setEnterStrategy: (enterStrategy) => set({ enterStrategy }),
-//   setCustomStrategy: (customStrategy) => set({ customStrategy }),
-// }));
-//
-// export const useBithumbStrategyStore = create<ExchangeStateStore>((set) => ({
-//   exchange: 'bithumb',
-//   leverage: 1,
-//   enterStrategy: 'long',
-//   customStrategy: '전략1',
-//   enterSymbol: { enterSymbolAmount: 10, enterSymbolCount: 500 },
-//   setLeverage: (leverage) => set({ leverage }),
-//   setEnterSymbol: (enterSymbol) => set({ enterSymbol }),
-//   setEnterStrategy: (enterStrategy) => set({ enterStrategy }),
-//   setCustomStrategy: (customStrategy) => set({ customStrategy }),
-// }));
-//
-// export const useUpbitStrategyStore = create<ExchangeStateStore>((set) => ({
-//   exchange: 'upbit',
-//   leverage: 1,
-//   enterStrategy: 'long',
-//   customStrategy: '전략1',
-//   enterSymbol: { enterSymbolAmount: 10, enterSymbolCount: 500 },
-//   setLeverage: (leverage) => set({ leverage }),
-//   setEnterSymbol: (enterSymbol) => set({ enterSymbol }),
-//   setEnterStrategy: (enterStrategy) => set({ enterStrategy }),
-//   setCustomStrategy: (customStrategy) => set({ customStrategy }),
-// }));
 
 export type ExchangeStateStore = BinanceStateStore | UpbitStateStore | BithumbStateStore;

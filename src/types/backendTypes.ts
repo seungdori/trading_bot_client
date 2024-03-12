@@ -1,6 +1,7 @@
 import {
   BinancePositionsResponseSchema,
   BithumbPositionsResponseSchema,
+  FetchPositionsRequestSchema,
   PositionsResponseSchema,
   UpbitPositionsResponseSchema,
   UserWithoutPasswordSchema,
@@ -32,3 +33,5 @@ export type BithumbPositionsResponse = z.infer<typeof BithumbPositionsResponseSc
 export type PositionsResponse = z.infer<typeof PositionsResponseSchema>;
 
 export type User = z.infer<typeof UserWithoutPasswordSchema>;
+
+export type FetchPositionsRequest = z.infer<typeof FetchPositionsRequestSchema>;

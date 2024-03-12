@@ -58,3 +58,9 @@ export const PositionsResponseSchema = z.union([
   UpbitPositionsResponseSchema,
   BithumbPositionsResponseSchema,
 ]);
+
+export const FetchPositionsRequestSchema = z.object({
+  exchange: z.string(),
+  api_key: z.string(),
+  secret_key: z.string(),
+});

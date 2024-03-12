@@ -1,9 +1,8 @@
-import { useWallet } from '@/hooks/useWallet.ts';
 import { AssetsSchemaWithKey } from '@/schemas/exchangeSchema.ts';
 import { z } from 'zod';
 import { TradingDataResponseSchema, TradingDataSchema } from '@/schemas/backendSchema.ts';
 import { useFetchTradingData } from '@/hooks/useFetchTradingData.ts';
-import { Wallet } from '@/types/exchangeTypes.ts';
+import { Exchange, Wallet } from '@/types/exchangeTypes.ts';
 import { fetchPositions } from '@/components/api/desktopClient.ts';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -13,19 +12,23 @@ import {
   UpbitPositionsResponse,
 } from '@/types/backendTypes.ts';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
+import { useApiKeysStore } from '@/hooks/useApiKeysStore.ts';
 
-export const useFetchPositions = ({ wallet }: { wallet?: Wallet }) => {
+export const useFetchPositions = (exchange: Exchange) => {
+  const {
+    keys: { apiKey, secret },
+  } = useApiKeysStore(exchange);
+
   return useQuery({
-    queryKey: ['positions', wallet?.exchange],
-    queryFn: () => fetchPositions({ wallet }),
-    refetchInterval: 1000,
+    queryKey: ['positions', exchange, apiKey, secret],
+    queryFn: () => fetchPositions({ exchange, api_key: apiKey, secret_key: secret }),
+    refetchInterval: 500,
   });
 };
 
 export const useAssetsData = (): { isLoading: boolean; assets: z.infer<typeof AssetsSchemaWithKey>[] } => {
   const { exchange } = useExchangeStore();
-  const { data: wallet } = useWallet();
-  const positionsQuery = useFetchPositions({ wallet });
+  const positionsQuery = useFetchPositions(exchange);
   const symbols = buildMarketSymbols(exchange, positionsQuery.data);
   const tradingDataQuery = useFetchTradingData({ exchange, symbols });
 
@@ -36,7 +39,7 @@ export const useAssetsData = (): { isLoading: boolean; assets: z.infer<typeof As
     };
   }
 
-  switch (wallet?.exchange) {
+  switch (exchange) {
     case 'upbit':
       return {
         isLoading: false,
@@ -118,7 +121,7 @@ function buildUpbitAssets(
     const amount = coin.balance;
     const currentPrice = coin.current_price;
     const initPrice = +coin.avg_buy_price;
-    const rateOfReturn = +(((currentPrice - initPrice) / initPrice) * 100);
+    const rateOfReturn = +(+(((currentPrice - initPrice) / initPrice) * 100)).toFixed(2);
     const value = Math.abs(+amount * currentPrice);
 
     const validatedTradingData = TradingDataSchema.safeParse(tradingData);
@@ -175,7 +178,7 @@ function buildBinanceAssets(
     const currentPrice = coin.mark_price;
     const initPrice = coin.entry_price;
     const key = coin.symbol;
-    const rateOfReturn = coin.profit_percent;
+    const rateOfReturn = +coin.profit_percent.toFixed(2);
     const value = coin.value;
 
     const validatedTradingData = TradingDataSchema.safeParse(coin.trading_data);

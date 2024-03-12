@@ -4,7 +4,7 @@ import { EXCHANGE } from '@/constants/exchange.ts';
 
 export default function RootLayout() {
   const { pathname } = useLocation(); // login, 빗썸, settings
-  const isLoginPage = pathname === '/login';
+  const isLoginPage = pathname === '/auth';
 
   return (
     <div className="container w-full h-screen space-y-4">

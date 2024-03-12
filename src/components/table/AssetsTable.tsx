@@ -1,13 +1,12 @@
 import ScrollableTable from '@/components/table/ScrollableTable.tsx';
 import { ColumnDef } from '@tanstack/react-table';
 import DataTable from '@/components/table/DataTable.tsx';
-// import { AssetsData } from '@/types/tableTypes';
 import { Button } from '@/components/ui/button.tsx';
 import { ArrowUpDown } from 'lucide-react';
 import { z } from 'zod';
 import { AssetsSchemaWithKey } from '@/schemas/exchangeSchema.ts';
 
-const mockColumns: ColumnDef<z.infer<typeof AssetsSchemaWithKey>>[] = [
+const columnsDef: ColumnDef<z.infer<typeof AssetsSchemaWithKey>>[] = [
   {
     accessorKey: 'coinName',
     header: ({ column }) => {
@@ -125,7 +124,7 @@ type Props = { assetsData: z.infer<typeof AssetsSchemaWithKey>[] };
 export default function AssetsTable({ assetsData }: Props) {
   return (
     <ScrollableTable>
-      <DataTable columns={mockColumns} data={assetsData} />
+      <DataTable columns={columnsDef} data={assetsData} />
     </ScrollableTable>
   );
 }

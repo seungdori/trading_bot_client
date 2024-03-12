@@ -1,16 +1,14 @@
 import { cn } from '@/lib/utils';
 import { Slider } from '@/components/ui/slider';
-import { ComponentProps, useEffect, useRef, useState } from 'react';
-import { useStrategyStore } from '@/hooks/useStrategyStore.ts';
+import { ComponentProps, useState } from 'react';
 import { saveLeverage, useBinanceStateStore } from '@/store/strategyStore.ts';
-import { URLSearchParamsInit, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button.tsx';
 
 type SliderProps = ComponentProps<typeof Slider>;
 
 const LEVERAGE_STEP = 1;
 const MIN_LEVERAGE = 1;
-const MAX_LEVERAGE = 125;
+const MAX_LEVERAGE = 50;
 
 export default function LeveragePanel({ className, ...props }: SliderProps) {
   const { store, setStore } = useBinanceStateStore();

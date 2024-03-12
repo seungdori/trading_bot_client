@@ -70,13 +70,13 @@ export default function EnterStrategySelect({ className }: Props) {
                       </FormItem>
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="short" />
+                          <RadioGroupItem value="short" disabled={exchange !== 'binance'} />
                         </FormControl>
                         <FormLabel className="font-normal">숏 진입전략</FormLabel>
                       </FormItem>
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="long-short" />
+                          <RadioGroupItem value="long-short" disabled={exchange !== 'binance'} />
                         </FormControl>
                         <FormLabel className="font-normal">롱/숏 진입전략</FormLabel>
                       </FormItem>

@@ -3,15 +3,21 @@ import { Body, fetch } from '@tauri-apps/api/http';
 import { getnerateRandomTransactionLog } from '@/helper/typia/generated/mock.ts';
 import { TradingSearchParamsSchema } from '@/schemas/searchParamsSchema.ts';
 import { ExchangeStateStore } from '@/store/strategyStore.ts';
-import { Upbit, Wallet } from '@/types/exchangeTypes.ts';
+import { Upbit } from '@/types/exchangeTypes.ts';
 import {
   DESKTOP_BACKEND_BASE_URL,
-  TradingDataResponseSchema,
-  UserExistSchema,
   LoginSchema,
   SignupSchema,
+  TradingDataResponseSchema,
+  UserExistSchema,
 } from '@/schemas/backendSchema.ts';
-import { PositionsResponse, ResponseDto, UpbitPositionsResponse, User } from '@/types/backendTypes.ts';
+import {
+  FetchPositionsRequest,
+  PositionsResponse,
+  ResponseDto,
+  UpbitPositionsResponse,
+  User,
+} from '@/types/backendTypes.ts';
 import { BINANCE_API_ACCESS_KEY, BINANCE_API_BASE_URL } from '@/constants/binance.ts';
 import { createBinanceQueryString, createBinanceSignature } from '@/components/api/binanceClient.ts';
 import { BinanceAssetResponseSchema } from '@/schemas/binanceSchema.ts';
@@ -81,11 +87,6 @@ export async function login(args: z.infer<typeof LoginSchema>) {
     console.error(e);
     throw e;
   }
-}
-
-export function mockLogin({ username, password }: { username: string; password: string }) {
-  console.log(`[mockLogin] username, password`, username, password);
-  return true;
 }
 
 export async function getTransactionLog(exchange: z.infer<typeof TradingSearchParamsSchema>['exchange']) {
@@ -159,15 +160,12 @@ export async function fetchUpbitTradingData(
 /**
  * @description Fetch trading data from local backend DB
  */
-export async function fetchPositions({ wallet }: { wallet?: Wallet }): Promise<PositionsResponse[]> {
-  if (!wallet) {
-    return [];
-  }
-
-  const endpoint = new URL(`/exchange/${wallet.exchange}`, DESKTOP_BACKEND_BASE_URL);
+export async function fetchPositions(args: FetchPositionsRequest): Promise<PositionsResponse[]> {
+  const endpoint = new URL(`/exchange`, DESKTOP_BACKEND_BASE_URL);
   const response = await fetch<ResponseDto<PositionsResponse[]>>(endpoint.href, {
-    method: 'GET',
+    method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    body: Body.json(args),
   });
 
   const dto: ResponseDto<PositionsResponse[]> = response.data;
