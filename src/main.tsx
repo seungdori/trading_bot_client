@@ -6,9 +6,10 @@ import { Toaster } from '@/components/ui/toaster';
 import RootLayout from '@/components/common/RootLayout.tsx';
 import { routes } from '@/routes.tsx';
 import QueryProvider from '@/components/reactQuery/QueryProvider.tsx';
-import './global.css';
 import { ReactRouter6Adapter } from 'use-query-params/adapters/react-router-6';
 import { QueryParamProvider } from 'use-query-params';
+import './global.css';
+
 const router = createBrowserRouter([
   {
     path: '/',
