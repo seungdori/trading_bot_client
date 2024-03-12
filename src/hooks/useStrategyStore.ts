@@ -1,12 +1,7 @@
-import {
-  ExchangeStateStore,
-  useBinanceStateStore,
-  useBithumbStateStore,
-  useUpbitStateStore,
-} from '@/store/strategyStore.ts';
+import { useBinanceStateStore, useBithumbStateStore, useUpbitStateStore } from '@/store/strategyStore.ts';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
 
-export const useStrategyStore = (): ExchangeStateStore => {
+export const useStrategyStore = () => {
   const { exchange } = useExchangeStore();
 
   const binanceStrategyStore = useBinanceStateStore();

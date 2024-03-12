@@ -3,6 +3,7 @@ import {
   BithumbPositionsResponseSchema,
   FetchPositionsRequestSchema,
   PositionsResponseSchema,
+  StartFeatureRequestSchema,
   UpbitPositionsResponseSchema,
   UserWithoutPasswordSchema,
 } from '@/schemas/backendSchema.ts';
@@ -35,3 +36,5 @@ export type PositionsResponse = z.infer<typeof PositionsResponseSchema>;
 export type User = z.infer<typeof UserWithoutPasswordSchema>;
 
 export type FetchPositionsRequest = z.infer<typeof FetchPositionsRequestSchema>;
+
+export type StartFeatureRequest = z.infer<typeof StartFeatureRequestSchema>;

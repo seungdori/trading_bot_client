@@ -1,12 +1,12 @@
-import { CustomStrategist } from '@/store/strategyStore.ts';
+import { CustomStrategist, CustomStrategy } from '@/store/strategyStore.ts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx';
 import { cn } from '@/lib/utils.ts';
 import CustomStrategyContent from '@/components/strategy/CustomStrategyContent.tsx';
 import { Button } from '@/components/ui/button.tsx';
+import { useStartCustomStrategy } from '@/hooks/useStartCustomStrategy.ts';
+import { useStrategyStore } from '@/hooks/useStrategyStore.ts';
 
 type Strategies = typeof CustomStrategist;
-
-type Strategy = Strategies[number];
 
 type Props = {
   strategies: Strategies;
@@ -14,17 +14,26 @@ type Props = {
 };
 
 export default function CustomStrategyTabs({ className, strategies }: Props) {
-  const handleStart = (strategy: Strategy) => {
+  const { exchange, store, setStore } = useStrategyStore();
+  const startMutation = useStartCustomStrategy();
+  // const stopMutation = useStopCustomStrategy();
+  // const testMutation = useTestCustomStrategy();
+
+  const handleStart = (strategy: CustomStrategy) => {
     // Todo: Add start strategy logic
     console.log('Start', strategy);
+    startMutation.mutate({
+      exchange,
+      store,
+    });
   };
 
-  const handleStop = (strategy: Strategy) => {
+  const handleStop = (strategy: CustomStrategy) => {
     // Todo: Add start strategy logic
     console.log('Stop', strategy);
   };
 
-  const handleTest = (strategy: Strategy) => {
+  const handleTest = (strategy: CustomStrategy) => {
     // Todo: Add start strategy logic
     console.log('Test', strategy);
   };

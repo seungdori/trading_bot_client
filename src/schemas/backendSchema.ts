@@ -64,3 +64,11 @@ export const FetchPositionsRequestSchema = z.object({
   api_key: z.string(),
   secret_key: z.string(),
 });
+
+export const StartFeatureRequestSchema = z.object({
+  exchange: z.string(),
+  enter_strategy: z.string(),
+  enter_symbol_count: z.number(),
+  enter_symbol_amount: z.number(),
+  leverage: z.number().optional(),
+});

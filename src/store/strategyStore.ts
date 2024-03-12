@@ -3,8 +3,8 @@ import { CustomStrategySchema, EnterStrategySchema } from '@/schemas/exchangeSch
 import { createEnumParam, NumberParam, useQueryParams, withDefault } from 'use-query-params';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
 
-type EnterStrategy = z.infer<typeof EnterStrategySchema>;
-type CustomStrategy = z.infer<typeof CustomStrategySchema>;
+export type EnterStrategy = z.infer<typeof EnterStrategySchema>;
+export type CustomStrategy = z.infer<typeof CustomStrategySchema>;
 
 const LEVERAGE_KEY = 'leverage';
 const DEFAULT_LEVERAGE = 10;
@@ -25,7 +25,7 @@ export function defaultLeverage(): number {
 }
 
 export const CustomStrategist = ['전략1', '전략2', '전략3'] as const;
-const EnterStrategist = ['long', 'short', 'long-short'] as const;
+export const EnterStrategist = ['long', 'short', 'long-short'] as const;
 
 export const useBinanceStateStore = () => {
   const [query, setQuery] = useQueryParams({

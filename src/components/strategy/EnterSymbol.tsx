@@ -15,7 +15,6 @@ type Props = { className?: string };
 export default function EnterSymbol({ className }: Props) {
   const { store, setStore } = useStrategyStore();
   const { enterSymbolCount, enterSymbolAmount } = store;
-  // enterSymbol, setEnterSymbol
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {

@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { Body, fetch } from '@tauri-apps/api/http';
 import { getnerateRandomTransactionLog } from '@/helper/typia/generated/mock.ts';
 import { TradingSearchParamsSchema } from '@/schemas/searchParamsSchema.ts';
-import { ExchangeStateStore } from '@/store/strategyStore.ts';
+import { BinanceStateStore, ExchangeStateStore } from '@/store/strategyStore.ts';
 import { Upbit } from '@/types/exchangeTypes.ts';
 import {
   DESKTOP_BACKEND_BASE_URL,
@@ -15,6 +15,7 @@ import {
   FetchPositionsRequest,
   PositionsResponse,
   ResponseDto,
+  StartFeatureRequest,
   UpbitPositionsResponse,
   User,
 } from '@/types/backendTypes.ts';
@@ -22,6 +23,11 @@ import { BINANCE_API_ACCESS_KEY, BINANCE_API_BASE_URL } from '@/constants/binanc
 import { createBinanceQueryString, createBinanceSignature } from '@/components/api/binanceClient.ts';
 import { BinanceAssetResponseSchema } from '@/schemas/binanceSchema.ts';
 
+/**
+ * @description 로컬 백엔드에 사용자가 존재하는지 확인.
+ * 사용자가 존재하면 로그인페이지로 이동.
+ * 존재하지 않으면 회원가입 페이지로 이동.
+ */
 export async function checkUserExist(): Promise<z.infer<typeof UserExistSchema>> {
   const endpoint = new URL('/user/exist', DESKTOP_BACKEND_BASE_URL);
   try {
@@ -43,6 +49,9 @@ export async function checkUserExist(): Promise<z.infer<typeof UserExistSchema>>
   }
 }
 
+/**
+ * @description 로컬 백엔드 회원가입.
+ */
 export async function signup(args: z.infer<typeof SignupSchema>): Promise<User> {
   const endpoint = new URL('/auth/signup', DESKTOP_BACKEND_BASE_URL);
 
@@ -66,6 +75,9 @@ export async function signup(args: z.infer<typeof SignupSchema>): Promise<User> 
   }
 }
 
+/**
+ * @description 로컬 백엔드 로그인.
+ */
 export async function login(args: z.infer<typeof LoginSchema>) {
   const endpoint = new URL('/auth/login', DESKTOP_BACKEND_BASE_URL);
 
@@ -89,6 +101,9 @@ export async function login(args: z.infer<typeof LoginSchema>) {
   }
 }
 
+/**
+ * @description 로컬 백엔드에 사용자 거래 내역 요청.
+ */
 export async function getTransactionLog(exchange: z.infer<typeof TradingSearchParamsSchema>['exchange']) {
   try {
     const endpoint = new URL('/sapi/v3/asset/getUserAsset', BINANCE_API_BASE_URL);
@@ -158,7 +173,7 @@ export async function fetchUpbitTradingData(
 }
 
 /**
- * @description Fetch trading data from local backend DB
+ * @description 로컬 백엔드에 사용자 포지션 요청. 거래소 api 요청은 백엔드에서 진행.
  */
 export async function fetchPositions(args: FetchPositionsRequest): Promise<PositionsResponse[]> {
   const endpoint = new URL(`/exchange`, DESKTOP_BACKEND_BASE_URL);
@@ -177,4 +192,33 @@ export async function fetchPositions(args: FetchPositionsRequest): Promise<Posit
 
   const positions = dto.data;
   return positions;
+}
+
+/**
+ * @description 사용자가 설정한 전략을 백엔드에 요청. 백엔드는 거래소 api를 통해 사용자의 전략을 실행.
+ */
+export async function startCustomStrategy(exchangeStore: Pick<ExchangeStateStore, 'exchange' | 'store'>) {
+  const endpoint = new URL(`/feature/start`, DESKTOP_BACKEND_BASE_URL);
+  const dto: StartFeatureRequest = {
+    exchange: exchangeStore.exchange,
+    enter_strategy: exchangeStore.store.enterStrategy,
+    enter_symbol_amount: exchangeStore.store.enterSymbolAmount,
+    enter_symbol_count: exchangeStore.store.enterSymbolCount,
+    leverage:
+      exchangeStore.exchange === 'binance' ? (exchangeStore.store as BinanceStateStore['store']).leverage : undefined,
+  };
+
+  const response = await fetch<ResponseDto<unknown>>(endpoint.href, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      body: Body.json(dto),
+    },
+  });
+
+  const responseDto = response.data;
+  console.log('[START CUSTOM REPOSITORY]', responseDto);
+  // const data = responseDto.data;
+
+  return responseDto;
 }
