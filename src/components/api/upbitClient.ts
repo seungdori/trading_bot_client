@@ -2,37 +2,30 @@ import { fetch } from '@tauri-apps/api/http';
 import * as uuid from 'uuid';
 import * as jose from 'jose';
 import { z } from 'zod';
-import {
-  UpbitAssetResponseSchema,
-  UpbitMarketCodeSchema,
-  UpbitWalletAssetSchema,
-  UpbitWalletSchema,
-} from '@/schemas/upbitSchema.ts';
-import { TickerRequest } from '@/types/exchangeTypes.ts';
+import { UpbitAssetResponseSchema, UpbitMarketCodeSchema, UpbitWalletAssetSchema } from '@/schemas/upbitSchema.ts';
+import { TickerRequest, UpbitWallet } from '@/types/exchangeTypes.ts';
 import { UpbitTickersWithKey } from '@/types/upbitTypes.ts';
 import { useUpbitAvailableMarketsStore } from '@/store/upbitAvailableMarketsStore.ts';
+import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
+import { UPBIT_REST_API_URL } from '@/constants/upbit.ts';
 
-export const UPBIT_ACCESS_KEY = `VAkx0co5MdTOYWTx5WViT2J3YU4DtvaTpFxwzbII`;
-export const UPBIT_SECRET_KEY = `9fiLxPwcd8zA23t3IlxMU8vHFxcLZbMsgQaziOxS`;
-
-export const UPBIT_REST_API_URL = `https://api.upbit.com`;
-export const UPBIT_WS_URL = `wss://api.upbit.com/websocket/v1`;
 const alg = 'HS256';
-const secret = new TextEncoder().encode(UPBIT_SECRET_KEY);
+const textEncoder = new TextEncoder();
 
-export async function getUpbitAccessToken() {
+export async function getUpbitAccessToken({ apiKey, secret }: ExchangeApiKeys) {
   const payload = {
-    access_key: UPBIT_ACCESS_KEY,
+    access_key: apiKey,
     nonce: uuid.v4(),
   };
-  const token = await new jose.SignJWT(payload).setProtectedHeader({ alg }).setIssuedAt().sign(secret);
+  const encodedSecret = textEncoder.encode(secret);
+  const token = await new jose.SignJWT(payload).setProtectedHeader({ alg }).setIssuedAt().sign(encodedSecret);
 
   return token;
 }
 
-export async function getUpbitWallet(): Promise<z.infer<typeof UpbitWalletSchema>> {
+export async function getUpbitWallet(apiKeys: ExchangeApiKeys): Promise<UpbitWallet> {
   const endpoint = new URL('/v1/accounts', UPBIT_REST_API_URL);
-  const accessToken = await getUpbitAccessToken();
+  const accessToken = await getUpbitAccessToken(apiKeys);
 
   try {
     const response = await fetch<z.infer<typeof UpbitAssetResponseSchema>[]>(endpoint.href, {

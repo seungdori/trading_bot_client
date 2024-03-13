@@ -1,4 +1,4 @@
 import { z } from 'zod';
-import { ApiKeysSchema } from '@/schemas/settingsSchema.ts';
+import { ExchangeApiKeysSchema } from '@/schemas/settingsSchema.ts';
 
-export type ApiKeys = z.infer<typeof ApiKeysSchema>;
+export type ExchangeApiKeys = z.infer<typeof ExchangeApiKeysSchema>;

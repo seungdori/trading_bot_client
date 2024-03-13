@@ -4,6 +4,7 @@ import {
   FetchPositionsRequestSchema,
   PositionsResponseSchema,
   StartFeatureRequestSchema,
+  StopFeatureRequestSchema,
   UpbitPositionsResponseSchema,
   UserWithoutPasswordSchema,
 } from '@/schemas/backendSchema.ts';
@@ -38,3 +39,5 @@ export type User = z.infer<typeof UserWithoutPasswordSchema>;
 export type FetchPositionsRequest = z.infer<typeof FetchPositionsRequestSchema>;
 
 export type StartFeatureRequest = z.infer<typeof StartFeatureRequestSchema>;
+
+export type StopFeatureRequest = z.infer<typeof StopFeatureRequestSchema>;

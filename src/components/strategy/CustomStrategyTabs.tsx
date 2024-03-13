@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.t
 import { cn } from '@/lib/utils.ts';
 import CustomStrategyContent from '@/components/strategy/CustomStrategyContent.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import { useStartCustomStrategy } from '@/hooks/useStartCustomStrategy.ts';
+import { useStartCustomStrategy, useStopCustomStrategy } from '@/hooks/useStartCustomStrategy.ts';
 import { useStrategyStore } from '@/hooks/useStrategyStore.ts';
 
 type Strategies = typeof CustomStrategist;
@@ -16,6 +16,7 @@ type Props = {
 export default function CustomStrategyTabs({ className, strategies }: Props) {
   const { exchange, store, setStore } = useStrategyStore();
   const startMutation = useStartCustomStrategy();
+  const stopMutation = useStopCustomStrategy();
   // const stopMutation = useStopCustomStrategy();
   // const testMutation = useTestCustomStrategy();
 
@@ -31,6 +32,10 @@ export default function CustomStrategyTabs({ className, strategies }: Props) {
   const handleStop = (strategy: CustomStrategy) => {
     // Todo: Add start strategy logic
     console.log('Stop', strategy);
+    stopMutation.mutate({
+      exchange,
+      store,
+    });
   };
 
   const handleTest = (strategy: CustomStrategy) => {
@@ -39,7 +44,16 @@ export default function CustomStrategyTabs({ className, strategies }: Props) {
   };
 
   return (
-    <Tabs className={className} defaultValue={strategies[0]}>
+    <Tabs
+      className={className}
+      defaultValue={strategies[0]}
+      onValueChange={(value) => {
+        console.log(`[TAB VALUE CHANGED]`, value);
+        setStore({
+          customStrategy: value as CustomStrategy,
+        });
+      }}
+    >
       <TabsList className={cn(`grid w-full grid-cols-${strategies.length}`)}>
         {strategies.map((strategy) => (
           <TabsTrigger key={strategy} value={strategy}>

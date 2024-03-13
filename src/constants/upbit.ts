@@ -14,7 +14,9 @@ export const UPBIT_API_SECRET_KEY = z
   })
   .parse(`9fiLxPwcd8zA23t3IlxMU8vHFxcLZbMsgQaziOxS`);
 
-export const UPBIT_API_URL = z.string({
-  required_error: 'Upbit API URL is required',
-  invalid_type_error: 'Upbit API URL must be a string',
-});
+export const UPBIT_REST_API_URL = z
+  .string({
+    required_error: 'Upbit API URL is required',
+    invalid_type_error: 'Upbit API URL must be a string',
+  })
+  .parse('https://api.upbit.com');

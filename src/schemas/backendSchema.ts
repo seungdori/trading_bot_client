@@ -66,9 +66,16 @@ export const FetchPositionsRequestSchema = z.object({
 });
 
 export const StartFeatureRequestSchema = z.object({
-  exchange: z.string(),
+  exchange_name: z.string(),
+  custom_strategy: z.string(),
   enter_strategy: z.string(),
   enter_symbol_count: z.number(),
   enter_symbol_amount: z.number(),
   leverage: z.number().optional(),
+});
+
+export const StopFeatureRequestSchema = StartFeatureRequestSchema.pick({
+  exchange_name: true,
+  custom_strategy: true,
+  enter_strategy: true,
 });

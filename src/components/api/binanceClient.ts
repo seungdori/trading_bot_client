@@ -3,13 +3,13 @@ import { fetch } from '@tauri-apps/api/http';
 import {
   BinanceAssetResponseSchema,
   BinanceWalletAssetSchema,
-  BinanceWalletSchema,
   BinanceWebScoketRequestPayloadSchema,
 } from '@/schemas/binanceSchema.ts';
-import { createSignature } from '@/lib/crypto.ts';
-import { BINANCE_API_ACCESS_KEY, BINANCE_API_BASE_URL, BINANCE_API_SECRET_KEY } from '@/constants/binance.ts';
-import { TickerRequest } from '@/types/exchangeTypes.ts';
+import { createHexSignature } from '@/lib/crypto.ts';
+import { BINANCE_API_BASE_URL } from '@/constants/binance.ts';
+import { BinanceWallet, TickerRequest } from '@/types/exchangeTypes.ts';
 import { BinanceTickersWithKey } from '@/types/binanceTypes.ts';
+import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
 
 export function createBinanceQueryString(payload: z.infer<typeof BinanceWebScoketRequestPayloadSchema>) {
   const queryString = Object.keys(payload)
@@ -19,15 +19,21 @@ export function createBinanceQueryString(payload: z.infer<typeof BinanceWebScoke
   return queryString;
 }
 
-export async function createBinanceSignature(payload: z.infer<typeof BinanceWebScoketRequestPayloadSchema>) {
+export async function createBinanceSignature(
+  payload: z.infer<typeof BinanceWebScoketRequestPayloadSchema>,
+  secret: string,
+) {
   const queryString = createBinanceQueryString(payload);
-  return await createSignature({
-    secret: BINANCE_API_SECRET_KEY,
-    data: queryString,
-  });
+  return await createHexSignature(
+    {
+      secret: secret,
+      data: queryString,
+    },
+    { algorithm: { name: 'HMAC', hash: { name: 'SHA-256' } } },
+  );
 }
 
-export async function getBinaceWallet(): Promise<z.infer<typeof BinanceWalletSchema>> {
+export async function getBinaceWallet({ apiKey, secret }: ExchangeApiKeys): Promise<BinanceWallet> {
   try {
     const endpoint = new URL('/sapi/v3/asset/getUserAsset', BINANCE_API_BASE_URL);
     const timestamp = Date.now();
@@ -38,13 +44,13 @@ export async function getBinaceWallet(): Promise<z.infer<typeof BinanceWalletSch
     };
 
     const queryString = createBinanceQueryString(payload);
-    const signature = await createBinanceSignature(payload);
+    const signature = await createBinanceSignature(payload, secret);
     const url = endpoint.href + '?' + queryString + '&signature=' + signature;
 
     const response = await fetch<z.infer<typeof BinanceAssetResponseSchema>[]>(url, {
       method: 'POST',
       headers: {
-        'X-MBX-APIKEY': BINANCE_API_ACCESS_KEY,
+        'X-MBX-APIKEY': apiKey,
         'Content-Type': 'application/xxx-www-form-urlencoded',
       },
     });

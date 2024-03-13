@@ -1,16 +1,16 @@
 import { Exchange } from '@/types/exchangeTypes.ts';
 import { useSettingsStore } from '@/store/settingsStore.ts';
-import { ApiKeys } from '@/types/settingsTypes.ts';
+import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
 
 export const useApiKeysStore = (exchange: Exchange) => {
   const settingsStore = useSettingsStore();
   const { API_KEY, SECRET } = buildLocalStorageKeys(exchange);
-  const keys: ApiKeys = {
+  const keys: ExchangeApiKeys = {
     apiKey: settingsStore.get(API_KEY) ?? '',
     secret: settingsStore.get(SECRET) ?? '',
   };
 
-  const updateApiKeys = (updated: ApiKeys) => {
+  const updateApiKeys = (updated: ExchangeApiKeys) => {
     settingsStore.set(API_KEY, updated.apiKey);
     settingsStore.set(SECRET, updated.secret);
   };

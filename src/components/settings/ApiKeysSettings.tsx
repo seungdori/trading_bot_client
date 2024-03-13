@@ -15,9 +15,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import BinanceLogo from '@/assets/binance.svg';
 import BithumbLogo from '@/assets/bithumb.svg';
 import UpbitLogo from '@/assets/upbit.svg';
-import { ApiKeysSchema } from '@/schemas/settingsSchema.ts';
+import { ExchangeApiKeysSchema } from '@/schemas/settingsSchema.ts';
 import { useApiKeysStore } from '@/hooks/useApiKeysStore.ts';
-import { ApiKeys } from '@/types/settingsTypes.ts';
+import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
 
 export default function ApiKeysSettings() {
   const { exchange, setExchange } = useExchangeStore();
@@ -26,12 +26,12 @@ export default function ApiKeysSettings() {
     keys: { apiKey, secret },
     updateApiKeys,
   } = useApiKeysStore(exchange);
-  const form = useForm<ApiKeys>({
-    resolver: zodResolver(ApiKeysSchema),
+  const form = useForm<ExchangeApiKeys>({
+    resolver: zodResolver(ExchangeApiKeysSchema),
     defaultValues: { apiKey, secret },
   });
 
-  const onSubmit = (inputs: ApiKeys) => {
+  const onSubmit = (inputs: ExchangeApiKeys) => {
     updateApiKeys(inputs);
     toast({ title: 'API Keys saved!' });
   };

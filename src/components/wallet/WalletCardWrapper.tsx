@@ -14,7 +14,7 @@ export default function WalletCardWrapper({ className }: Props) {
     return <Icons.spinner />;
   }
 
-  const title = getExchangeName(wallet.exchange);
+  const title = buildExchangeName(wallet.exchange);
   const balance = buildBalanceString(wallet);
 
   return (
@@ -24,7 +24,7 @@ export default function WalletCardWrapper({ className }: Props) {
   );
 }
 
-function getExchangeName(exchange: Exchange) {
+function buildExchangeName(exchange: Exchange) {
   switch (exchange) {
     case 'binance':
       return '바이낸스';

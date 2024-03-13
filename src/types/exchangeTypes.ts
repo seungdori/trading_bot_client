@@ -20,10 +20,13 @@ export type Upbit = z.infer<typeof UpbitExchangeSchema>;
 
 export type Exchange = z.infer<typeof ExchangeSchema>;
 
-export type Wallet =
-  | z.infer<typeof BinanceWalletSchema>
-  | z.infer<typeof UpbitWalletSchema>
-  | z.infer<typeof BithumbWalletSchema>;
+export type BinanceWallet = z.infer<typeof BinanceWalletSchema>;
+
+export type UpbitWallet = z.infer<typeof UpbitWalletSchema>;
+
+export type BithumbWallet = z.infer<typeof BithumbWalletSchema>;
+
+export type Wallet = BinanceWallet | UpbitWallet | BithumbWallet;
 
 export type TickerRequest = { wallet?: Wallet; symbols: string[] };
 

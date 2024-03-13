@@ -16,6 +16,7 @@ import {
   PositionsResponse,
   ResponseDto,
   StartFeatureRequest,
+  StopFeatureRequest,
   UpbitPositionsResponse,
   User,
 } from '@/types/backendTypes.ts';
@@ -114,18 +115,18 @@ export async function getTransactionLog(exchange: z.infer<typeof TradingSearchPa
       recvWindow,
     };
 
-    const queryString = createBinanceQueryString(payload);
-    const signature = await createBinanceSignature(payload);
-    const url = endpoint.href + '?' + queryString + '&signature=' + signature;
+    // const queryString = createBinanceQueryString(payload);
+    // const signature = await createBinanceSignature(payload);
+    // const url = endpoint.href + '?' + queryString + '&signature=' + signature;
 
-    const response = await fetch<z.infer<typeof BinanceAssetResponseSchema>[]>(url, {
-      method: 'POST',
-      headers: {
-        'X-MBX-APIKEY': BINANCE_API_ACCESS_KEY,
-        'Content-Type': 'application/xxx-www-form-urlencoded',
-      },
-    });
-    console.log(`[BINANCE WALLET]`, response.data);
+    // const response = await fetch<z.infer<typeof BinanceAssetResponseSchema>[]>(url, {
+    //   method: 'POST',
+    //   headers: {
+    //     'X-MBX-APIKEY': BINANCE_API_ACCESS_KEY,
+    //     'Content-Type': 'application/xxx-www-form-urlencoded',
+    //   },
+    // });
+    // console.log(`[BINANCE WALLET]`, response.data);
   } catch (e) {
     console.error(`[FETCH BINANCE WALLET ERROR]`, e);
   }
@@ -176,6 +177,9 @@ export async function fetchUpbitTradingData(
  * @description 로컬 백엔드에 사용자 포지션 요청. 거래소 api 요청은 백엔드에서 진행.
  */
 export async function fetchPositions(args: FetchPositionsRequest): Promise<PositionsResponse[]> {
+  // Todo: remove after change IP
+  return [];
+
   const endpoint = new URL(`/exchange`, DESKTOP_BACKEND_BASE_URL);
   const response = await fetch<ResponseDto<PositionsResponse[]>>(endpoint.href, {
     method: 'POST',
@@ -195,12 +199,13 @@ export async function fetchPositions(args: FetchPositionsRequest): Promise<Posit
 }
 
 /**
- * @description 사용자가 설정한 전략을 백엔드에 요청. 백엔드는 거래소 api를 통해 사용자의 전략을 실행.
+ * @description 백엔드에 사용자가 설정한 전략 시작 요청. 백엔드는 거래소 api를 통해 사용자의 전략을 실행.
  */
 export async function startCustomStrategy(exchangeStore: Pick<ExchangeStateStore, 'exchange' | 'store'>) {
   const endpoint = new URL(`/feature/start`, DESKTOP_BACKEND_BASE_URL);
   const dto: StartFeatureRequest = {
-    exchange: exchangeStore.exchange,
+    exchange_name: exchangeStore.exchange,
+    custom_strategy: exchangeStore.store.customStrategy,
     enter_strategy: exchangeStore.store.enterStrategy,
     enter_symbol_amount: exchangeStore.store.enterSymbolAmount,
     enter_symbol_count: exchangeStore.store.enterSymbolCount,
@@ -208,17 +213,57 @@ export async function startCustomStrategy(exchangeStore: Pick<ExchangeStateStore
       exchangeStore.exchange === 'binance' ? (exchangeStore.store as BinanceStateStore['store']).leverage : undefined,
   };
 
-  const response = await fetch<ResponseDto<unknown>>(endpoint.href, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+  console.log(`[START CUSTOM STARKEY DTO]`, dto);
+
+  try {
+    const response = await fetch<ResponseDto<unknown>>(endpoint.href, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: Body.json(dto),
-    },
-  });
+    });
 
-  const responseDto = response.data;
-  console.log('[START CUSTOM REPOSITORY]', responseDto);
-  // const data = responseDto.data;
+    const responseDto = response.data;
+    console.log('[START CUSTOM REPOSITORY]', responseDto);
 
-  return responseDto;
+    return responseDto;
+  } catch (e) {
+    console.error(`[START CUSTOM STRATEGY ERROR]`, e);
+    console.error(e);
+    throw e;
+  }
+}
+
+/**
+ * @description 백엔드에 사용자가 설정한 전략을 중지 요청. 백엔드는 거래소 api를 통해 사용자의 전략을 중지.
+ */
+export async function stopCustomStrategy(exchangeStore: Pick<ExchangeStateStore, 'exchange' | 'store'>) {
+  const endpoint = new URL(`/feature/stop`, DESKTOP_BACKEND_BASE_URL);
+  const dto: StopFeatureRequest = {
+    exchange_name: exchangeStore.exchange,
+    custom_strategy: exchangeStore.store.customStrategy,
+    enter_strategy: exchangeStore.store.enterStrategy,
+  };
+
+  console.log(`[STOP CUSTOM STARKEY DTO]`, dto);
+
+  try {
+    const response = await fetch<ResponseDto<unknown>>(endpoint.href, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: Body.json(dto),
+    });
+
+    const responseDto = response.data;
+    console.log('[STOP CUSTOM REPOSITORY]', responseDto);
+
+    return responseDto;
+  } catch (e) {
+    console.error(`[STOP CUSTOM STRATEGY ERROR]`, e);
+    console.error(e);
+    throw e;
+  }
 }
