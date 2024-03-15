@@ -1,22 +1,13 @@
 import { fetch, Body } from '@tauri-apps/api/http';
-// Web crypto API
-const WebCryptoAPI = window.crypto.subtle;
-// import * as  crypto from 'crypto'; // Do not use this.
+import hamcSHA512 from 'crypto-js/hmac-sha512';
 import { BithumbTickersWithKey } from '@/types/bithumbTypes.ts';
 import { BithumbWallet, TickerRequest } from '@/types/exchangeTypes.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
 import { BITHUMB_REST_API_URL } from '@/constants/bithumb.ts';
-import { encodeToBase64 } from '@/lib/base64.ts';
 
-const enc = new TextEncoder();
-const algorithm = { name: 'HMAC', hash: 'SHA-512' };
-
-async function createSignature({ secret, data }: { secret: string; data: string }): Promise<string> {
-  const key = await WebCryptoAPI.importKey('raw', enc.encode(secret), algorithm, false, ['sign', 'verify']);
-  const signature = await WebCryptoAPI.sign(algorithm.name, key, enc.encode(data));
-  const digest = encodeToBase64(String.fromCharCode(...new Uint8Array(signature)));
-  console.log(`[BITHUMB WALLET DIGEST]`, digest);
-  return digest;
+function createSignature({ secret, data }: { secret: string; data: string }): string {
+  const hmac = hamcSHA512(data, secret).toString();
+  return window.btoa(hmac);
 }
 
 function urlencode(params: Record<string, string>): string {
@@ -32,11 +23,8 @@ async function buildHeader(
 
   const nonce = new Date().getTime().toString();
   const paramString = urlencode(params);
-  console.log(`[BITHUMB WALLET PARAM STRING]`, paramString);
   const data = `${endPoint};${paramString};${nonce}`;
-
-  console.log(`[BITHUMB WALLET HEADER DATA]`, data);
-  const apiSign = await createSignature({ secret, data });
+  const apiSign = createSignature({ secret, data });
 
   return {
     'api-client-type': '2', // Assuming this is how you want to handle this parameter
@@ -45,6 +33,11 @@ async function buildHeader(
     'Api-Sign': apiSign, // Ensure this is correctly encoded as Base64 if not already
   };
 }
+
+type BithumbBalanceResponse = {
+  status: string;
+  data: Record<string, string>;
+};
 
 export async function getBithumbWallet(apiKeys: ExchangeApiKeys): Promise<BithumbWallet> {
   const endpoint = '/info/balance';
@@ -59,29 +52,28 @@ export async function getBithumbWallet(apiKeys: ExchangeApiKeys): Promise<Bithum
   console.log(`[BITHUMB WALLET HEADER]`, header);
 
   try {
-    const response = await fetch<unknown>(url.href, {
+    const response = await fetch<BithumbBalanceResponse>(url.href, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded',
         ...header,
       },
-      body: Body.form({
-        currency: 'ALL',
-      }),
+      body: Body.form(params),
     });
     console.log(`[BITHUMB WALLET RESPONSE]`, response);
 
-    const data = response.data;
-    console.log(`[BITHUMB WALLET DATA]`, data);
+    const bithumbBalanceResponse = response.data;
+    const totalKrw = bithumbBalanceResponse.data['total_krw'];
+    console.log(`[BITHUMB WALLET KRWWWWW]`, totalKrw);
+    return {
+      exchange: 'bithumb',
+      krw: totalKrw,
+    };
   } catch (e) {
     console.error(e);
     throw e;
   }
-
-  return {
-    exchange: 'bithumb',
-  };
 }
 //
 // export async function getBithumbWallet(apiKeys: ExchangeApiKeys): Promise<BithumbWallet> {

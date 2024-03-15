@@ -3,8 +3,12 @@ import {
   BithumbPositionsResponseSchema,
   FetchPositionsRequestSchema,
   PositionsResponseSchema,
+  SellAllCoinsRequestSchema,
+  SellCoinSchema,
+  SellCoinsRequestSchema,
   StartFeatureRequestSchema,
   StopFeatureRequestSchema,
+  TestFeatureRequestSchema,
   UpbitPositionsResponseSchema,
   UserWithoutPasswordSchema,
 } from '@/schemas/backendSchema.ts';
@@ -41,3 +45,11 @@ export type FetchPositionsRequest = z.infer<typeof FetchPositionsRequestSchema>;
 export type StartFeatureRequest = z.infer<typeof StartFeatureRequestSchema>;
 
 export type StopFeatureRequest = z.infer<typeof StopFeatureRequestSchema>;
+
+export type TestFeatureRequest = z.infer<typeof TestFeatureRequestSchema>;
+
+export type SellAllCoinsRequest = z.infer<typeof SellAllCoinsRequestSchema>;
+
+export type SellCoin = z.infer<typeof SellCoinSchema>;
+
+export type SellCoinsRequest = z.infer<typeof SellCoinsRequestSchema>;

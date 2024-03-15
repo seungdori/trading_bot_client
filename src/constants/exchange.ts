@@ -13,9 +13,4 @@ export const EXCHANGE = {
   },
 } as const;
 
-// Utility type to extract PATH values as a union type
-type PathValues<T> = {
-  [K in keyof T]: T[K] extends { EXCHANGE: infer P } ? P : never;
-}[keyof T];
-
-export type ExchangeType = PathValues<typeof EXCHANGE>;
+export const DEFAULT_EXCHANGE = EXCHANGE.UPBIT.EXCHANGE;

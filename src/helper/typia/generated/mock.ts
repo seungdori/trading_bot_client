@@ -1,9 +1,25 @@
 import * as typia from 'typia';
-import { AssetsData } from '@/types/tableTypes.ts';
-export function generateRandomAssetsTableRow(): AssetsData {
+import { AssetsSchemaWithKey } from '@/schemas/exchangeSchema.ts';
+import { z } from 'zod';
+type AssetsData = z.infer<typeof AssetsSchemaWithKey>;
+export function generateRandomAssetsTableRow(): AssetsData[] {
     console.log(`[generateRandomAssetsTableRow]`);
-    const random = ((generator?: Partial<typia.IRandomGenerator>): typia.Resolved<AssetsData> => {
-        return "any type used...";
+    const random = ((generator?: Partial<typia.IRandomGenerator>): typia.Resolved<AssetsData[]> => {
+        const $generator = (typia.random as any).generator;
+        const $ro0 = (_recursive: boolean = false, _depth: number = 0): any => ({
+            coinName: (generator?.customs ?? $generator.customs)?.string?.([]) ?? (generator?.string ?? $generator.string)(),
+            initPrice: (generator?.customs ?? $generator.customs)?.number?.([]) ?? (generator?.number ?? $generator.number)(0, 100),
+            currentPrice: (generator?.customs ?? $generator.customs)?.number?.([]) ?? (generator?.number ?? $generator.number)(0, 100),
+            amount: (generator?.customs ?? $generator.customs)?.string?.([]) ?? (generator?.string ?? $generator.string)(),
+            rateOfReturn: (generator?.customs ?? $generator.customs)?.number?.([]) ?? (generator?.number ?? $generator.number)(0, 100),
+            sellPrice: (generator?.customs ?? $generator.customs)?.string?.([]) ?? (generator?.string ?? $generator.string)(),
+            tp1: (generator?.customs ?? $generator.customs)?.string?.([]) ?? (generator?.string ?? $generator.string)(),
+            tp2: (generator?.customs ?? $generator.customs)?.string?.([]) ?? (generator?.string ?? $generator.string)(),
+            tp3: (generator?.customs ?? $generator.customs)?.string?.([]) ?? (generator?.string ?? $generator.string)(),
+            value: (generator?.customs ?? $generator.customs)?.number?.([]) ?? (generator?.number ?? $generator.number)(0, 100),
+            key: (generator?.customs ?? $generator.customs)?.string?.([]) ?? (generator?.string ?? $generator.string)()
+        });
+        return (generator?.array ?? $generator.array)(() => $ro0());
     })();
     console.log(`[generateRandomAssetsTableRow] random`, random);
     return random;

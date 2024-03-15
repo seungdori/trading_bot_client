@@ -42,9 +42,9 @@ function buildBalanceString(wallet: Wallet | undefined) {
     case 'binance':
       return `${wallet.usdt.free} USDT`;
     case 'upbit':
-      return `${wallet.krw.balance} 원`;
-    // case 'bithumb':
-    // Todo Impl
+      return `${(+wallet.krw.balance).toFixed(1)} 원`;
+    case 'bithumb':
+      return `${(+wallet.krw).toFixed(1)} 원`;
     default:
       return `Unknown`;
   }

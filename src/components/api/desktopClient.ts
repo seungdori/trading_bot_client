@@ -15,14 +15,15 @@ import {
   FetchPositionsRequest,
   PositionsResponse,
   ResponseDto,
+  SellAllCoinsRequest,
+  SellCoin,
+  SellCoinsRequest,
   StartFeatureRequest,
   StopFeatureRequest,
+  TestFeatureRequest,
   UpbitPositionsResponse,
   User,
 } from '@/types/backendTypes.ts';
-import { BINANCE_API_ACCESS_KEY, BINANCE_API_BASE_URL } from '@/constants/binance.ts';
-import { createBinanceQueryString, createBinanceSignature } from '@/components/api/binanceClient.ts';
-import { BinanceAssetResponseSchema } from '@/schemas/binanceSchema.ts';
 
 /**
  * @description 로컬 백엔드에 사용자가 존재하는지 확인.
@@ -106,31 +107,6 @@ export async function login(args: z.infer<typeof LoginSchema>) {
  * @description 로컬 백엔드에 사용자 거래 내역 요청.
  */
 export async function getTransactionLog(exchange: z.infer<typeof TradingSearchParamsSchema>['exchange']) {
-  try {
-    const endpoint = new URL('/sapi/v3/asset/getUserAsset', BINANCE_API_BASE_URL);
-    const timestamp = Date.now();
-    const recvWindow = 60000;
-    const payload: Record<string, any> = {
-      timestamp,
-      recvWindow,
-    };
-
-    // const queryString = createBinanceQueryString(payload);
-    // const signature = await createBinanceSignature(payload);
-    // const url = endpoint.href + '?' + queryString + '&signature=' + signature;
-
-    // const response = await fetch<z.infer<typeof BinanceAssetResponseSchema>[]>(url, {
-    //   method: 'POST',
-    //   headers: {
-    //     'X-MBX-APIKEY': BINANCE_API_ACCESS_KEY,
-    //     'Content-Type': 'application/xxx-www-form-urlencoded',
-    //   },
-    // });
-    // console.log(`[BINANCE WALLET]`, response.data);
-  } catch (e) {
-    console.error(`[FETCH BINANCE WALLET ERROR]`, e);
-  }
-
   // Todo: fetch data from server
   console.log(exchange);
   return getnerateRandomTransactionLog();
@@ -177,9 +153,6 @@ export async function fetchUpbitTradingData(
  * @description 로컬 백엔드에 사용자 포지션 요청. 거래소 api 요청은 백엔드에서 진행.
  */
 export async function fetchPositions(args: FetchPositionsRequest): Promise<PositionsResponse[]> {
-  // Todo: remove after change IP
-  return [];
-
   const endpoint = new URL(`/exchange`, DESKTOP_BACKEND_BASE_URL);
   const response = await fetch<ResponseDto<PositionsResponse[]>>(endpoint.href, {
     method: 'POST',
@@ -188,7 +161,7 @@ export async function fetchPositions(args: FetchPositionsRequest): Promise<Posit
   });
 
   const dto: ResponseDto<PositionsResponse[]> = response.data;
-  console.log(`[POSITION DTO]`, dto);
+  console.log(`[${args.exchange} POSITION DTO]`, dto);
 
   if (!dto.success) {
     return [];
@@ -263,6 +236,98 @@ export async function stopCustomStrategy(exchangeStore: Pick<ExchangeStateStore,
     return responseDto;
   } catch (e) {
     console.error(`[STOP CUSTOM STRATEGY ERROR]`, e);
+    console.error(e);
+    throw e;
+  }
+}
+
+/**
+ * @description 'Test' feature. 'Test' 버튼이 눌렸을때 백엔드에 요청.
+ */
+export async function testFeature({
+  exchange,
+  leverage,
+}: Pick<ExchangeStateStore, 'exchange'> & Partial<Pick<BinanceStateStore['store'], 'leverage'>>) {
+  const endpoint = new URL(`/feature/test`, DESKTOP_BACKEND_BASE_URL);
+  const dto: TestFeatureRequest = {
+    exchange_name: exchange,
+    leverage,
+  };
+
+  try {
+    const response = await fetch<ResponseDto<unknown>>(endpoint.href, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: Body.json(dto),
+    });
+
+    const responseDto = response.data;
+
+    if (responseDto.success) {
+      return responseDto.data;
+    } else {
+      throw new Error(responseDto.message);
+    }
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+/**
+ * @description 'Sell' feature. 'Sell' 버튼이 눌렸을때 백엔드에 요청.
+ */
+export async function sellCoins({ exchange, coins }: Pick<ExchangeStateStore, 'exchange'> & { coins: SellCoin[] }) {
+  const endpoint = new URL(`/feature/sell`, DESKTOP_BACKEND_BASE_URL);
+  const dto: SellCoinsRequest = {
+    exchange_name: exchange,
+    coins,
+  };
+
+  try {
+    const response = await fetch<ResponseDto<unknown>>(endpoint.href, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: Body.json(dto),
+    });
+
+    const responseDto = response.data;
+
+    if (responseDto.success) {
+      return responseDto;
+    } else {
+      throw new Error(responseDto.message);
+    }
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+/**
+ * @description 'Sell all' feature. 'Sell all' 버튼이 눌렸을때 백엔드에 요청.
+ */
+export async function sellAllCoins({ exchange }: Pick<ExchangeStateStore, 'exchange'>) {
+  const endpoint = new URL(`/feature/sell/all`, DESKTOP_BACKEND_BASE_URL);
+  const dto: SellAllCoinsRequest = {
+    exchange_name: exchange,
+  };
+
+  try {
+    const response = await fetch<ResponseDto<unknown>>(endpoint.href, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: Body.json(dto),
+    });
+
+    const responseDto = response.data;
+
+    if (responseDto.success) {
+      return responseDto;
+    } else {
+      throw new Error(responseDto.message);
+    }
+  } catch (e) {
     console.error(e);
     throw e;
   }

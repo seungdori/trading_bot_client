@@ -35,7 +35,6 @@ export const BinancePositionsResponseSchema = z.object({
   mark_price: z.number(),
   value: z.number(),
   profit_percent: z.number(),
-  trading_data: z.any().nullish(),
 });
 
 export const UpbitPositionsResponseSchema = z.object({
@@ -43,14 +42,12 @@ export const UpbitPositionsResponseSchema = z.object({
   current_price: z.number(),
   balance: z.string(),
   avg_buy_price: z.string(),
-  trading_data: z.any().nullish(),
 });
 
 export const BithumbPositionsResponseSchema = z.object({
   currency: z.string(),
   current_price: z.number(),
   balance: z.string(),
-  trading_data: z.any().nullish(),
 });
 
 export const PositionsResponseSchema = z.union([
@@ -78,4 +75,23 @@ export const StopFeatureRequestSchema = StartFeatureRequestSchema.pick({
   exchange_name: true,
   custom_strategy: true,
   enter_strategy: true,
+});
+
+export const TestFeatureRequestSchema = z.object({
+  exchange_name: z.string(),
+  leverage: z.number().optional(),
+});
+
+export const SellAllCoinsRequestSchema = z.object({
+  exchange_name: z.string(),
+});
+
+export const SellCoinSchema = z.object({
+  symbol: z.string(),
+  // amount: z.number(),
+});
+
+export const SellCoinsRequestSchema = z.object({
+  exchange_name: z.string(),
+  coins: SellCoinSchema.array(),
 });

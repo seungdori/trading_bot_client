@@ -39,5 +39,5 @@ function buildTabs(): {
 function cachePositions() {
   useFetchPositions('binance');
   useFetchPositions('upbit');
-  // useFetchPositions('bithumb');
+  useFetchPositions('bithumb');
 }

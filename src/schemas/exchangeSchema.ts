@@ -22,7 +22,6 @@ export const AssetsSchema = z.object({
   initPrice: z.number(),
   currentPrice: z.number(),
   amount: z.string(),
-  // amount: z.number(),
   rateOfReturn: z.number(),
   sellPrice: z.string(),
   tp1: z.string(),

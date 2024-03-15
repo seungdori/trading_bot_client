@@ -5,6 +5,7 @@ import CustomStrategyContent from '@/components/strategy/CustomStrategyContent.t
 import { Button } from '@/components/ui/button.tsx';
 import { useStartCustomStrategy, useStopCustomStrategy } from '@/hooks/useStartCustomStrategy.ts';
 import { useStrategyStore } from '@/hooks/useStrategyStore.ts';
+import { useTestFeature } from '@/hooks/useTestFeature.ts';
 
 type Strategies = typeof CustomStrategist;
 
@@ -18,7 +19,7 @@ export default function CustomStrategyTabs({ className, strategies }: Props) {
   const startMutation = useStartCustomStrategy();
   const stopMutation = useStopCustomStrategy();
   // const stopMutation = useStopCustomStrategy();
-  // const testMutation = useTestCustomStrategy();
+  const testMutation = useTestFeature();
 
   const handleStart = (strategy: CustomStrategy) => {
     // Todo: Add start strategy logic
@@ -41,6 +42,10 @@ export default function CustomStrategyTabs({ className, strategies }: Props) {
   const handleTest = (strategy: CustomStrategy) => {
     // Todo: Add start strategy logic
     console.log('Test', strategy);
+    testMutation.mutate({
+      exchange,
+      leverage: exchange === 'binance' ? store.leverage : undefined,
+    });
   };
 
   return (
