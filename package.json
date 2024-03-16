@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "typia:generate": "pnpm typia generate --input src/helper/typia/templates --output src/helper/typia/generated --project tsconfig.json",
-    "tauri": "pnpm run typia:generate && tauri"
+    "rename": "node external/scripts/renameBinary.js",
+    "tauri": "pnpm run rename && pnpm run typia:generate && tauri"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
@@ -59,6 +60,7 @@
     "@types/uuid": "^9.0.8",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.17",
+    "execa": "^8.0.1",
     "postcss": "^8.4.35",
     "prettier": "^3.2.5",
     "tailwindcss": "^3.4.1",

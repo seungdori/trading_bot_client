@@ -8,10 +8,14 @@ type Props = { className?: string };
 
 export default function WalletCardWrapper({ className }: Props) {
   console.log(`[RENDER WALLET CARD WRAPPER]`);
-  const { isLoading, data: wallet } = useWallet();
+  const { data: wallet } = useWallet();
 
   if (!wallet) {
-    return <Icons.spinner />;
+    return (
+      <div className="flex w-full h-full items-center justify-center">
+        <Icons.spinner className="h-8 w-8 animate-spin" />
+      </div>
+    );
   }
 
   const title = buildExchangeName(wallet.exchange);
@@ -51,12 +55,12 @@ function buildBalanceString(wallet: Wallet | undefined) {
 }
 
 // 수익률/100x보유수량x현재가격
-function buildUnrealizedProfit({
-  profit,
-  quantity,
-  currentPrice,
-}: {
-  profit: number;
-  quantity: number;
-  currentPrice: number;
-}) {}
+// function buildUnrealizedProfit({
+//   profit,
+//   quantity,
+//   currentPrice,
+// }: {
+//   profit: number;
+//   quantity: number;
+//   currentPrice: number;
+// }) {}

@@ -26,6 +26,28 @@ import {
 } from '@/types/backendTypes.ts';
 
 /**
+ * @description 로컬 백엔드 health check.
+ * 데스크탑 앱과 함께 패키징된 백엔드 서버가 정상적으로 동작하는지 확인.
+ * 백엔드 서버가 정상적으로 동작하면 true를 반환.
+ */
+export async function healthCheck(): Promise<boolean> {
+  const endpoint = new URL('/health/ping', DESKTOP_BACKEND_BASE_URL);
+  try {
+    const response = await fetch<'pong'>(endpoint.href, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    console.log(`[HEALTH CHECK]`, response);
+
+    return response.data === 'pong';
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+/**
  * @description 로컬 백엔드에 사용자가 존재하는지 확인.
  * 사용자가 존재하면 로그인페이지로 이동.
  * 존재하지 않으면 회원가입 페이지로 이동.

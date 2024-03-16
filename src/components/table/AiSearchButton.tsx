@@ -1,5 +1,4 @@
 import { toast } from '@/components/ui/use-toast.ts';
-import { cn } from '@/lib/utils.ts';
 import { Button } from '@/components/ui/button.tsx';
 import { Exchange } from '@/types/exchangeTypes.ts';
 
@@ -14,7 +13,7 @@ export default function AiSearchButton({ exchange }: Props) {
     //   description: <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4 text-white">...</pre>,
     // });
     toast({
-      title: 'AI 탐색을 시작합니다.',
+      title: `${exchange} AI 탐색을 시작합니다.`,
     });
   };
 

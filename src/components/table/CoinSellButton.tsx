@@ -9,7 +9,7 @@ import { toast } from '@/components/ui/use-toast.ts';
 type Props = { exchange: Exchange };
 
 export default function CoinSellButton({ exchange }: Props) {
-  const { selectedCoins } = useSelectedCoinStore();
+  const { selectedCoins } = useSelectedCoinStore(exchange);
   const coins = selectedCoins.map((coin) => ({ symbol: coin }));
   const sellCoinsMutation = useSellCoins(exchange);
   const rootModalId = `coin-sell-root-modal-${useId()}`; // random ID
