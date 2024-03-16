@@ -2,7 +2,9 @@ import { fetch, Body } from '@tauri-apps/api/http';
 import hamcSHA512 from 'crypto-js/hmac-sha512';
 import { BithumbWallet } from '@/types/exchangeTypes.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
-import { BITHUMB_REST_API_URL } from '@/constants/bithumb.ts';
+import { BITHUMB_INVALID_IP_ERROR_CODE, BITHUMB_REST_API_URL } from '@/constants/bithumb.ts';
+import { z } from 'zod';
+import { toast } from '@/components/ui/use-toast.ts';
 
 function createSignature({ secret, data }: { secret: string; data: string }): string {
   const hmac = hamcSHA512(data, secret).toString();
@@ -38,6 +40,13 @@ type BithumbBalanceResponse = {
   data: Record<string, string>;
 };
 
+const BithumbErrorResponseSchema = z.object({
+  status: z.string(),
+  message: z.string(),
+});
+
+type BithumbErrorResponse = z.infer<typeof BithumbErrorResponseSchema>;
+
 export async function getBithumbWallet(apiKeys: ExchangeApiKeys): Promise<BithumbWallet> {
   const endpoint = '/info/balance';
   const url = new URL(endpoint, BITHUMB_REST_API_URL);
@@ -62,7 +71,12 @@ export async function getBithumbWallet(apiKeys: ExchangeApiKeys): Promise<Bithum
     });
     console.log(`[BITHUMB WALLET RESPONSE]`, response);
 
+    if (!response.ok) {
+      throw response.data as unknown as BithumbErrorResponse;
+    }
+
     const bithumbBalanceResponse = response.data;
+
     const totalKrw = bithumbBalanceResponse.data['total_krw'];
     console.log(`[BITHUMB WALLET KRWWWWW]`, totalKrw);
     return {
@@ -71,23 +85,14 @@ export async function getBithumbWallet(apiKeys: ExchangeApiKeys): Promise<Bithum
     };
   } catch (e) {
     console.error(e);
+    const validBithumbError = BithumbErrorResponseSchema.safeParse(e);
+    if (validBithumbError.success) {
+      const bithumbError = validBithumbError.data;
+      if (bithumbError.status === BITHUMB_INVALID_IP_ERROR_CODE) {
+        toast({ title: '빗썸 거래소에 등록된 ip가 아닙니다. 올바른 ip가 등록되있는지 확인해주세요.' });
+      }
+    }
+
     throw e;
   }
 }
-//
-// export async function getBithumbWallet(apiKeys: ExchangeApiKeys): Promise<BithumbWallet> {
-//   const endpoint = new URL('/info/balance', BITHUMB_REST_API_URL);
-//   const header = {
-//     'api-client-type': '2', // Api-Sign 생성 시 사용하는 구분자 유형. 세미콜론 구분자 사용. "2" : ";"
-//     'Api-Key': apiKeys.apiKey,
-//     'Api-Sign': '',
-//     'Api-Nonce': Date.now().toString(),
-//   };
-//   return {
-//     exchange: 'bithumb',
-//   };
-// }
-
-// export async function getBithumbTickers({ symbols }: Pick<TickerRequest, 'symbols'>): Promise<BithumbTickersWithKey> {
-//   return {};
-// }

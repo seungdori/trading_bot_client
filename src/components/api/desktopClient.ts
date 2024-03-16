@@ -24,6 +24,7 @@ import {
   UpbitPositionsResponse,
   User,
 } from '@/types/backendTypes.ts';
+import { useTransactionLogStore } from '@/store/transactionLogStore.ts';
 
 /**
  * @description 로컬 백엔드 health check.
@@ -128,10 +129,24 @@ export async function login(args: z.infer<typeof LoginSchema>) {
 /**
  * @description 로컬 백엔드에 사용자 거래 내역 요청.
  */
-export async function getTransactionLog(exchange: z.infer<typeof TradingSearchParamsSchema>['exchange']) {
+export async function getTransactionLogs(
+  exchange: z.infer<typeof TradingSearchParamsSchema>['exchange'],
+): Promise<string[]> {
   // Todo: fetch data from server
   console.log(exchange);
-  return getnerateRandomTransactionLog();
+  const mockTransactionLog = `매매를 시작합니다.
+  - 거래소: ${exchange}
+  - 방향: long
+  - 진입 종목 갯수: 10
+  - 종목당 투입 금액: ₩50000
+  
+  현재 거래 종목: ['ADA', 'BTC', 'ETH', 'DOGE', 'XRP', 'LTC', 'LINK', 'BCH', 'TRX', 'EOS']
+  `;
+
+  const transactionLogStore = useTransactionLogStore(exchange);
+  transactionLogStore.append(mockTransactionLog);
+
+  return transactionLogStore.logs;
 }
 
 export async function startAiSearch({ exchange, store }: Pick<ExchangeStateStore, 'exchange' | 'store'>) {

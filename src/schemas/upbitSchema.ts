@@ -13,6 +13,13 @@ export const UpbitWalletAssetSchema = UpbitAssetResponseSchema.extend({
   key: z.string(), // unit_currency - currency (e.g. KRW-BTC)
 });
 
+export const UpbitPrivateEndpointErrorResponseSchema = z.object({
+  error: z.object({
+    name: z.string(),
+    message: z.string(),
+  }),
+});
+
 export const UpbitWalletSchema = z.object({
   exchange: z.literal('upbit'),
   krw: UpbitWalletAssetSchema,

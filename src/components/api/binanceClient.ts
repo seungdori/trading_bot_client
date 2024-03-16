@@ -7,9 +7,9 @@ import {
 } from '@/schemas/binanceSchema.ts';
 import { createHexSignature } from '@/lib/crypto.ts';
 import { BINANCE_API_BASE_URL } from '@/constants/binance.ts';
-import { BinanceWallet, TickerRequest } from '@/types/exchangeTypes.ts';
-import { BinanceTickersWithKey } from '@/types/binanceTypes.ts';
+import { BinanceWallet } from '@/types/exchangeTypes.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
+import { toast } from '@/components/ui/use-toast.ts';
 
 export function createBinanceQueryString(payload: z.infer<typeof BinanceWebScoketRequestPayloadSchema>) {
   const queryString = Object.keys(payload)
@@ -87,39 +87,15 @@ export async function getBinaceWallet({ apiKey, secret }: ExchangeApiKeys): Prom
     };
   } catch (e) {
     console.error(`[BINANCE WALLET ERROR]`, e);
+    console.log(`=====================`);
+    console.log(e);
+    if (typeof e === 'string') {
+      // Binance IP 등록되지 않은 경우
+      if (e.includes('connection closed')) {
+        toast({ title: '바이낸스 거래소에 등록된 ip가 아닙니다. 올바른 ip가 등록되있는지 확인해주세요.' });
+      }
+    }
+
     throw e;
   }
-}
-
-type BinanceTicker = {
-  symbol: string;
-  price: string;
-};
-
-export async function getBinanceTickers({ symbols }: Pick<TickerRequest, 'symbols'>): Promise<BinanceTickersWithKey> {
-  console.log(`[BINANCE SYMBOLS]`, symbols);
-  const endpoint = new URL('/api/v3/ticker/price', BINANCE_API_BASE_URL);
-  const queryString = JSON.stringify(symbols);
-  endpoint.searchParams.append('symbols', queryString);
-
-  // Todo: 상장 폐지 코인 검증
-
-  const response = await fetch<BinanceTicker[]>(endpoint.href, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  const tickers = response.data.reduce((acc, item) => {
-    return {
-      ...acc,
-      [item.symbol]: {
-        ...item,
-        key: item.symbol,
-      },
-    };
-  }, {} as BinanceTickersWithKey);
-
-  return tickers;
 }

@@ -2,12 +2,16 @@ import { fetch } from '@tauri-apps/api/http';
 import * as uuid from 'uuid';
 import * as jose from 'jose';
 import { z } from 'zod';
-import { UpbitAssetResponseSchema, UpbitMarketCodeSchema, UpbitWalletAssetSchema } from '@/schemas/upbitSchema.ts';
-import { TickerRequest, UpbitWallet } from '@/types/exchangeTypes.ts';
-import { UpbitTickersWithKey } from '@/types/upbitTypes.ts';
-import { useUpbitAvailableMarketsStore } from '@/store/upbitAvailableMarketsStore.ts';
+import {
+  UpbitAssetResponseSchema,
+  UpbitPrivateEndpointErrorResponseSchema,
+  UpbitWalletAssetSchema,
+} from '@/schemas/upbitSchema.ts';
+import { UpbitWallet } from '@/types/exchangeTypes.ts';
+import { UpbitPrivateEndpointErrorResponse } from '@/types/upbitTypes.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
 import { UPBIT_REST_API_URL } from '@/constants/upbit.ts';
+import { toast } from '@/components/ui/use-toast.ts';
 
 const alg = 'HS256';
 const textEncoder = new TextEncoder();
@@ -34,6 +38,10 @@ export async function getUpbitWallet(apiKeys: ExchangeApiKeys): Promise<UpbitWal
         Authorization: `Bearer ${accessToken}`,
       },
     });
+
+    if (!response.ok) {
+      throw response.data as unknown as UpbitPrivateEndpointErrorResponse;
+    }
 
     const data = response.data;
     console.log(`[UPBIT ACCOUNT INFO]`, data);
@@ -69,63 +77,13 @@ export async function getUpbitWallet(apiKeys: ExchangeApiKeys): Promise<UpbitWal
     };
   } catch (e) {
     console.error(`[UPBIT ACCOUNT INFO ERROR]`, e);
-    throw new Error(`${JSON.stringify(e)}`);
-  }
-}
-
-export async function getUpbitAvailableMarkets(): Promise<string[]> {
-  const { availableMarkets, setAvailableMarkets } = useUpbitAvailableMarketsStore();
-
-  if (availableMarkets && availableMarkets.length > 0) {
-    return availableMarkets as string[];
-  }
-
-  const endpoint = new URL('v1/market/all', UPBIT_REST_API_URL);
-  try {
-    const response = await fetch<z.infer<typeof UpbitMarketCodeSchema>[]>(endpoint.href, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    // Todo: set available markets to url query params (cache)
-    const markets = response.data.map((item) => item.market);
-    setAvailableMarkets(markets);
-
-    return markets;
-  } catch (e) {
-    console.error(e);
-    throw e;
-  }
-}
-
-export async function getUpbitTickers({ symbols }: Pick<TickerRequest, 'symbols'>): Promise<UpbitTickersWithKey> {
-  // Todo: Cache available markets
-  const availableMarkets = await getUpbitAvailableMarkets();
-  const markets = availableMarkets.filter((availableMarket) => symbols.includes(availableMarket));
-
-  const endpoint = new URL('v1/ticker', UPBIT_REST_API_URL);
-  endpoint.searchParams.append('markets', markets.join(','));
-  try {
-    const response = await fetch<Record<string, any>[]>(endpoint.href, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    console.log(`[UPBIT RAW TICKER INFO]`, response.data);
-
-    const tickers = response.data.reduce((acc, item) => {
-      const key = item.market;
-      acc[key] = item;
-      return acc;
-    }, {} as UpbitTickersWithKey);
-    console.log(`[UPBIT TICKER INFO]`, tickers);
-
-    return tickers;
-  } catch (e) {
-    console.error(e);
+    const validUpbitError = UpbitPrivateEndpointErrorResponseSchema.safeParse(e);
+    if (validUpbitError.success) {
+      const upbitError = validUpbitError.data;
+      if (upbitError.error.name === 'no_authorization_ip') {
+        toast({ title: '업비트 거래소에 등록된 ip가 아닙니다. 올바른 ip가 등록되있는지 확인해주세요.' });
+      }
+    }
     throw new Error(`${JSON.stringify(e)}`);
   }
 }

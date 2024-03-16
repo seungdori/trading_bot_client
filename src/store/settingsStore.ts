@@ -1,4 +1,4 @@
-export const useSettingsStore = () => {
+export const useLocalStorage = () => {
   const set = (key: string, value: string) => {
     localStorage.setItem(key, value);
   };
