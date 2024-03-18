@@ -41,10 +41,15 @@ jobs:
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          gh auth login --with-token <<< $GH_PAT
+          echo $GH_PAT | gh auth login --with-token
           LATEST_RELEASE=$(gh release view --repo KGESH/trading_bot_backend --json tagName -q '.tagName')
           echo "Downloading assets for release $LATEST_RELEASE..."
-          gh release download $LATEST_RELEASE --repo KGESH/trading_bot_backend --pattern "*${{ matrix.platform }}*" --dir ./external/backend/
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            PATTERN="*Windows.exe"
+          else
+            PATTERN="*macOS"
+          fi
+          gh release download $LATEST_RELEASE --repo KGESH/trading_bot_backend --pattern $PATTERN --dir ./external/backend/
           echo "Downloaded files:"
           ls -la ./external/backend/
 
