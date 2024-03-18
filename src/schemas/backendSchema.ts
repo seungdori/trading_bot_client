@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ExchangeSchema } from '@/schemas/exchangeSchema.ts';
 
 export const DESKTOP_BACKEND_BASE_URL = 'http://localhost:8000';
 
@@ -56,14 +57,19 @@ export const PositionsResponseSchema = z.union([
   BithumbPositionsResponseSchema,
 ]);
 
-export const FetchPositionsRequestSchema = z.object({
-  exchange: z.string(),
+export const ExchangeApiKeyRequestSchema = z.object({
+  exchange_name: z.string(),
   api_key: z.string(),
   secret_key: z.string(),
 });
 
+export const StartAiSearchRequestSchema = z.object({
+  exchange_name: ExchangeSchema,
+  enter_strategy: z.string(),
+});
+
 export const StartFeatureRequestSchema = z.object({
-  exchange_name: z.string(),
+  exchange_name: ExchangeSchema,
   custom_strategy: z.string(),
   enter_strategy: z.string(),
   enter_symbol_count: z.number(),
@@ -78,12 +84,12 @@ export const StopFeatureRequestSchema = StartFeatureRequestSchema.pick({
 });
 
 export const TestFeatureRequestSchema = z.object({
-  exchange_name: z.string(),
+  exchange_name: ExchangeSchema,
   leverage: z.number().optional(),
 });
 
 export const SellAllCoinsRequestSchema = z.object({
-  exchange_name: z.string(),
+  exchange_name: ExchangeSchema,
 });
 
 export const SellCoinSchema = z.object({
@@ -92,6 +98,11 @@ export const SellCoinSchema = z.object({
 });
 
 export const SellCoinsRequestSchema = z.object({
-  exchange_name: z.string(),
+  exchange_name: ExchangeSchema,
   coins: SellCoinSchema.array(),
+});
+
+export const TelegramTokenRequestSchema = z.object({
+  exchange_name: z.string(),
+  token: z.string(),
 });

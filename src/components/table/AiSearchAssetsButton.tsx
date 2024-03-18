@@ -4,8 +4,8 @@ import { Exchange } from '@/types/exchangeTypes.ts';
 
 type Props = { exchange: Exchange };
 
-export default function AiSearchButton({ exchange }: Props) {
-  const handleAiSearch = () => {
+export default function AiSearchAssetsButton({ exchange }: Props) {
+  const handleAiSearchAssets = () => {
     // Todo: confirm design
     // toast({
     //   className: cn('fixed z-50 top-1/2 left-1/2 -translate-x-2/4 -translate-y-2/4 flex md:max-w-[420px]'),
@@ -13,9 +13,9 @@ export default function AiSearchButton({ exchange }: Props) {
     //   description: <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4 text-white">...</pre>,
     // });
     toast({
-      title: `${exchange} AI 탐색을 시작합니다.`,
+      title: `${exchange} AI 탐색 종목.`,
     });
   };
 
-  return <Button onClick={handleAiSearch}>AI 탐색 종목</Button>;
+  return <Button onClick={handleAiSearchAssets}>AI 탐색 종목</Button>;
 }

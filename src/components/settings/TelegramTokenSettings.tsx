@@ -15,37 +15,37 @@ import { Checkbox } from '@/components/ui/checkbox';
 import BinanceLogo from '@/assets/binance.svg';
 import BithumbLogo from '@/assets/bithumb.svg';
 import UpbitLogo from '@/assets/upbit.svg';
-import { ExchangeApiKeysSchema } from '@/schemas/settingsSchema.ts';
-import { useApiKeysStore } from '@/hooks/useApiKeysStore.ts';
-import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
+import { TelegramTokenSchema } from '@/schemas/settingsSchema.ts';
+import { TelegramToken } from '@/types/settingsTypes.ts';
+import { useTelegramStore } from '@/hooks/useTelegramStore.ts';
 
-export default function ApiKeysSettings() {
+export default function TelegramTokenSettings() {
   const id = useId();
   const { exchange, setExchange } = useExchangeStore(id);
-  const [showApiKeys, setShowApiKeys] = useQueryParam('showApiKeys', withDefault(BooleanParam, false));
-  const {
-    keys: { apiKey, secret },
-    updateApiKeys,
-  } = useApiKeysStore(exchange);
-  const form = useForm<ExchangeApiKeys>({
-    resolver: zodResolver(ExchangeApiKeysSchema),
-    defaultValues: { apiKey, secret },
+  const [showTelegramToken, setShowTelegramToken] = useQueryParam(
+    'showTelegramToken',
+    withDefault(BooleanParam, false),
+  );
+  const { token, updateToken } = useTelegramStore(exchange);
+  const form = useForm<TelegramToken>({
+    resolver: zodResolver(TelegramTokenSchema),
+    defaultValues: { token },
   });
 
-  const onSubmit = (inputs: ExchangeApiKeys) => {
-    updateApiKeys(inputs);
-    toast({ title: 'API Keys saved!' });
+  const onSubmit = (inputs: TelegramToken) => {
+    updateToken(inputs.token);
+    toast({ title: 'Telegram token saved!' });
   };
 
   useEffect(() => {
-    form.reset({ apiKey, secret });
-  }, [apiKey, secret]);
+    form.reset({ token });
+  }, [token]);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Exchange api keys</CardTitle>
-        <CardDescription>Set exchange api key & api secret.</CardDescription>
+        <CardTitle>Telegram tokens</CardTitle>
+        <CardDescription>Set telegram token.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
         <RadioGroup
@@ -81,6 +81,7 @@ export default function ApiKeysSettings() {
               htmlFor={`upbit-${id}`}
               className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
             >
+              {/*<p className="">*/}
               <img src={UpbitLogo} className="h-10 m-2" />
               <span>Upbit</span>
             </Label>
@@ -88,39 +89,18 @@ export default function ApiKeysSettings() {
         </RadioGroup>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1">
               <FormField
                 control={form.control}
-                name="apiKey"
+                name="token"
                 render={({ field }) => (
                   <FormItem className="space-y-3 w-full">
-                    <FormLabel>API KEY</FormLabel>
+                    <FormLabel>Telegram Token</FormLabel>
                     <FormControl>
                       <Input
-                        id="apiKey"
-                        type={showApiKeys ? 'text' : 'password'}
-                        placeholder="API KEY"
-                        autoCapitalize="none"
-                        autoCorrect="off"
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="secret"
-                render={({ field }) => (
-                  <FormItem className="space-y-3 w-full">
-                    <Label htmlFor="secret">API SECRET</Label>
-                    <FormControl>
-                      <Input
-                        id="secret"
-                        type={showApiKeys ? 'text' : 'password'}
-                        placeholder="API SECRET"
+                        id="token"
+                        type={showTelegramToken ? 'text' : 'password'}
+                        placeholder="Telegram Token"
                         autoCapitalize="none"
                         autoCorrect="off"
                         value={field.value}
@@ -133,12 +113,12 @@ export default function ApiKeysSettings() {
               />
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id={`showApiKeys-${id}`} onCheckedChange={(checked) => setShowApiKeys(!!checked)} />
+              <Checkbox id={`showTelegramToken-${id}`} onCheckedChange={(checked) => setShowTelegramToken(!!checked)} />
               <Label
-                htmlFor={`showApiKeys-${id}`}
+                htmlFor={`showTelegramToken-${id}`}
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                Show api keys
+                Show telegram token
               </Label>
             </div>
             <Button type="submit" className="w-full">

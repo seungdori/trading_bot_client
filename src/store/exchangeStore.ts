@@ -7,8 +7,9 @@ const ExchangeParam = withDefault(createEnumParam<Exchange>(['binance', 'upbit',
  * @description - Get or set the exchange query param
  * @example - http://localhost:1420/?exchange=upbit
  */
-export const useExchangeStore = () => {
-  const [exchange, setExchange] = useQueryParam('exchange', ExchangeParam);
+export const useExchangeStore = (componentId?: string) => {
+  const key = componentId ? `exchange-${componentId}` : 'exchange';
+  const [exchange, setExchange] = useQueryParam(key, ExchangeParam);
   if (!exchange) {
     throw new Error('Exchange is not set');
   }

@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
-import { startCustomStrategy } from '@/components/api/desktopClient.ts';
+import { stopCustomStrategy } from '@/components/api/desktopClient.ts';
 import { toast } from '@/components/ui/use-toast.ts';
 
-export const useStartCustomStrategy = () => {
+export const useStopCustomStrategy = () => {
   return useMutation({
-    mutationKey: ['startCustomStrategy'],
-    mutationFn: startCustomStrategy,
+    mutationKey: ['stopCustomStrategy'],
+    mutationFn: stopCustomStrategy,
     // Todo: refactor backend
     onSuccess: (responseDto) => {
       if (responseDto.success) {

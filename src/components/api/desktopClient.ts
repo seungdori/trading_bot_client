@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { Body, fetch } from '@tauri-apps/api/http';
-import { getnerateRandomTransactionLog } from '@/helper/typia/generated/mock.ts';
+// import { getnerateRandomTransactionLog } from '@/helper/typia/generated/mock.ts';
 import { TradingSearchParamsSchema } from '@/schemas/searchParamsSchema.ts';
 import { BinanceStateStore, ExchangeStateStore } from '@/store/strategyStore.ts';
-import { Upbit } from '@/types/exchangeTypes.ts';
+import { Exchange, Upbit } from '@/types/exchangeTypes.ts';
 import {
   DESKTOP_BACKEND_BASE_URL,
   LoginSchema,
@@ -12,19 +12,23 @@ import {
   UserExistSchema,
 } from '@/schemas/backendSchema.ts';
 import {
-  FetchPositionsRequest,
+  ExchangeRequest,
   PositionsResponse,
   ResponseDto,
   SellAllCoinsRequest,
   SellCoin,
   SellCoinsRequest,
+  StartAiSearchRequest,
   StartFeatureRequest,
   StopFeatureRequest,
+  TelegramTokenDto,
+  TelegramTokenRequest,
   TestFeatureRequest,
   UpbitPositionsResponse,
   User,
 } from '@/types/backendTypes.ts';
 import { useTransactionLogStore } from '@/store/transactionLogStore.ts';
+import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
 
 /**
  * @description 로컬 백엔드 health check.
@@ -127,6 +131,27 @@ export async function login(args: z.infer<typeof LoginSchema>) {
 }
 
 /**
+ * @description 로컬 백엔드에 거래소 api key, secret 업데이트 요청.
+ */
+export async function updateExchangeApiKeys({ exchange, apiKey, secret }: { exchange: Exchange } & ExchangeApiKeys) {
+  const dto: ExchangeRequest = {
+    exchange_name: exchange,
+    api_key: apiKey,
+    secret_key: secret,
+  };
+
+  const endpoint = new URL('/exchange/keys', DESKTOP_BACKEND_BASE_URL);
+  const response = await fetch<ResponseDto<unknown>>(endpoint.href, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: Body.json(dto),
+  });
+
+  const responseDto = response.data;
+  return responseDto;
+}
+
+/**
  * @description 로컬 백엔드에 사용자 거래 내역 요청.
  */
 export async function getTransactionLogs(
@@ -150,8 +175,28 @@ export async function getTransactionLogs(
 }
 
 export async function startAiSearch({ exchange, store }: Pick<ExchangeStateStore, 'exchange' | 'store'>) {
-  console.log(`[startAiSearch] exchange, enterStrategy`, exchange, store.enterStrategy);
-  return true;
+  console.log(`[startAiSearch] exchange, enterStrategy`);
+
+  const dto: StartAiSearchRequest = {
+    exchange_name: exchange,
+    enter_strategy: store.enterStrategy,
+  };
+
+  const endpoint = new URL('/feature/ai/search/start', DESKTOP_BACKEND_BASE_URL);
+
+  try {
+    const response = await fetch<ResponseDto<unknown>>(endpoint.href, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: Body.json(dto),
+    });
+
+    const responseDto = response.data;
+    return responseDto;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
 }
 
 /**
@@ -189,38 +234,41 @@ export async function fetchUpbitTradingData(
 /**
  * @description 로컬 백엔드에 사용자 포지션 요청. 거래소 api 요청은 백엔드에서 진행.
  */
-export async function fetchPositions(args: FetchPositionsRequest): Promise<PositionsResponse[]> {
-  const endpoint = new URL(`/exchange`, DESKTOP_BACKEND_BASE_URL);
-  const response = await fetch<ResponseDto<PositionsResponse[]>>(endpoint.href, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: Body.json(args),
-  });
+export async function fetchPositions(exchange: Exchange): Promise<PositionsResponse[]> {
+  const endpoint = new URL(`/exchange/${exchange}`, DESKTOP_BACKEND_BASE_URL);
+  try {
+    const response = await fetch<ResponseDto<PositionsResponse[]>>(endpoint.href, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
 
-  const dto: ResponseDto<PositionsResponse[]> = response.data;
-  console.log(`[${args.exchange} POSITION DTO]`, dto);
+    const dto: ResponseDto<PositionsResponse[]> = response.data;
+    console.log(`[${exchange} POSITION DTO]`, dto);
 
-  if (!dto.success) {
-    return [];
+    if (!dto.success) {
+      return [];
+    }
+
+    const positions = dto.data;
+    return positions;
+  } catch (e) {
+    console.error(`[${exchange} POSITION DTO ERROR]`, e);
+    throw e;
   }
-
-  const positions = dto.data;
-  return positions;
 }
 
 /**
  * @description 백엔드에 사용자가 설정한 전략 시작 요청. 백엔드는 거래소 api를 통해 사용자의 전략을 실행.
  */
-export async function startCustomStrategy(exchangeStore: Pick<ExchangeStateStore, 'exchange' | 'store'>) {
+export async function startCustomStrategy({ exchange, store }: Pick<ExchangeStateStore, 'exchange' | 'store'>) {
   const endpoint = new URL(`/feature/start`, DESKTOP_BACKEND_BASE_URL);
   const dto: StartFeatureRequest = {
-    exchange_name: exchangeStore.exchange,
-    custom_strategy: exchangeStore.store.customStrategy,
-    enter_strategy: exchangeStore.store.enterStrategy,
-    enter_symbol_amount: exchangeStore.store.enterSymbolAmount,
-    enter_symbol_count: exchangeStore.store.enterSymbolCount,
-    leverage:
-      exchangeStore.exchange === 'binance' ? (exchangeStore.store as BinanceStateStore['store']).leverage : undefined,
+    exchange_name: exchange,
+    custom_strategy: store.customStrategy,
+    enter_strategy: store.enterStrategy,
+    enter_symbol_amount: store.enterSymbolAmount,
+    enter_symbol_count: store.enterSymbolCount,
+    leverage: exchange === 'binance' ? (store as BinanceStateStore['store']).leverage : undefined,
   };
 
   console.log(`[START CUSTOM STARKEY DTO]`, dto);
@@ -248,12 +296,12 @@ export async function startCustomStrategy(exchangeStore: Pick<ExchangeStateStore
 /**
  * @description 백엔드에 사용자가 설정한 전략을 중지 요청. 백엔드는 거래소 api를 통해 사용자의 전략을 중지.
  */
-export async function stopCustomStrategy(exchangeStore: Pick<ExchangeStateStore, 'exchange' | 'store'>) {
+export async function stopCustomStrategy({ exchange, store }: Pick<ExchangeStateStore, 'exchange' | 'store'>) {
   const endpoint = new URL(`/feature/stop`, DESKTOP_BACKEND_BASE_URL);
   const dto: StopFeatureRequest = {
-    exchange_name: exchangeStore.exchange,
-    custom_strategy: exchangeStore.store.customStrategy,
-    enter_strategy: exchangeStore.store.enterStrategy,
+    exchange_name: exchange,
+    custom_strategy: store.customStrategy,
+    enter_strategy: store.enterStrategy,
   };
 
   console.log(`[STOP CUSTOM STARKEY DTO]`, dto);
@@ -299,12 +347,7 @@ export async function testFeature({
     });
 
     const responseDto = response.data;
-
-    if (responseDto.success) {
-      return responseDto.data;
-    } else {
-      throw new Error(responseDto.message);
-    }
+    return responseDto;
   } catch (e) {
     console.error(e);
     throw e;
@@ -364,6 +407,47 @@ export async function sellAllCoins({ exchange }: Pick<ExchangeStateStore, 'excha
     } else {
       throw new Error(responseDto.message);
     }
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+/**
+ * @description 텔레그램 id 업데이트 요청.
+ */
+export async function updateTelegramId(id: string) {
+  const endpoint = new URL(`/telegram/id/${id}`, DESKTOP_BACKEND_BASE_URL);
+  try {
+    const response = await fetch<ResponseDto<string>>(endpoint.href, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    const responseDto = response.data;
+    return responseDto;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+export async function updateTeleramToken({ exchange, token }: { exchange: Exchange; token: string }) {
+  const endpoint = new URL(`/telegram/token`, DESKTOP_BACKEND_BASE_URL);
+  const dto: TelegramTokenRequest = {
+    exchange_name: exchange,
+    token,
+  };
+
+  try {
+    const response = await fetch<ResponseDto<TelegramTokenDto>>(endpoint.href, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: Body.json(dto),
+    });
+
+    const responseDto = response.data;
+    return responseDto;
   } catch (e) {
     console.error(e);
     throw e;

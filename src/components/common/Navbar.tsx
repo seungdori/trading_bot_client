@@ -20,6 +20,7 @@ type NavbarProps = {
 
 export default function Navbar({ routes, className }: NavbarProps) {
   const { exchange } = useExchangeStore();
+  console.log(`[CURRENT PATH]`, window.location.href);
   return (
     <header className={cn('flex h-16 w-full items-center justify-between border-b', className)}>
       <nav className="w-full flex justify-between">

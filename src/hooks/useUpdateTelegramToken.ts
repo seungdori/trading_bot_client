@@ -1,19 +1,18 @@
 import { useMutation } from '@tanstack/react-query';
-import { startCustomStrategy } from '@/components/api/desktopClient.ts';
+import { updateTeleramToken } from '@/components/api/desktopClient.ts';
 import { toast } from '@/components/ui/use-toast.ts';
+import { Exchange } from '@/types/exchangeTypes.ts';
 
-export const useStartCustomStrategy = () => {
+export const useUpdateTelegramToken = (exchange: Exchange) => {
   return useMutation({
-    mutationKey: ['startCustomStrategy'],
-    mutationFn: startCustomStrategy,
-    // Todo: refactor backend
+    mutationKey: ['updateTeleramToken', exchange],
+    mutationFn: updateTeleramToken,
     onSuccess: (responseDto) => {
       if (responseDto.success) {
         toast({
           title: responseDto.message,
         });
       } else {
-        // Todo: display warning or error toast
         toast({
           title: responseDto.message,
         });

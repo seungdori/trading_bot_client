@@ -7,4 +7,6 @@ export const BITHUMB_REST_API_URL = z
   })
   .parse('https://api.bithumb.com');
 
+export const BITHUMB_INVALID_API_KEY_ERROR_CODE = '5300';
+
 export const BITHUMB_INVALID_IP_ERROR_CODE = '5302';

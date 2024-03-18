@@ -16,7 +16,7 @@ export const UpbitWalletAssetSchema = UpbitAssetResponseSchema.extend({
 export const UpbitPrivateEndpointErrorResponseSchema = z.object({
   error: z.object({
     name: z.string(),
-    message: z.string(),
+    message: z.string().optional(),
   }),
 });
 

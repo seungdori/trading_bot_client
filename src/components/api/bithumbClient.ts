@@ -2,7 +2,11 @@ import { fetch, Body } from '@tauri-apps/api/http';
 import hamcSHA512 from 'crypto-js/hmac-sha512';
 import { BithumbWallet } from '@/types/exchangeTypes.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
-import { BITHUMB_INVALID_IP_ERROR_CODE, BITHUMB_REST_API_URL } from '@/constants/bithumb.ts';
+import {
+  BITHUMB_INVALID_API_KEY_ERROR_CODE,
+  BITHUMB_INVALID_IP_ERROR_CODE,
+  BITHUMB_REST_API_URL,
+} from '@/constants/bithumb.ts';
 import { z } from 'zod';
 import { toast } from '@/components/ui/use-toast.ts';
 
@@ -88,8 +92,14 @@ export async function getBithumbWallet(apiKeys: ExchangeApiKeys): Promise<Bithum
     const validBithumbError = BithumbErrorResponseSchema.safeParse(e);
     if (validBithumbError.success) {
       const bithumbError = validBithumbError.data;
-      if (bithumbError.status === BITHUMB_INVALID_IP_ERROR_CODE) {
-        toast({ title: '빗썸 거래소에 등록된 ip가 아닙니다. 올바른 ip가 등록되있는지 확인해주세요.' });
+
+      switch (bithumbError.status) {
+        case BITHUMB_INVALID_API_KEY_ERROR_CODE:
+          toast({ title: '빗썸 거래소 api key 또는 secret이 올바르지 않습니다.' });
+          break;
+        case BITHUMB_INVALID_IP_ERROR_CODE:
+          toast({ title: '빗썸 거래소에 등록된 ip가 아닙니다. 올바른 ip가 등록되있는지 확인해주세요.' });
+          break;
       }
     }
 

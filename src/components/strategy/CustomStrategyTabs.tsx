@@ -3,9 +3,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.t
 import { cn } from '@/lib/utils.ts';
 import CustomStrategyContent from '@/components/strategy/CustomStrategyContent.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import { useStartCustomStrategy, useStopCustomStrategy } from '@/hooks/useStartCustomStrategy.ts';
+import { useStartCustomStrategy } from '@/hooks/useStartCustomStrategy.ts';
 import { useStrategyStore } from '@/hooks/useStrategyStore.ts';
 import { useTestFeature } from '@/hooks/useTestFeature.ts';
+import { useStopCustomStrategy } from '@/hooks/useStopCustomStrategy.ts';
 
 type Strategies = typeof CustomStrategist;
 
@@ -18,7 +19,6 @@ export default function CustomStrategyTabs({ className, strategies }: Props) {
   const { exchange, store, setStore } = useStrategyStore();
   const startMutation = useStartCustomStrategy();
   const stopMutation = useStopCustomStrategy();
-  // const stopMutation = useStopCustomStrategy();
   const testMutation = useTestFeature();
 
   const handleStart = (strategy: CustomStrategy) => {

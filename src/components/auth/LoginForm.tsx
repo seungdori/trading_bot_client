@@ -35,7 +35,7 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
         <h1 className="text-2xl font-semibold tracking-tight">Login</h1>
         <p className="text-sm text-muted-foreground">Enter your ID and Password to continue.</p>
       </div>
-      <div className={cn('grid gap-6')}>
+      <div className={cn('grid gap-6 mt-2')}>
         <form onSubmit={onSubmit}>
           <div className="grid gap-2">
             <div className="grid gap-1">

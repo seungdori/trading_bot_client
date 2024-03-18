@@ -1,12 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
-import { startCustomStrategy } from '@/components/api/desktopClient.ts';
+import { startAiSearch } from '@/components/api/desktopClient.ts';
+import { Exchange } from '@/types/exchangeTypes.ts';
 import { toast } from '@/components/ui/use-toast.ts';
 
-export const useStartCustomStrategy = () => {
+export const useStartAiSearch = (exchange: Exchange) => {
   return useMutation({
-    mutationKey: ['startCustomStrategy'],
-    mutationFn: startCustomStrategy,
-    // Todo: refactor backend
+    mutationKey: ['startAiSearch', exchange],
+    mutationFn: startAiSearch,
     onSuccess: (responseDto) => {
       if (responseDto.success) {
         toast({

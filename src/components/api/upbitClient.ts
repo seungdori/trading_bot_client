@@ -10,7 +10,12 @@ import {
 import { UpbitWallet } from '@/types/exchangeTypes.ts';
 import { UpbitPrivateEndpointErrorResponse } from '@/types/upbitTypes.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
-import { UPBIT_REST_API_URL } from '@/constants/upbit.ts';
+import {
+  UPBIT_INVALID_API_KEY_ERROR_MESSAGE,
+  UPBIT_INVALID_IP_ERROR_MESSAGE,
+  UPBIT_INVALID_SECRET_KEY_ERROR_MESSAGE,
+  UPBIT_REST_API_URL,
+} from '@/constants/upbit.ts';
 import { toast } from '@/components/ui/use-toast.ts';
 
 const alg = 'HS256';
@@ -80,8 +85,14 @@ export async function getUpbitWallet(apiKeys: ExchangeApiKeys): Promise<UpbitWal
     const validUpbitError = UpbitPrivateEndpointErrorResponseSchema.safeParse(e);
     if (validUpbitError.success) {
       const upbitError = validUpbitError.data;
-      if (upbitError.error.name === 'no_authorization_ip') {
-        toast({ title: '업비트 거래소에 등록된 ip가 아닙니다. 올바른 ip가 등록되있는지 확인해주세요.' });
+      switch (upbitError.error.name) {
+        case UPBIT_INVALID_IP_ERROR_MESSAGE:
+          toast({ title: '업비트 거래소에 등록된 ip가 아닙니다. 올바른 ip가 등록되있는지 확인해주세요.' });
+          break;
+        case UPBIT_INVALID_API_KEY_ERROR_MESSAGE:
+        case UPBIT_INVALID_SECRET_KEY_ERROR_MESSAGE:
+          toast({ title: '업비트 거래소 api key 또는 secret이 올바르지 않습니다.' });
+          break;
       }
     }
     throw new Error(`${JSON.stringify(e)}`);

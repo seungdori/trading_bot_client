@@ -2,13 +2,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { RadioGroupItem } from '@/components/ui/radio-group';
-import { toast } from '@/components/ui/use-toast';
 import { useStrategyStore } from '@/hooks/useStrategyStore.ts';
 import { RadioGroup } from '@/components/ui/radio-group.tsx';
 import { Button } from '@/components/ui/button.tsx';
-import { startAiSearch } from '@/components/api/desktopClient.ts';
 import { EnterStrategySchema } from '@/schemas/exchangeSchema.ts';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form.tsx';
+import { useStartAiSearch } from '@/hooks/useStartAiSearch.ts';
 
 const FormSchema = z.object({
   type: EnterStrategySchema,
@@ -16,9 +15,34 @@ const FormSchema = z.object({
 
 type Props = { className?: string };
 
+// function AiSearchStartButton() {
+//   // const { exchange, store } = useStrategyStore();
+//   const {
+//     keys: { apiKey, secret },
+//   } = useApiKeysStore(exchange);
+//   const aiSearchMutation = useStartAiSearch(exchange);
+//
+//   const handleAiSearch = () => {
+//     aiSearchMutation.mutate({
+//       exchange,
+//       store,
+//       apiKey,
+//       secret,
+//     });
+//   };
+//
+//   return (
+//     <Button onClick={handleAiSearch} className="w-full" type="submit">
+//       AI 탐색 시작
+//     </Button>
+//   );
+// }
+
 export default function EnterStrategySelect({ className }: Props) {
   const { exchange, store, setStore } = useStrategyStore();
   const { enterStrategy } = store;
+  const aiSearchMutation = useStartAiSearch(exchange);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -27,17 +51,22 @@ export default function EnterStrategySelect({ className }: Props) {
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    console.log('[ENTER STRATEGY VALUE]', enterStrategy);
+    console.log('[ENTER STRATEGY VALUE]', data);
 
-    await startAiSearch({ exchange, store });
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+    aiSearchMutation.mutate({
+      exchange,
+      store,
     });
+
+    // await startAiSearch({ exchange, store });
+    // toast({
+    //   title: 'You submitted the following values:',
+    //   description: (
+    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+    //     </pre>
+    //   ),
+    // });
   };
 
   return (
@@ -90,6 +119,7 @@ export default function EnterStrategySelect({ className }: Props) {
           <Button className="w-full" type="submit">
             AI 탐색 시작
           </Button>
+          {/*{AiSearchStartButton()}*/}
         </form>
       </Form>
     </div>
