@@ -56,12 +56,17 @@ jobs:
           rm -f ./external/backend/backend
           # Rename the downloaded file to 'backend', removing '.exe' extension for Windows
           find ./external/backend/ -name "*${PATTERN}" -exec mv {} ./external/backend/backend \;
+          # Log the binary file path
+          echo "Binary file path: ./external/backend/backend"
           # Make the file executable (for non-Windows systems)
           if [[ "${{ runner.os }}" != "Windows" ]]; then
             chmod +x ./external/backend/backend
           fi
           echo "After preparation:"
           ls -la ./external/backend/
+          # Finally, log the path to confirm its existence and permissions
+          echo "Final binary file path and permissions:"
+          ls -la ./external/backend/backend
 
       - uses: tauri-apps/tauri-action@v0
         env:
