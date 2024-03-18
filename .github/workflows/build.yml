@@ -1,5 +1,4 @@
 name: 'publish'
-
 on:
   push:
     branches:
@@ -40,6 +39,7 @@ jobs:
       - name: Download FastAPI Binary
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
+        shell: bash
         run: |
           echo $GH_PAT | gh auth login --with-token
           LATEST_RELEASE=$(gh release view --repo KGESH/trading_bot_backend --json tagName -q '.tagName')
@@ -51,6 +51,16 @@ jobs:
           fi
           gh release download $LATEST_RELEASE --repo KGESH/trading_bot_backend --pattern $PATTERN --dir ./external/backend/
           echo "Downloaded files:"
+          ls -la ./external/backend/
+          # Remove existing 'backend' file if it exists
+          rm -f ./external/backend/backend
+          # Rename the downloaded file to 'backend', removing '.exe' extension for Windows
+          find ./external/backend/ -name "*${PATTERN}" -exec mv {} ./external/backend/backend \;
+          # Make the file executable (for non-Windows systems)
+          if [[ "${{ runner.os }}" != "Windows" ]]; then
+            chmod +x ./external/backend/backend
+          fi
+          echo "After preparation:"
           ls -la ./external/backend/
 
       - uses: tauri-apps/tauri-action@v0
