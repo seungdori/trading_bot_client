@@ -1,15 +1,15 @@
 import { Exchange } from '@/types/exchangeTypes.ts';
-import { useSelectedCoinStore } from '@/store/selectedCoinStore.ts';
+import { useSelectedCoinsStore } from '@/store/selectedCoinStore.ts';
 import { useSellCoins } from '@/hooks/useSellCoins.ts';
 import { useId } from 'react';
 import { BooleanParam, useQueryParam } from 'use-query-params';
-import CoinSellConfirmAlertModal from '@/components/table/CoinSellConfirmAlertModal.tsx';
+import CoinSellConfirmAlertModal from '@/components/assetsTable/CoinSellConfirmAlertModal.tsx';
 import { toast } from '@/components/ui/use-toast.ts';
 
 type Props = { exchange: Exchange };
 
 export default function CoinSellButton({ exchange }: Props) {
-  const { selectedCoins } = useSelectedCoinStore(exchange);
+  const { selectedCoins } = useSelectedCoinsStore(exchange);
   const coins = selectedCoins.map((coin) => ({ symbol: coin }));
   const sellCoinsMutation = useSellCoins(exchange);
   const rootModalId = `coin-sell-root-modal-${useId()}`; // random ID

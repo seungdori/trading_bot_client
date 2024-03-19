@@ -13,6 +13,7 @@ import {
   TestFeatureRequestSchema,
   UpbitPositionsResponseSchema,
   UserWithoutPasswordSchema,
+  WinRateSchema,
 } from '@/schemas/backendSchema.ts';
 import { z } from 'zod';
 
@@ -61,3 +62,5 @@ export type SellCoinsRequest = z.infer<typeof SellCoinsRequestSchema>;
 export type TelegramTokenRequest = z.infer<typeof TelegramTokenRequestSchema>;
 
 export type TelegramTokenDto = z.infer<typeof TelegramTokenRequestSchema>;
+
+export type WinRate = z.infer<typeof WinRateSchema>;

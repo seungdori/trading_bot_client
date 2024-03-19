@@ -1,4 +1,4 @@
-import DataTablesWrapper from '@/components/table/DataTablesWrapper.tsx';
+import DataTablesWrapper from '@/components/assetsTable/DataTablesWrapper.tsx';
 import CustomStrategyWrapper from '@/components/strategy/CustomStrategyWrapper.tsx';
 import WalletCardWrapper from '@/components/wallet/WalletCardWrapper.tsx';
 import StrategyPanel from '@/components/strategy/StrategyPanel.tsx';
@@ -6,7 +6,7 @@ import ExchangePanel from '@/components/strategy/ExchangePanel.tsx';
 
 export default function TradingPage() {
   return (
-    <main className="grid grid-cols-12 w-full h-full gap-2">
+    <main className="md:grid md:grid-cols-12 sm:flex sm:flex-col sm:space-y-4 w-full h-full gap-2">
       <section className="col-span-3">
         <WalletCardWrapper className="h-full" />
       </section>

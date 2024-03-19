@@ -26,6 +26,7 @@ import {
   TestFeatureRequest,
   UpbitPositionsResponse,
   User,
+  WinRate,
 } from '@/types/backendTypes.ts';
 import { useTransactionLogStore } from '@/store/transactionLogStore.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
@@ -157,6 +158,8 @@ export async function updateExchangeApiKeys({ exchange, apiKey, secret }: { exch
 export async function getTransactionLogs(
   exchange: z.infer<typeof TradingSearchParamsSchema>['exchange'],
 ): Promise<string[]> {
+  const transactionLogStore = useTransactionLogStore(exchange);
+
   // Todo: fetch data from server
   console.log(exchange);
   const mockTransactionLog = `매매를 시작합니다.
@@ -168,8 +171,18 @@ export async function getTransactionLogs(
   현재 거래 종목: ['ADA', 'BTC', 'ETH', 'DOGE', 'XRP', 'LTC', 'LINK', 'BCH', 'TRX', 'EOS']
   `;
 
-  const transactionLogStore = useTransactionLogStore(exchange);
-  transactionLogStore.append(mockTransactionLog);
+  const endpoint = new URL('/trading/logs', DESKTOP_BACKEND_BASE_URL);
+  const response = await fetch<ResponseDto<string[]>>(endpoint.href, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  const responseDto = response.data;
+
+  if (responseDto.success) {
+    const logs = responseDto.data;
+    transactionLogStore.append(logs);
+  }
 
   return transactionLogStore.logs;
 }
@@ -448,6 +461,58 @@ export async function updateTeleramToken({ exchange, token }: { exchange: Exchan
 
     const responseDto = response.data;
     return responseDto;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+/**
+ * @description 선택한 코인의 차트 이미지 생성 요청.
+ * @param exchange - 거래소 이름.
+ * @param coin - 차트 이미지를 생성할 코인.
+ * @returns ResponseDTO<차트 이미지 url>.
+ */
+export async function createChartImage({
+  exchange,
+  coin,
+}: {
+  exchange: Exchange;
+  coin: SellCoin;
+}): Promise<ResponseDto<string>> {
+  const dto: SellCoin = coin;
+  const endpoint = new URL(`/trading/${exchange}/chart`, DESKTOP_BACKEND_BASE_URL);
+  const response = await fetch<ResponseDto<string>>(endpoint.href, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: Body.json(dto),
+  });
+
+  const responseDto = response.data;
+  if (responseDto.success) {
+    // const fileUrl = responseDto.data;
+    return responseDto;
+  } else {
+    throw new Error(responseDto.message);
+  }
+}
+
+export async function getWinRates(exchange: Exchange) {
+  const endpoint = new URL(`/trading/${exchange}/winrate`, DESKTOP_BACKEND_BASE_URL);
+
+  try {
+    const response = await fetch<ResponseDto<WinRate[]>>(endpoint.href, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    const responseDto = response.data;
+
+    if (responseDto.success) {
+      return responseDto.data;
+    } else {
+      return [];
+    }
   } catch (e) {
     console.error(e);
     throw e;

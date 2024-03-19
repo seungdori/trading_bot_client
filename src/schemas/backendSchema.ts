@@ -106,3 +106,10 @@ export const TelegramTokenRequestSchema = z.object({
   exchange_name: z.string(),
   token: z.string(),
 });
+
+export const WinRateSchema = z.object({
+  name: z.string(),
+  long_win_rate: z.number(),
+  short_win_rate: z.number(),
+  total_win_rate: z.number(),
+});

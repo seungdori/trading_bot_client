@@ -73,7 +73,7 @@ export default function EnterStrategySelect({ className }: Props) {
     <div className={className}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex space-y-6">
-          <div className="w-full flex">
+          <div className="w-full flex whitespace-nowrap">
             <FormField
               control={form.control}
               name="type"

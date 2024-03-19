@@ -11,7 +11,7 @@ export async function getWallet(exchange: Exchange, apiKeys: ExchangeApiKeys): P
     case 'binance':
       return getBinaceWallet(apiKeys);
     case 'bithumb':
-      return getBithumbWallet(apiKeys); // Todo: Impl
+      return getBithumbWallet(apiKeys);
     default:
       throw new Error('Invalid exchange');
   }

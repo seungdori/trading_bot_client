@@ -1,19 +1,19 @@
-import ScrollableTable from '@/components/table/ScrollableTable.tsx';
+import ScrollableTable from '@/components/assetsTable/ScrollableTable.tsx';
 import { ColumnDef } from '@tanstack/react-table';
-import DataTable from '@/components/table/DataTable.tsx';
+import DataTable from '@/components/assetsTable/DataTable.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { ArrowUpDown } from 'lucide-react';
 import { z } from 'zod';
 import { AssetsSchemaWithKey } from '@/schemas/exchangeSchema.ts';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
-import { useSelectedCoinStore } from '@/store/selectedCoinStore.ts';
+import { useSelectedCoinsStore } from '@/store/selectedCoinStore.ts';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
 
 type Props = { assetsData: z.infer<typeof AssetsSchemaWithKey>[] };
 
 export default function AssetsTable({ assetsData }: Props) {
   const { exchange } = useExchangeStore();
-  const { selectedCoins, setSelectedCoins } = useSelectedCoinStore(exchange);
+  const { selectedCoins, setSelectedCoins } = useSelectedCoinsStore(exchange);
   const columnsDef: ColumnDef<z.infer<typeof AssetsSchemaWithKey>>[] = [
     {
       id: 'select',
@@ -157,10 +157,6 @@ export default function AssetsTable({ assetsData }: Props) {
       },
     },
   ];
-
-  const currentUrl = window.location.href;
-
-  console.log(`[CURRENT URL]`, currentUrl);
 
   return (
     <ScrollableTable>

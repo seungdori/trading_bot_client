@@ -1,6 +1,6 @@
 import { useAssetsData } from '@/hooks/useAssetsData.ts';
-import AssetsTable from '@/components/table/AssetsTable.tsx';
-import TableSkeleton from '@/components/table/TableSkeleton.tsx';
+import AssetsTable from '@/components/assetsTable/AssetsTable.tsx';
+import TableSkeleton from '@/components/assetsTable/TableSkeleton.tsx';
 export default function AssetsTableWrapper() {
   const { isLoading, assets } = useAssetsData();
 

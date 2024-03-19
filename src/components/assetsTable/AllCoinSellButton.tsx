@@ -2,7 +2,7 @@ import { Exchange } from '@/types/exchangeTypes.ts';
 import { useSellAllCoins } from '@/hooks/useSellAllCoins.ts';
 import { useId } from 'react';
 import { BooleanParam, useQueryParam } from 'use-query-params';
-import CoinSellConfirmAlertModal from '@/components/table/CoinSellConfirmAlertModal.tsx';
+import CoinSellConfirmAlertModal from '@/components/assetsTable/CoinSellConfirmAlertModal.tsx';
 
 type Props = { exchange: Exchange };
 

@@ -1,6 +1,6 @@
 import { InfoTab } from '@/types/tableTypes.ts';
-import InfoTabs from '@/components/table/InfoTabs.tsx';
-import AssetsTableWrapper from '@/components/table/AssetsTableWrapper.tsx';
+import InfoTabs from '@/components/assetsTable/InfoTabs.tsx';
+import AssetsTableWrapper from '@/components/assetsTable/AssetsTableWrapper.tsx';
 import TransactionLogWrapper from '@/components/transaction/TransactionLogWrapper.tsx';
 import { useFetchPositions } from '@/hooks/useAssetsData.ts';
 
