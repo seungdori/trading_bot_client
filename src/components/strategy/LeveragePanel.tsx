@@ -21,7 +21,7 @@ export default function LeveragePanel({ className, ...props }: SliderProps) {
   };
 
   return (
-    <div className="w-full h-full flex flex-col justify-around">
+    <div className="p-4 space-y-2 w-full h-full flex flex-col justify-around">
       <p>레버리지 : {leverage}</p>
       <Slider
         value={[leverage]}

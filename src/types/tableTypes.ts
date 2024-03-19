@@ -1,8 +1,14 @@
+import { Exchange } from '@/types/exchangeTypes.ts';
+
+export type TabDefaultProps = { id: string; displayName: string; component: React.ReactNode };
+
 export type InfoTab = {
   id: 'history' | 'assets'; // 거래 기록, 자산 목록
-  displayName: string;
-  component: React.ReactNode;
-};
+} & TabDefaultProps;
+
+export type WinRateTab = {
+  id: Exchange;
+} & TabDefaultProps;
 
 // export type AssetsData = {
 //   coinName: string; // 코인명

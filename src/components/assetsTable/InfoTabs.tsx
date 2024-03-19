@@ -1,8 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { InfoTab } from '@/types/tableTypes.ts';
+import { TabDefaultProps } from '@/types/tableTypes.ts';
 import { cn } from '@/lib/utils.ts';
 
-type TableTabProps = InfoTab;
+type TableTabProps = TabDefaultProps;
 
 type Props = {
   defaultTableId: TableTabProps['id'];
@@ -17,7 +17,7 @@ export default function InfoTabs({ defaultTableId, tables, className }: Props) {
       className={cn('rounded-lg border bg-card text-card-foreground shadow-sm', className)}
     >
       <div className="flex justify-center">
-        <TabsList className="w-[400px] grid grid-cols-2">
+        <TabsList className={cn(`w-[400px] grid grid-cols-${tables.length}`)}>
           {tables.map((table) => (
             <TabsTrigger key={table.id} value={table.id}>
               {table.displayName}

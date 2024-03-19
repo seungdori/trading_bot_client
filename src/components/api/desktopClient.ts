@@ -30,6 +30,7 @@ import {
 } from '@/types/backendTypes.ts';
 import { useTransactionLogStore } from '@/store/transactionLogStore.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
+import { convertFileSrc } from '@tauri-apps/api/tauri';
 
 /**
  * @description 로컬 백엔드 health check.
@@ -462,13 +463,7 @@ export async function updateTeleramToken({ exchange, token }: { exchange: Exchan
  * @param coin - 차트 이미지를 생성할 코인.
  * @returns ResponseDTO<차트 이미지 url>.
  */
-export async function createChartImage({
-  exchange,
-  coin,
-}: {
-  exchange: Exchange;
-  coin: SellCoin;
-}): Promise<ResponseDto<string>> {
+export async function createChartImage({ exchange, coin }: { exchange: Exchange; coin: SellCoin }): Promise<string> {
   const dto: SellCoin = coin;
   const endpoint = new URL(`/trading/${exchange}/chart`, DESKTOP_BACKEND_BASE_URL);
   const response = await fetch<ResponseDto<string>>(endpoint.href, {
@@ -480,7 +475,8 @@ export async function createChartImage({
   const responseDto = response.data;
   if (responseDto.success) {
     // const fileUrl = responseDto.data;
-    return responseDto;
+    const localFilePath = convertFileSrc(responseDto.data);
+    return localFilePath;
   } else {
     throw new Error(responseDto.message);
   }

@@ -11,7 +11,7 @@ export default function StrategyPanel({ className }: Props) {
   const { exchange } = useStrategyStore();
 
   return (
-    <Card className={cn('container w-full flex flex-col space-y-4', className)}>
+    <Card className={cn('container w-full flex flex-col space-y-2', className)}>
       <EnterStrategySelect className="w-full p-4" />
       <Separator />
       <EnterSymbol />

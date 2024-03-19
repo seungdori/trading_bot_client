@@ -4,6 +4,7 @@ import TradingPage from '@/pages/TradingPage.tsx';
 import AuthLayout from '@/components/auth/AuthLayout.tsx';
 import InitPage from '@/pages/InitPage.tsx';
 import WinRatePage from '@/pages/WinRatePage.tsx';
+import SettingsPage from '@/pages/SettingsPage.tsx';
 
 type CustomRoute = RouteObject;
 export const routes: CustomRoute[] = [
@@ -21,7 +22,10 @@ export const routes: CustomRoute[] = [
   },
   {
     path: '/settings',
+    element: <SettingsPage />,
+  },
+  {
+    path: '/winRate',
     element: <WinRatePage />,
-    // element: <SettingsPage />,
   },
 ];

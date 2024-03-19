@@ -12,6 +12,10 @@
   "tauri": {
     "allowlist": {
       "all": true,
+      "protocol": {
+        "asset": true,
+        "assetScope": ["*/**"]
+      },
       "shell": {
         "all": true,
         "open": true,
@@ -28,6 +32,10 @@
         "all": true,
         "request": true,
         "scope": ["http://*", "https://*", "ws://*", "wss://*", "tauri://*"]
+      },
+      "fs": {
+        "all": true,
+        "scope": ["*/**"]
       }
     },
     "windows": [
