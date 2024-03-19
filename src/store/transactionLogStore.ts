@@ -13,6 +13,7 @@ import { z } from 'zod';
  */
 export const useTransactionLogStore = (exchange: Exchange) => {
   const { get, set } = useLocalStorage();
+  console.log(exchange);
   // const key = `${exchange}-transaction-log`; // Todo: 거래소별 거래내역을 저장할 수 있도록 요구사항 변경시 사용.
   const key = `transaction-log`;
   const maxItemCount = 100;

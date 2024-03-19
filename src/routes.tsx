@@ -1,5 +1,5 @@
 import { RouteObject } from 'react-router-dom';
-import SettingsPage from '@/pages/SettingsPage.tsx';
+// import SettingsPage from '@/pages/SettingsPage.tsx';
 import TradingPage from '@/pages/TradingPage.tsx';
 import AuthLayout from '@/components/auth/AuthLayout.tsx';
 import InitPage from '@/pages/InitPage.tsx';

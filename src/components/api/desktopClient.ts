@@ -159,19 +159,8 @@ export async function getTransactionLogs(
   exchange: z.infer<typeof TradingSearchParamsSchema>['exchange'],
 ): Promise<string[]> {
   const transactionLogStore = useTransactionLogStore(exchange);
-
-  // Todo: fetch data from server
-  console.log(exchange);
-  const mockTransactionLog = `매매를 시작합니다.
-  - 거래소: ${exchange}
-  - 방향: long
-  - 진입 종목 갯수: 10
-  - 종목당 투입 금액: ₩50000
-  
-  현재 거래 종목: ['ADA', 'BTC', 'ETH', 'DOGE', 'XRP', 'LTC', 'LINK', 'BCH', 'TRX', 'EOS']
-  `;
-
   const endpoint = new URL('/trading/logs', DESKTOP_BACKEND_BASE_URL);
+
   const response = await fetch<ResponseDto<string[]>>(endpoint.href, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
