@@ -3,8 +3,7 @@
  * @see https://v0.dev/t/CsRlPpF1Enj
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
-import { CardTitle, CardDescription, CardHeader, CardFooter, Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { CardTitle, CardDescription, CardHeader, Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils.ts';
 
 type Props = {
@@ -22,9 +21,6 @@ export default function WalletCard({ title, description, children, className }: 
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       {children}
-      <CardFooter>
-        <Button className="w-full">history</Button>
-      </CardFooter>
     </Card>
   );
 }

@@ -16,7 +16,6 @@ import {
   UPBIT_INVALID_SECRET_KEY_ERROR_MESSAGE,
   UPBIT_REST_API_URL,
 } from '@/constants/upbit.ts';
-import { toast } from '@/components/ui/use-toast.ts';
 
 const alg = 'HS256';
 const textEncoder = new TextEncoder();
@@ -87,14 +86,17 @@ export async function getUpbitWallet(apiKeys: ExchangeApiKeys): Promise<UpbitWal
       const upbitError = validUpbitError.data;
       switch (upbitError.error.name) {
         case UPBIT_INVALID_IP_ERROR_MESSAGE:
-          toast({ title: '업비트 거래소에 등록된 ip가 아닙니다. 올바른 ip가 등록되있는지 확인해주세요.' });
-          break;
+          throw new Error('업비트 거래소에 등록된 ip가 아닙니다. 올바른 ip가 등록되있는지 확인해주세요.');
+
         case UPBIT_INVALID_API_KEY_ERROR_MESSAGE:
         case UPBIT_INVALID_SECRET_KEY_ERROR_MESSAGE:
-          toast({ title: '업비트 거래소 api key 또는 secret이 올바르지 않습니다.' });
-          break;
+          throw new Error('업비트 거래소 api key 또는 secret이 올바르지 않습니다.');
+
+        default:
+          throw new Error(upbitError.error.name);
       }
     }
+
     throw new Error(`${JSON.stringify(e)}`);
   }
 }

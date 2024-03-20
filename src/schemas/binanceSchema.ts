@@ -32,19 +32,14 @@ export const BinanceWalletSchema = z.object({
   withOutUsdt: BinanceWalletAssetSchema.array(),
 });
 
-export const BinanceWebScoketRequestPayloadSchema = z.record(z.any());
-
-export const BinanceWebSocketRequestSchema = z.object({
-  id: z.string(),
-  method: z.string(),
-  params: BinanceWebScoketRequestPayloadSchema.and(
-    z.object({
-      signature: z.string(),
-    }),
-  ),
-});
+export const BinanceRequestPayloadSchema = z.record(z.any());
 
 export const BinanceTickerSchema = z.object({
   symbol: z.string(),
   price: z.string(),
+});
+
+export const BinanceErrorResponseSchema = z.object({
+  code: z.number(),
+  msg: z.string(),
 });

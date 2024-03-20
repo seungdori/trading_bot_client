@@ -8,7 +8,6 @@ import {
   BITHUMB_REST_API_URL,
 } from '@/constants/bithumb.ts';
 import { z } from 'zod';
-import { toast } from '@/components/ui/use-toast.ts';
 
 function createSignature({ secret, data }: { secret: string; data: string }): string {
   const hmac = hamcSHA512(data, secret).toString();
@@ -95,11 +94,9 @@ export async function getBithumbWallet(apiKeys: ExchangeApiKeys): Promise<Bithum
 
       switch (bithumbError.status) {
         case BITHUMB_INVALID_API_KEY_ERROR_CODE:
-          toast({ title: '빗썸 거래소 api key 또는 secret이 올바르지 않습니다.' });
-          break;
+          throw new Error('빗썸 거래소 api key 또는 secret이 올바르지 않습니다.');
         case BITHUMB_INVALID_IP_ERROR_CODE:
-          toast({ title: '빗썸 거래소에 등록된 ip가 아닙니다. 올바른 ip가 등록되있는지 확인해주세요.' });
-          break;
+          throw new Error('빗썸 거래소에 등록된 ip가 아닙니다. 올바른 ip가 등록되있는지 확인해주세요.');
       }
     }
 

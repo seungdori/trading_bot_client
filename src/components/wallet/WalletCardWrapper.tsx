@@ -3,14 +3,26 @@ import WalletCard from '@/components/wallet/WalletCard.tsx';
 import { useWallet } from '@/hooks/useWallet.ts';
 import { Exchange, Wallet } from '@/types/exchangeTypes.ts';
 import { Icons } from '@/components/common/Icons.tsx';
+import { toast } from '@/components/ui/use-toast.ts';
+import { useExchangeStore } from '@/store/exchangeStore.ts';
 
 type Props = { className?: string };
 
 export default function WalletCardWrapper({ className }: Props) {
-  console.log(`[RENDER WALLET CARD WRAPPER]`);
-  const { data: wallet } = useWallet();
+  const { exchange } = useExchangeStore();
+  const { isLoading, data: wallet, error } = useWallet();
 
-  if (!wallet) {
+  if (error) {
+    console.error(`[WALLET ERROR]`, error);
+    toast({ title: '거래소 조회 실패', description: error.message });
+    return (
+      <div className="flex w-full h-full items-center justify-center">
+        <p>Failed to load wallet</p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
     return (
       <div className="flex w-full h-full items-center justify-center">
         <Icons.spinner className="h-8 w-8 animate-spin" />
@@ -18,7 +30,7 @@ export default function WalletCardWrapper({ className }: Props) {
     );
   }
 
-  const title = buildExchangeName(wallet.exchange);
+  const title = buildExchangeName(exchange);
   const balance = buildBalanceString(wallet);
 
   return (
@@ -63,4 +75,6 @@ function buildBalanceString(wallet: Wallet | undefined) {
 //   profit: number;
 //   quantity: number;
 //   currentPrice: number;
-// }) {}
+// }): number {
+//   return (profit / 100) * quantity * currentPrice;
+// }

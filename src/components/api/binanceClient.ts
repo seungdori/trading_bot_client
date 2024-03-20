@@ -3,15 +3,15 @@ import { fetch } from '@tauri-apps/api/http';
 import {
   BinanceAssetResponseSchema,
   BinanceWalletAssetSchema,
-  BinanceWebScoketRequestPayloadSchema,
+  BinanceRequestPayloadSchema,
+  BinanceErrorResponseSchema,
 } from '@/schemas/binanceSchema.ts';
 import { createHexSignature } from '@/lib/crypto.ts';
-import { BINANCE_API_BASE_URL } from '@/constants/binance.ts';
+import { BINANCE_API_BASE_URL, BINANCE_INVALID_IP_ERROR_CODE } from '@/constants/binance.ts';
 import { BinanceWallet } from '@/types/exchangeTypes.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
-import { toast } from '@/components/ui/use-toast.ts';
 
-export function createBinanceQueryString(payload: z.infer<typeof BinanceWebScoketRequestPayloadSchema>) {
+export function createBinanceQueryString(payload: z.infer<typeof BinanceRequestPayloadSchema>) {
   const queryString = Object.keys(payload)
     .map((key) => `${key}=${encodeURIComponent(payload[key])}`)
     .join('&');
@@ -19,10 +19,7 @@ export function createBinanceQueryString(payload: z.infer<typeof BinanceWebScoke
   return queryString;
 }
 
-export async function createBinanceSignature(
-  payload: z.infer<typeof BinanceWebScoketRequestPayloadSchema>,
-  secret: string,
-) {
+export async function createBinanceSignature(payload: z.infer<typeof BinanceRequestPayloadSchema>, secret: string) {
   const queryString = createBinanceQueryString(payload);
   return await createHexSignature(
     {
@@ -56,6 +53,10 @@ export async function getBinaceWallet({ apiKey, secret }: ExchangeApiKeys): Prom
     });
 
     console.log(`[BINANCE WALLET]`, response.data);
+    const isBinanceError = BinanceErrorResponseSchema.safeParse(response.data);
+    if (isBinanceError.success) {
+      throw isBinanceError.data;
+    }
 
     const foundUsdt = response.data.find((item) => item.asset === 'USDT');
     const usdt: z.infer<typeof BinanceWalletAssetSchema> = foundUsdt
@@ -89,10 +90,13 @@ export async function getBinaceWallet({ apiKey, secret }: ExchangeApiKeys): Prom
     console.error(`[BINANCE WALLET ERROR]`, e);
     console.log(`=====================`);
     console.log(e);
-    if (typeof e === 'string') {
-      // Binance IP 등록되지 않은 경우
-      if (e.includes('connection closed')) {
-        toast({ title: '바이낸스 거래소에 등록된 ip가 아닙니다. 올바른 ip가 등록되있는지 확인해주세요.' });
+    const binanceError = BinanceErrorResponseSchema.safeParse(e);
+    if (binanceError.success) {
+      switch (binanceError.data.code) {
+        case BINANCE_INVALID_IP_ERROR_CODE:
+          throw new Error('바이낸스 거래소에 등록된 ip가 아닙니다. 올바른 ip가 등록되있는지 확인해주세요.');
+        default:
+          throw new Error(binanceError.data.msg);
       }
     }
 

@@ -8,9 +8,6 @@ import {
 import { UpbitWalletSchema } from '@/schemas/upbitSchema.ts';
 import { BinanceWalletSchema } from '@/schemas/binanceSchema.ts';
 import { BithumbWalletSchema } from '@/schemas/bithumbSchema.ts';
-import { UpbitTickersWithKey } from '@/types/upbitTypes.ts';
-import { BithumbTickersWithKey } from '@/types/bithumbTypes.ts';
-import { BinanceTickersWithKey } from '@/types/binanceTypes.ts';
 
 export type Binance = z.infer<typeof BinanceExchangeSchema>;
 
@@ -27,7 +24,3 @@ export type UpbitWallet = z.infer<typeof UpbitWalletSchema>;
 export type BithumbWallet = z.infer<typeof BithumbWalletSchema>;
 
 export type Wallet = BinanceWallet | UpbitWallet | BithumbWallet;
-
-export type TickerRequest = { wallet?: Wallet; symbols: string[] };
-
-export type TickersWithKey = UpbitTickersWithKey | BinanceTickersWithKey | BithumbTickersWithKey;
