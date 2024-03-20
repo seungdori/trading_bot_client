@@ -19,7 +19,7 @@ fn main() {
                     // Spawn the external process
                     let (mut rx, child) = Command::new("./backend")
                         .spawn()
-                        .expect("failed to setup `backend` sidecar");
+                        .expect("failed to setup `backend` process");
                 }
                 Ok(())
             }
