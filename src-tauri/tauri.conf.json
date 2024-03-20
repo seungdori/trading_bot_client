@@ -24,7 +24,7 @@
         "scope": [
           {
             "name": "../external/backend/backend",
-            "sidecar": true
+            "cmd": "backend"
           }
         ]
       },
