@@ -1,3 +1,6 @@
+import { useAppVersionCheck } from '@/hooks/useAppVersionCheck.ts';
+
 export default function VersionDisplay() {
-  return <div>Version 0.0.1</div>;
+  const { isLoading, data } = useAppVersionCheck();
+  return isLoading ? <p>Loading...</p> : data ? <p>App version {data}</p> : <p>Unknown</p>;
 }

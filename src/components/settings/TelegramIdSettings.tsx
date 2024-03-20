@@ -44,7 +44,7 @@ export default function TelegramIdSettings() {
     <Card>
       <CardHeader>
         <CardTitle>Telegram id settings</CardTitle>
-        <CardDescription>Set telegram id.</CardDescription>
+        <CardDescription>Set telegram id</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
         <RadioGroup disabled className="grid grid-cols-1">

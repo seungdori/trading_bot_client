@@ -45,7 +45,7 @@ export default function ApiKeysSettings() {
     <Card>
       <CardHeader>
         <CardTitle>Exchange api keys</CardTitle>
-        <CardDescription>Set exchange api key & api secret.</CardDescription>
+        <CardDescription>Set exchange api key & api secret</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
         <RadioGroup

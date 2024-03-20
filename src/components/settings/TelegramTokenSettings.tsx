@@ -45,7 +45,7 @@ export default function TelegramTokenSettings() {
     <Card>
       <CardHeader>
         <CardTitle>Telegram tokens</CardTitle>
-        <CardDescription>Set telegram token.</CardDescription>
+        <CardDescription>Set telegram token</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
         <RadioGroup
