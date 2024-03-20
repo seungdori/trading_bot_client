@@ -79,3 +79,4 @@ jobs:
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: true
           prerelease: false
+          updaterJsonPreferNsis: true # set to true if you want to use NSIS for Windows
