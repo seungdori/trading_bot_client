@@ -26,7 +26,6 @@ function buf2hex(buffer: ArrayBuffer): string {
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
 }
-// { name: 'HMAC', hash: { name: 'SHA-256' }
 export async function createHexSignature(
   { secret, data }: { secret: string; data: string },
   { algorithm }: { algorithm: Algorithm },

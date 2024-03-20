@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/com
 import { LucideMail, LucideSettings, LucidePower } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import VersionDisplay from '@/components/common/VersionDisplay.tsx';
+import { CONTACT_DEVELOPER_EMAIL } from '@/constants/developer.ts';
 
 export default function SystemSettings() {
   return (
@@ -23,7 +24,7 @@ export default function SystemSettings() {
           <span>Reset settings</span>
         </Button>
         <Button variant="outline" type="button" asChild>
-          <Link to="mailto:skyfish93@naver.com" target="_blank" rel="noopener noreferrer">
+          <Link to={`mailto:${CONTACT_DEVELOPER_EMAIL}`} target="_blank" rel="noopener noreferrer">
             <LucideMail className="mr-2 h-4 w-4" /> Contact developer
           </Link>
         </Button>

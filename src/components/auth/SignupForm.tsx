@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { SignupSchema } from '@/schemas/backendSchema.ts';
 import { useForm } from 'react-hook-form';
 import { useSignup } from '@/hooks/useSignupUser.ts';
+import { CONTACT_DEVELOPER_EMAIL } from '@/constants/developer.ts';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -80,7 +81,7 @@ export function SignupForm({ className, ...props }: UserAuthFormProps) {
           </div>
         </div>
         <Button variant="outline" type="button" disabled={signupMutation.isPending} asChild>
-          <Link to="mailto:skyfish93@naver.com" target="_blank" rel="noopener noreferrer">
+          <Link to={`mailto:${CONTACT_DEVELOPER_EMAIL}`} target="_blank" rel="noopener noreferrer">
             <LucideMail className="mr-2 h-4 w-4" /> Contact
           </Link>
         </Button>

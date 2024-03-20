@@ -9,7 +9,6 @@ import {
   PositionsResponse,
   UpbitPositionsResponse,
 } from '@/types/backendTypes.ts';
-// import { generateRandomAssetsTableRow } from '@/helper/typia/generated/mock.ts';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
 import { TradingDataResponseSchema, TradingDataSchema } from '@/schemas/backendSchema';
 import { useFetchTradingData } from '@/hooks/useFetchTradingData.ts';
@@ -25,14 +24,6 @@ export const useFetchPositions = (exchange: Exchange) => {
 
 // Todo: Separate
 export const useAssetsData = (): { isLoading: boolean; assets: z.infer<typeof AssetsSchemaWithKey>[] } => {
-  // Todo: remove this mock
-  // return {
-  //   isLoading: false,
-  //   assets: generateRandomAssetsTableRow(),
-  // };
-
-  // Todo: uncomment
-
   const { exchange } = useExchangeStore();
   const positionsQuery = useFetchPositions(exchange);
   const symbols = buildMarketSymbols(exchange, positionsQuery.data);

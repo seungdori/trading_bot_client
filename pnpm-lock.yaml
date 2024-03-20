@@ -71,9 +71,6 @@ dependencies:
   jose:
     specifier: ^5.2.2
     version: 5.2.2
-  js-base64:
-    specifier: ^3.7.7
-    version: 3.7.7
   lucide-react:
     specifier: ^0.343.0
     version: 0.343.0(react@18.2.0)
@@ -2543,10 +2540,6 @@ packages:
 
   /jose@5.2.2:
     resolution: {integrity: sha512-/WByRr4jDcsKlvMd1dRJnPfS1GVO3WuKyaurJ/vvXcOaUQO8rnNObCQMlv/5uCceVQIq5Q4WLF44ohsdiTohdg==}
-    dev: false
-
-  /js-base64@3.7.7:
-    resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
     dev: false
 
   /js-tokens@4.0.0:
