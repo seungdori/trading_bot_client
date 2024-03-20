@@ -1,6 +1,5 @@
-import { AssetsSchemaWithKey } from '@/schemas/exchangeSchema.ts';
 import { z } from 'zod';
-import { Exchange, Wallet } from '@/types/exchangeTypes.ts';
+import { Asset, Exchange, Wallet } from '@/types/exchangeTypes.ts';
 import { fetchPositions } from '@/components/api/desktopClient.ts';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -23,7 +22,7 @@ export const useFetchPositions = (exchange: Exchange) => {
 };
 
 // Todo: Separate
-export const useAssetsData = (): { isLoading: boolean; assets: z.infer<typeof AssetsSchemaWithKey>[] } => {
+export const useAssetsData = (): { isLoading: boolean; assets: Asset[] } => {
   const { exchange } = useExchangeStore();
   const positionsQuery = useFetchPositions(exchange);
   const symbols = buildMarketSymbols(exchange, positionsQuery.data);
@@ -118,7 +117,7 @@ export function buildBithumbSymbols(positions?: BithumbPositionsResponse[]): str
 function buildBinanceAssets(
   positions: BinancePositionsResponse[],
   tradingData: z.infer<typeof TradingDataResponseSchema>[],
-): z.infer<typeof AssetsSchemaWithKey>[] {
+): Asset[] {
   const tradingDataWithKey = tradingData.reduce(
     (acc, item) => {
       return {
@@ -129,7 +128,7 @@ function buildBinanceAssets(
     {} as Record<string, z.infer<typeof TradingDataResponseSchema>>,
   );
 
-  const assets: z.infer<typeof AssetsSchemaWithKey>[] = positions.map((coin) => {
+  const assets: Asset[] = positions.map((coin) => {
     const amount = coin.quantity.toString();
     const coinName = coin.symbol;
     const currentPrice = coin.mark_price;
@@ -176,7 +175,7 @@ function buildBinanceAssets(
 function buildBithumbAssets(
   positions: BithumbPositionsResponse[],
   tradingData: z.infer<typeof TradingDataResponseSchema>[],
-): z.infer<typeof AssetsSchemaWithKey>[] {
+): Asset[] {
   const tradingDataWithKey = tradingData.reduce(
     (acc, item) => {
       return {
@@ -187,7 +186,7 @@ function buildBithumbAssets(
     {} as Record<string, z.infer<typeof TradingDataResponseSchema>>,
   );
 
-  const assets: z.infer<typeof AssetsSchemaWithKey>[] = positions.map((coin) => {
+  const assets: Asset[] = positions.map((coin) => {
     const key = coin.currency;
     const coinName = coin.currency;
     const amount = coin.balance;
@@ -234,7 +233,7 @@ function buildBithumbAssets(
 function buildUpbitAssets(
   positions: UpbitPositionsResponse[],
   tradingData: z.infer<typeof TradingDataResponseSchema>[],
-): z.infer<typeof AssetsSchemaWithKey>[] {
+): Asset[] {
   const tradingDataWithKey = tradingData.reduce(
     (acc, item) => {
       return {
@@ -245,7 +244,7 @@ function buildUpbitAssets(
     {} as Record<string, z.infer<typeof TradingDataResponseSchema>>,
   );
 
-  const assets: z.infer<typeof AssetsSchemaWithKey>[] = positions.map((coin) => {
+  const assets: Asset[] = positions.map((coin) => {
     const key = coin.currency;
     const coinName = coin.currency;
     const amount = coin.balance;

@@ -3,18 +3,17 @@ import { ColumnDef } from '@tanstack/react-table';
 import DataTable from '@/components/assetsTable/DataTable.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { ArrowUpDown } from 'lucide-react';
-import { z } from 'zod';
-import { AssetsSchemaWithKey } from '@/schemas/exchangeSchema.ts';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import { useSelectedCoinsStore } from '@/store/selectedCoinStore.ts';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
+import { Asset } from '@/types/exchangeTypes.ts';
 
-type Props = { assetsData: z.infer<typeof AssetsSchemaWithKey>[] };
+type Props = { assetsData: Asset[] };
 
 export default function AssetsTable({ assetsData }: Props) {
   const { exchange } = useExchangeStore();
   const { selectedCoins, setSelectedCoins } = useSelectedCoinsStore(exchange);
-  const columnsDef: ColumnDef<z.infer<typeof AssetsSchemaWithKey>>[] = [
+  const columnsDef: ColumnDef<Asset>[] = [
     {
       id: 'select',
       header: ({ table }) => (

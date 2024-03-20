@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+  AssetsSchemaWithKey,
   BinanceExchangeSchema,
   BithumbExchangeSchema,
   ExchangeSchema,
@@ -24,3 +25,5 @@ export type UpbitWallet = z.infer<typeof UpbitWalletSchema>;
 export type BithumbWallet = z.infer<typeof BithumbWalletSchema>;
 
 export type Wallet = BinanceWallet | UpbitWallet | BithumbWallet;
+
+export type Asset = z.infer<typeof AssetsSchemaWithKey>;

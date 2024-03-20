@@ -1,8 +1,7 @@
 import * as typia from 'typia';
-import { AssetsSchemaWithKey } from '@/schemas/exchangeSchema.ts';
-import { z } from 'zod';
+import { Asset } from '@/types/exchangeTypes.ts';
 
-type AssetsData = z.infer<typeof AssetsSchemaWithKey>;
+type AssetsData = Asset;
 
 export function generateRandomAssetsTableRow(): AssetsData[] {
   console.log(`[generateRandomAssetsTableRow]`);
