@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { Body, fetch } from '@tauri-apps/api/http';
-// import { getnerateRandomTransactionLog } from '@/helper/typia/generated/mock.ts';
 import { TradingSearchParamsSchema } from '@/schemas/searchParamsSchema.ts';
 import { BinanceStateStore, ExchangeStateStore } from '@/store/strategyStore.ts';
 import { Exchange, Upbit } from '@/types/exchangeTypes.ts';
