@@ -60,9 +60,7 @@
     "updater": {
       "active": true,
       "dialog": true,
-      "endpoints": [
-        "https://https://bd7f-195-175-35-62.ngrok-free.app/update?current_version={{current_version}}&target={{target}}&arch={{arch}}"
-      ],
+      "endpoints": ["https://github.com/KGESH/trading_bot_client/releases/latest/download/latest.json"],
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEYyQUUwMUVCNkI2RjdGNEQKUldSTmYyOXI2d0d1OGpTWmNtK1loWmNkRmtTemtUcFZlcittVGQ0ZkFLcTR1ZmlMS0pjbk8wajgK"
     }
   }
