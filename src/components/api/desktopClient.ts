@@ -120,12 +120,7 @@ export async function login(args: z.infer<typeof LoginSchema>) {
     });
 
     const responseDto = response.data;
-
-    if (responseDto.success) {
-      return responseDto.data;
-    } else {
-      throw new Error(responseDto.message);
-    }
+    return responseDto;
   } catch (e) {
     console.error(e);
     throw e;

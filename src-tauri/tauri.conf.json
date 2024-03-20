@@ -56,6 +56,12 @@
       "identifier": "com.wildcoder.me",
       "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
       "externalBin": ["../external/backend/backend"]
+    },
+    "updater": {
+      "active": true,
+      "dialog": true,
+      "endpoints": ["https://bd7f-195-175-35-62.ngrok-free.app/release/{{target}}/{{current_version}}"],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEYyQUUwMUVCNkI2RjdGNEQKUldSTmYyOXI2d0d1OGpTWmNtK1loWmNkRmtTemtUcFZlcittVGQ0ZkFLcTR1ZmlMS0pjbk8wajgK"
     }
   }
 }
