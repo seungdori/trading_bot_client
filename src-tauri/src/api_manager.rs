@@ -12,7 +12,6 @@ pub struct APIManager {
 impl APIManager {
     pub fn new() -> APIManager {
         let t = TCommand::new_sidecar("backend").expect("backend sidecar failed to start");
-        // let tt = TCommand::new("backend");
         let cmd_from_sidecar: Command = t.into();
         APIManager {
             cmd: cmd_from_sidecar,
@@ -50,24 +49,6 @@ impl APIManager {
     }
 
     pub fn terminate_backend(&mut self) -> Result<String, String> {
-        // match self.api_process.borrow_mut() {
-        //     Some(child) => {
-        //         // child.wait().expect("Some error happened when killing child process");
-        //         child
-        //             .kill()
-        //             .expect("Some error happened when killing child process");
-        //         self.api_process = None;
-        //         let info = "Kill already existed child process then set it to None";
-        //         println!("{}", &info);
-        //         Ok(info.into())
-        //     }
-        //     _ => {
-        //         let info = "backend not started, no need to terminate it";
-        //         println!("{}", &info);
-        //         Ok(info.into())
-        //     }
-        // }
-
         match self.child.borrow_mut() {
             Some(child) => {
                 // child.wait().expect("Some error happened when killing child process");
