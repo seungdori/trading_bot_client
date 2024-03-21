@@ -12,10 +12,10 @@ async function terminateBackend() {
   console.log(`[USE START BACKEND] terminateBackend response: `, response);
 }
 
-// async function restartBackend() {
-//   const response = await invoke('restart_server');
-//   console.log(`[USE START BACKEND] restartBackend response: `, response);
-// }
+async function restartBackend() {
+  const response = await invoke('restart_server');
+  console.log(`[USE START BACKEND] restartBackend response: `, response);
+}
 
 export const useStartServer = () => {
   return useMutation({
@@ -42,6 +42,17 @@ export const useStopServer = ({ onSuccess }: { onSuccess: () => void }) => {
     },
     onError: (error) => {
       console.error(`[USE STOP SERVER] terminateBackend error: `, error);
+    },
+  });
+};
+
+export const useRestartBackend = () => {
+  return useMutation({
+    mutationKey: ['restartBackend'],
+    mutationFn: restartBackend,
+    onError: (error) => {
+      console.error(`[USE RESTART BACKEND] restartBackend error: `, error);
+      throw error;
     },
   });
 };
