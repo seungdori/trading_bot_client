@@ -37,7 +37,7 @@ import { convertFileSrc } from '@tauri-apps/api/tauri';
  * 백엔드 서버가 정상적으로 동작하면 true를 반환.
  */
 export async function healthCheck(): Promise<boolean> {
-  const endpoint = new URL('/health/ping', DESKTOP_BACKEND_BASE_URL);
+  const endpoint = new URL('/utils/ping', DESKTOP_BACKEND_BASE_URL);
   try {
     const response = await fetch<'pong'>(endpoint.href, {
       method: 'GET',
@@ -499,7 +499,7 @@ export async function getWinRates(exchange: Exchange) {
 }
 
 export async function backendVersionCheck(): Promise<string> {
-  const endpoint = new URL(`/health/version`, DESKTOP_BACKEND_BASE_URL);
+  const endpoint = new URL(`/utils/version`, DESKTOP_BACKEND_BASE_URL);
   try {
     const response = await fetch<string>(endpoint.href, {
       method: 'GET',
