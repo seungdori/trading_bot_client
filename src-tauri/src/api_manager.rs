@@ -1,6 +1,6 @@
 use std::borrow::BorrowMut;
 use std::process::{Child, Command};
-use command_group::GroupChild;
+use command_group::{CommandGroup, GroupChild};
 use tauri::api::process::Command as TCommand;
 
 pub struct APIManager {
@@ -30,9 +30,11 @@ impl APIManager {
             }
             None => {
                 let child = self.cmd.spawn();
+                // let child = Command::from(self.cmd.borrow()).group_spawn().expect("backend failed to start");
                 match child {
                     Ok(v) => {
                         self.child = Some(v);
+                        // self.api_process = Some(v);
                         let info = "backend started successfully";
                         println!("{}", &info);
                         Ok(info.into())
@@ -48,6 +50,24 @@ impl APIManager {
     }
 
     pub fn terminate_backend(&mut self) -> Result<String, String> {
+        // match self.api_process.borrow_mut() {
+        //     Some(child) => {
+        //         // child.wait().expect("Some error happened when killing child process");
+        //         child
+        //             .kill()
+        //             .expect("Some error happened when killing child process");
+        //         self.api_process = None;
+        //         let info = "Kill already existed child process then set it to None";
+        //         println!("{}", &info);
+        //         Ok(info.into())
+        //     }
+        //     _ => {
+        //         let info = "backend not started, no need to terminate it";
+        //         println!("{}", &info);
+        //         Ok(info.into())
+        //     }
+        // }
+
         match self.child.borrow_mut() {
             Some(child) => {
                 // child.wait().expect("Some error happened when killing child process");
@@ -71,10 +91,10 @@ impl APIManager {
         let terminate_result = self.terminate_backend();
         match terminate_result {
             Ok(_) => {
-                println!("已执行API终止动作");
+                println!("backend terminated successfully, now start it again");
                 match self.start_backend() {
                     Ok(_) => {
-                        let info = "重启API服务器成功";
+                        let info = "backend restarted successfully";
                         println!("{}", &info);
                         Ok(info.into())
                     }

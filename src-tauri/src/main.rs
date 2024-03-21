@@ -48,6 +48,7 @@ fn main() {
     };
 
     tauri::Builder::default()
+        .manage(ams)
         .setup(move |app| {
             let am: State<APIManagerState> = app.state();
             #[cfg(not(debug_assertions))]
