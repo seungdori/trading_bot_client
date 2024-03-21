@@ -56,6 +56,7 @@ export const useUpdater = () => {
     checkUpdate().then(({ shouldUpdate, manifest }) => {
       console.log(`[USE UPDATER] checkUpdate: `, shouldUpdate, manifest);
       if (!shouldUpdate || !manifest) {
+        handleSkip();
         return;
       }
 
