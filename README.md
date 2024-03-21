@@ -22,7 +22,7 @@ This project is a desktop application for trading automation, built with Tauri, 
 Clone this repository:
 
 ```shell
-git clone https://yourrepo/trading_bot_client.git
+git clone https://KGESH/trading_bot_client.git
 ```
 
 Install JavaScript dependencies:
