@@ -3,46 +3,84 @@ all(not(debug_assertions), target_os = "windows"),
 windows_subsystem = "windows"
 )]
 
-use std::process::Command;
-use std::sync::mpsc::{sync_channel, Receiver};
-use std::thread;
-use command_group::{CommandGroup, GroupChild};
-use tauri::api::process::Command as TCommand;
-use tauri::{Manager, WindowEvent};
+pub mod api_manager;
+
+use api_manager::APIManager;
+use std::sync::Mutex;
+use command_group::{CommandGroup};
+use tauri::{Manager, State, WindowEvent};
+
 
 const BACKEND_TERMINATE_SIGNAL: i32 = -1;
 
-fn start_backend(receiver: Receiver<i32>) {
-    let t = TCommand::new_sidecar("backend").expect("backend sidecar failed to start");
-    let mut group = Command::from(t).group_spawn().expect("backend command group failed to start");
-    thread::spawn(move || {
-        loop {
-            let mut s = receiver.recv();
-            if s.unwrap() == BACKEND_TERMINATE_SIGNAL {
-                group.kill().expect("backend kill failed");
-            }
-        }
-    });
+struct APIManagerState {
+    api_manager_mutex: Mutex<APIManager>,
 }
 
+#[tauri::command]
+fn start_server(api_manager_state: State<APIManagerState>) -> Result<String, String> {
+    let am = api_manager_state
+        .api_manager_mutex
+        .lock()
+        .unwrap()
+        .start_backend();
+    am
+}
+
+#[tauri::command]
+fn stop_server(api_manager_state: State<APIManagerState>) -> Result<String, String> {
+    let am = api_manager_state
+        .api_manager_mutex
+        .lock()
+        .unwrap()
+        .terminate_backend();
+    am
+}
+
+#[tauri::command]
+fn restart_server(api_manager_state: State<APIManagerState>) -> Result<String, String> {
+    let am = api_manager_state
+        .api_manager_mutex
+        .lock()
+        .unwrap()
+        .restart_backend();
+    am
+}
 
 #[cfg(not(debug_assertions))] // only include this code on release builds
 fn main() {
-    let (tx, rx) = sync_channel(1);
-    start_backend(rx);
+    let api_manager = APIManager::new();
+    let ams = APIManagerState {
+        api_manager_mutex: Mutex::new(api_manager),
+    };
 
     tauri::Builder::default()
-        .on_window_event(
-            move |event|
-                match event.event() {
-                    WindowEvent::Destroyed => {
-                        println!("Window destroyed");
-                        tx.send(BACKEND_TERMINATE_SIGNAL).expect("failed to send exit signal");
-                        println!("backend terminate signal sent");
-                    }
-                    _ => {}
-                }
-        )
+        .setup(move |app| {
+            let am: State<APIManagerState> = app.state();
+            #[cfg(not(debug_assertions))]
+            am.api_manager_mutex
+                .lock()
+                .unwrap()
+                .start_backend()
+                .expect("backend start failed");
+            Ok(())
+        })
+        .on_window_event(move |event| match event.event() {
+            WindowEvent::Destroyed => {
+                let am: State<APIManagerState> = event.window().state();
+                am.api_manager_mutex
+                    .lock()
+                    .unwrap()
+                    .terminate_backend()
+                    .expect("");
+            }
+            _ => {}
+        })
+        .invoke_handler(tauri::generate_handler![
+            start_server,
+            stop_server,
+            restart_server
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
