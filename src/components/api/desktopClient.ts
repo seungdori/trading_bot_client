@@ -497,3 +497,18 @@ export async function getWinRates(exchange: Exchange) {
     throw e;
   }
 }
+
+export async function backendVersionCheck(): Promise<string> {
+  const endpoint = new URL(`/health/version`, DESKTOP_BACKEND_BASE_URL);
+  try {
+    const response = await fetch<string>(endpoint.href, {
+      method: 'GET',
+    });
+
+    const version = response.data;
+    return version;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
