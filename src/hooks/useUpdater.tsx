@@ -15,6 +15,7 @@ export const useUpdater = () => {
     toast({
       title: '업데이트 중',
       description: `업데이트가 완료되면 재시작됩니다.`,
+      duration: Infinity,
     });
     installUpdate().then(relaunch);
   };
