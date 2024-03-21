@@ -4,10 +4,11 @@ import { Separator } from '@/components/ui/separator.tsx';
 type Props = {
   balance: string;
   unrealizedProfit: string;
+  totalBalance: string | null;
   className?: string;
 };
 
-export default function WalletCardContent({ balance, unrealizedProfit, className }: Props) {
+export default function WalletCardContent({ balance, totalBalance, unrealizedProfit, className }: Props) {
   return (
     <div className={className}>
       <CardContent className="flex flex-col justify-center space-y-2 p-6">
@@ -17,18 +18,15 @@ export default function WalletCardContent({ balance, unrealizedProfit, className
       <Separator />
       <CardContent className="flex flex-col gap-1 p-6">
         <div className="flex flex-col">
-          <div className="font-bold">Unrealized Profit</div>
+          <div className="font-bold">미실현 이익</div>
           <div className="font-semibold">{unrealizedProfit}</div>
         </div>
-        {/*Todo: remove*/}
-        <div className="flex flex-col">
-          <div className="font-bold">Transfer</div>
-          <div className="font-semibold">$0.0</div>
-        </div>
-        <div className="flex flex-col">
-          <div className="font-bold">Withdrawal</div>
-          <div className="font-semibold">$0.0</div>
-        </div>
+        {totalBalance && (
+          <div className="flex flex-col">
+            <div className="font-bold">총 잔고</div>
+            <div className="font-semibold">{totalBalance}</div>
+          </div>
+        )}
       </CardContent>
     </div>
   );

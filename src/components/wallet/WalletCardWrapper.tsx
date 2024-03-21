@@ -35,10 +35,11 @@ export default function WalletCardWrapper({ className }: Props) {
   const title = buildExchangeName(exchange);
   const balance = buildBalanceString(wallet);
   const unrealizedProfit = buildTotalUnrealizedProfit(exchange, assets);
+  const totalBalance = buildTotalBalance(exchange, assets);
 
   return (
     <WalletCard className={className} title={title} description={'지갑 정보'}>
-      <WalletCardContent balance={balance} unrealizedProfit={unrealizedProfit} />
+      <WalletCardContent balance={balance} totalBalance={totalBalance} unrealizedProfit={unrealizedProfit} />
     </WalletCard>
   );
 }
@@ -59,13 +60,42 @@ function buildExchangeName(exchange: Exchange) {
 function buildBalanceString(wallet: Wallet | undefined) {
   switch (wallet?.exchange) {
     case 'binance':
-      return `${wallet.usdt.free} USDT`;
+      return `${(+wallet.usdt.free).toFixed(1)} USDT`;
     case 'upbit':
-      return `${(+wallet.krw.balance).toFixed(1)} 원`;
+      return `${(+wallet.krw.balance).toFixed(1)} ₩`;
     case 'bithumb':
-      return `${(+wallet.krw).toFixed(1)} 원`;
+      return `${(+wallet.krw).toFixed(1)} ₩`;
     default:
       return `Unknown`;
+  }
+}
+
+function buildTotalBalance(exchange: Exchange, assets: Asset[]): string | null {
+  const totalBalance = calculateTotalBalance(exchange, assets).toFixed(1);
+  switch (exchange) {
+    case 'binance':
+      return null;
+
+    case 'upbit':
+    case 'bithumb':
+      return `${totalBalance} ₩`;
+
+    default:
+      return `${totalBalance}`;
+  }
+}
+
+function calculateTotalBalance(exchange: Exchange, assets: Asset[]): number {
+  switch (exchange) {
+    case 'upbit':
+    case 'bithumb':
+      return assets.reduce((acc, cur) => {
+        return acc + cur.currentPrice * +cur.amount;
+      }, 0);
+
+    case 'binance':
+    default:
+      return 0;
   }
 }
 
