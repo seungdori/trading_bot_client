@@ -7,7 +7,7 @@ import { useFetchPositions } from '@/hooks/useAssetsData.ts';
 type Props = { className?: string };
 
 export default function DataTablesWrapper({ className }: Props) {
-  cachePositions(); // Todo: uncomment
+  cachePositions();
   const tabs = buildTabs();
   return <InfoTabs className={className} defaultTableId={tabs.defaultId} tables={tabs.tabs} />;
 }
