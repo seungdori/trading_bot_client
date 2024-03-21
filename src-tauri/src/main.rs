@@ -57,22 +57,22 @@ fn main() {
     tauri::Builder::default()
         .setup(move |app| {
             let am: State<APIManagerState> = app.state();
-            #[cfg(not(debug_assertions))]
-            am.api_manager_mutex
-                .lock()
-                .unwrap()
-                .start_backend()
-                .expect("backend start failed");
+            // #[cfg(not(debug_assertions))]
+            // am.api_manager_mutex
+            //     .lock()
+            //     .unwrap()
+            //     .start_backend()
+            //     .expect("backend start failed");
             Ok(())
         })
         .on_window_event(move |event| match event.event() {
             WindowEvent::Destroyed => {
                 let am: State<APIManagerState> = event.window().state();
-                am.api_manager_mutex
-                    .lock()
-                    .unwrap()
-                    .terminate_backend()
-                    .expect("");
+                // am.api_manager_mutex
+                //     .lock()
+                //     .unwrap()
+                //     .terminate_backend()
+                //     .expect("");
             }
             _ => {}
         })

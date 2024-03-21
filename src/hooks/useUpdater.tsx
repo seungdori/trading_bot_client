@@ -13,8 +13,8 @@ export const useUpdater = () => {
   // Updater integration
   const startInstall = () => {
     toast({
-      title: '업데이트 설치 중',
-      description: `설치가 완료되면 재시작됩니다.`,
+      title: '업데이트 중',
+      description: `업데이트가 완료되면 재시작됩니다.`,
     });
     installUpdate().then(relaunch);
   };
@@ -29,23 +29,26 @@ export const useUpdater = () => {
     const unlistenPromise = onUpdaterEvent(({ error, status }) => {
       // This will log all updater events, including status updates and errors.
       console.log('Updater event', error, status);
+
+      if (status === 'ERROR') {
+        console.error(`[USE UPDATER] Updater error: `, error);
+        toast({
+          title: '업데이트 중 오류가 발생했습니다.',
+          description: error,
+          duration: Infinity,
+          action: (
+            <ToastAction altText="Update app" onClick={handleSkip}>
+              로그인 화면으로 이동
+            </ToastAction>
+          ),
+        });
+      }
     });
 
     return () => {
       unlistenPromise.then((unlisten) => unlisten());
     };
   }, []);
-
-  // Logging long running thread
-  // useEffect(() => {
-  //   const promise = tauriEvent.listen('longRunningThread', ({ payload }) => {
-  //     console.log(`[USE UPDATER] long event payload: `, payload);
-  //   });
-  //
-  //   return () => {
-  //     promise.then((unlisten) => unlisten());
-  //   };
-  // }, []);
 
   // Update checker
   useEffect(() => {
@@ -60,7 +63,7 @@ export const useUpdater = () => {
         title: `새로운 업데이트가 있습니다. v${version}`,
         description: body,
         action: (
-          <div className="grid grid-cols-2 gap-2">
+          <div className="flex flex-col gap-2">
             <ToastAction altText="Update app" onClick={handleUpdate}>
               Update
             </ToastAction>
