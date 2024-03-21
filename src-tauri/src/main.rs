@@ -46,7 +46,7 @@ fn restart_server(api_manager_state: State<APIManagerState>) -> Result<String, S
     am
 }
 
-#[cfg(not(debug_assertions))] // only include this code on release builds
+// #[cfg(not(debug_assertions))] // only include this code on release builds
 fn main() {
     let api_manager = APIManager::new();
     let ams = APIManagerState {
@@ -64,30 +64,41 @@ fn main() {
             stop_server,
             restart_server
         ])
+        .on_window_event(move |event| match event.event() {
+            WindowEvent::Destroyed => {
+                let am: State<APIManagerState> = event.window().state();
+                am.api_manager_mutex
+                    .lock()
+                    .unwrap()
+                    .terminate_backend()
+                    .expect("failed to terminate backend process");
+            }
+            _ => {}
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
 
-#[cfg(debug_assertions)] // only include this code on debug builds
-fn main() {
-    tauri::Builder::default()
-        .setup({
-            move |app| {
-                let main_window = app.get_window("main").unwrap();
-                main_window.open_devtools();
-                main_window.close_devtools();
-                Ok(())
-            }
-        })
-        .on_window_event(
-            move |event|
-                match event.event() {
-                    WindowEvent::Destroyed => {
-                        println!("Window destroyed");
-                    }
-                    _ => {}
-                }
-        )
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
-}
+// #[cfg(debug_assertions)] // only include this code on debug builds
+// fn main() {
+//     tauri::Builder::default()
+//         .setup({
+//             move |app| {
+//                 let main_window = app.get_window("main").unwrap();
+//                 main_window.open_devtools();
+//                 main_window.close_devtools();
+//                 Ok(())
+//             }
+//         })
+//         .on_window_event(
+//             move |event|
+//                 match event.event() {
+//                     WindowEvent::Destroyed => {
+//                         println!("Window destroyed");
+//                     }
+//                     _ => {}
+//                 }
+//         )
+//         .run(tauri::generate_context!())
+//         .expect("error while running tauri application");
+// }
