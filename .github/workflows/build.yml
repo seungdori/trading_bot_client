@@ -39,17 +39,18 @@ jobs:
       - name: Download FastAPI Binary
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
+          BACKEND_REPO_OWNER: ${{ secrets.BACKEND_REPO_OWNER }}
         shell: bash
         run: |
           echo $GH_PAT | gh auth login --with-token
-          LATEST_RELEASE=$(gh release view --repo KGESH/trading_bot_backend --json tagName -q '.tagName')
+          LATEST_RELEASE=$(gh release view --repo $BACKEND_REPO_OWNER/trading_bot_backend --json tagName -q '.tagName')
           echo "Downloading assets for release $LATEST_RELEASE..."
           if [[ "${{ runner.os }}" == "Windows" ]]; then
             PATTERN="*Windows.exe"
           else
             PATTERN="*macOS"
           fi
-          gh release download $LATEST_RELEASE --repo KGESH/trading_bot_backend --pattern $PATTERN --dir ./external/backend/
+          gh release download $LATEST_RELEASE --repo $BACKEND_REPO_OWNER/trading_bot_backend --pattern $PATTERN --dir ./external/backend/
           echo "Downloaded files:"
           ls -la ./external/backend/
           # Remove existing 'backend' file if it exists
