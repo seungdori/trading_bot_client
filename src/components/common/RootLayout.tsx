@@ -2,7 +2,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from '@/components/common/Navbar.tsx';
 import { EXCHANGE } from '@/constants/exchange.ts';
 
-const HIDE_NAVBAR_PAGES = ['/', '/auth'];
+const HIDE_NAVBAR_PAGES = ['/', '/healthCheck', '/auth'];
 
 export default function RootLayout() {
   const { pathname } = useLocation();
