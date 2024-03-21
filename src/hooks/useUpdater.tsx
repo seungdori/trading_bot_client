@@ -4,22 +4,24 @@ import { toast } from '@/components/ui/use-toast.ts';
 import { ToastAction } from '@/components/ui/toast.tsx';
 import { relaunch } from '@tauri-apps/api/process';
 import { useNavigate } from 'react-router-dom';
+import { useStopServer } from '@/hooks/useBackend.ts';
 
 export const useUpdater = () => {
   console.log(`[USE UPDATER] useUpdater hook`);
   const navigate = useNavigate();
 
   // Updater integration
-  const startInstall = (newVersion: string) => {
-    // Todo: Kill backend process
+  const startInstall = () => {
     toast({
       title: '업데이트 설치 중',
-      description: `v${newVersion} 버전을 설치 중입니다. 설치가 완료되면 재시작됩니다.`,
+      description: `설치가 완료되면 재시작됩니다.`,
     });
     installUpdate().then(relaunch);
   };
 
-  const handleUpdate = (newVersion: string) => startInstall(newVersion);
+  const stopServer = useStopServer({ onSuccess: startInstall });
+
+  const handleUpdate = () => stopServer.mutate();
 
   const handleSkip = () => navigate('/healthCheck', { replace: true });
 
@@ -59,7 +61,7 @@ export const useUpdater = () => {
         description: body,
         action: (
           <div className="grid grid-cols-2 gap-2">
-            <ToastAction altText="Update app" onClick={() => handleUpdate(version)}>
+            <ToastAction altText="Update app" onClick={handleUpdate}>
               Update
             </ToastAction>
             <ToastAction altText="Update app" onClick={handleSkip}>
