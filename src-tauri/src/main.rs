@@ -1,3 +1,8 @@
+#![cfg_attr(
+all(not(debug_assertions), target_os = "windows"),
+windows_subsystem = "windows"
+)]
+
 use std::process::Command;
 use std::sync::mpsc::{sync_channel, Receiver};
 use std::thread;
