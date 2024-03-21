@@ -34,11 +34,11 @@ export default function WalletCardWrapper({ className }: Props) {
 
   const title = buildExchangeName(exchange);
   const balance = buildBalanceString(wallet);
-  const unrealizedProfit = buildTotalUnrealizedProfit(assets);
+  const unrealizedProfit = buildTotalUnrealizedProfit(exchange, assets);
 
   return (
     <WalletCard className={className} title={title} description={'지갑 정보'}>
-      <WalletCardContent balance={balance} unrealizedProfit={unrealizedProfit.toFixed(2)} />
+      <WalletCardContent balance={balance} unrealizedProfit={unrealizedProfit} />
     </WalletCard>
   );
 }
@@ -69,7 +69,7 @@ function buildBalanceString(wallet: Wallet | undefined) {
   }
 }
 
-function buildTotalUnrealizedProfit(assets: Asset[]): number {
+function buildTotalUnrealizedProfit(exchange: Exchange, assets: Asset[]): string {
   const unrealizedProfits = assets.map((asset) => {
     return calculateUnrealizedProfit({
       profit: asset.rateOfReturn,
@@ -78,7 +78,20 @@ function buildTotalUnrealizedProfit(assets: Asset[]): number {
     });
   });
 
-  return unrealizedProfits.reduce((acc, cur) => acc + cur, 0);
+  const totalUnrealizedProfit = unrealizedProfits.reduce((acc, cur) => acc + cur, 0);
+  const totalString = totalUnrealizedProfit.toFixed(1);
+
+  switch (exchange) {
+    case 'binance':
+      return `${totalString} USDT`;
+
+    case 'upbit':
+    case 'bithumb':
+      return `${totalString} ₩`;
+
+    default:
+      return totalString;
+  }
 }
 
 // 수익률/100x보유수량x현재가격

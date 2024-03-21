@@ -16,19 +16,19 @@ export default function WalletCardContent({ balance, unrealizedProfit, className
       </CardContent>
       <Separator />
       <CardContent className="flex flex-col gap-1 p-6">
-        <div className="flex items-center justify-between">
-          <div className="font-semibold">Unrealized Profit</div>
+        <div className="flex flex-col">
+          <div className="font-bold">Unrealized Profit</div>
           <div className="font-semibold">{unrealizedProfit}</div>
         </div>
         {/*Todo: remove*/}
-        {/*<div className="flex items-center justify-between">*/}
-        {/*  <div className="font-semibold">Transfer</div>*/}
-        {/*  <div className="font-semibold">-$500.00</div>*/}
-        {/*</div>*/}
-        {/*<div className="flex items-center justify-between">*/}
-        {/*  <div className="font-semibold">Withdrawal</div>*/}
-        {/*  <div className="font-semibold">-$258.71</div>*/}
-        {/*</div>*/}
+        <div className="flex flex-col">
+          <div className="font-bold">Transfer</div>
+          <div className="font-semibold">$0.0</div>
+        </div>
+        <div className="flex flex-col">
+          <div className="font-bold">Withdrawal</div>
+          <div className="font-semibold">$0.0</div>
+        </div>
       </CardContent>
     </div>
   );
