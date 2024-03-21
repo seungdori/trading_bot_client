@@ -1,6 +1,6 @@
 import { invoke } from '@tauri-apps/api/tauri';
 import { useMutation } from '@tanstack/react-query';
-// import { useEffect } from 'react';
+import { useEffect } from 'react';
 
 async function startBackend() {
   const response = await invoke('start_server');
@@ -24,14 +24,14 @@ export const useStartServer = () => {
   });
 };
 
-// export const useStartBackend = () => {
-//   const { isPending, mutate, isSuccess } = useStartServer();
-//   useEffect(() => {
-//     mutate();
-//   }, []);
-//
-//   return { isPending, isSuccess };
-// };
+export const useStartBackend = () => {
+  const { isPending, mutate, isSuccess } = useStartServer();
+  useEffect(() => {
+    mutate();
+  }, []);
+
+  return { isPending, isSuccess };
+};
 
 export const useStopServer = ({ onSuccess }: { onSuccess: () => void }) => {
   return useMutation({
