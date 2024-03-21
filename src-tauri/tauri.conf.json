@@ -23,8 +23,8 @@
         "sidecar": true,
         "scope": [
           {
-            "name": "../external/backend/backend",
-            "cmd": "backend"
+            "name": "backend",
+            "sidecar": true
           }
         ]
       },
