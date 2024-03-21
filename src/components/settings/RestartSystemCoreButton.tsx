@@ -28,8 +28,9 @@ export default function RestartSystemCoreButton() {
     });
   }
 
+  // Todo: Handle disable status after rust side impl done.
   return (
-    <Button disabled={restartBackendMutation.isPending} onClick={handleRestart} variant="outline" type="button">
+    <Button disabled onClick={handleRestart} variant="outline" type="button">
       {restartBackendMutation.isPending ? (
         <Icons.spinner className="h-4 w-4 animate-spin" />
       ) : (
