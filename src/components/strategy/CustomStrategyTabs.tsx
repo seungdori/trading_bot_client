@@ -7,6 +7,7 @@ import { useStartCustomStrategy } from '@/hooks/useStartCustomStrategy.ts';
 import { useStrategyStore } from '@/hooks/useStrategyStore.ts';
 import { useTestFeature } from '@/hooks/useTestFeature.ts';
 import { useStopCustomStrategy } from '@/hooks/useStopCustomStrategy.ts';
+import { Icons } from '@/components/common/Icons.tsx';
 
 type Strategies = typeof CustomStrategist;
 
@@ -74,9 +75,15 @@ export default function CustomStrategyTabs({ className, strategies }: Props) {
             // Todo: Add strategy description
             description={`${strategy} 자동 매매`}
           >
-            <Button onClick={() => handleStart(strategy)}>Start</Button>
-            <Button onClick={() => handleStop(strategy)}>Stop</Button>
-            <Button onClick={() => handleTest(strategy)}>Test</Button>
+            <Button disabled={startMutation.isPending} onClick={() => handleStart(strategy)}>
+              {startMutation.isPending ? <Icons.spinner className="h-4 w-4 animate-spin" /> : <span>Start</span>}
+            </Button>
+            <Button disabled={stopMutation.isPending} onClick={() => handleStop(strategy)}>
+              {stopMutation.isPending ? <Icons.spinner className="h-4 w-4 animate-spin" /> : <span>Stop</span>}
+            </Button>
+            <Button disabled={testMutation.isPending} onClick={() => handleTest(strategy)}>
+              {testMutation.isPending ? <Icons.spinner className="h-4 w-4 animate-spin" /> : <span>Test</span>}
+            </Button>
           </CustomStrategyContent>
         </TabsContent>
       ))}
