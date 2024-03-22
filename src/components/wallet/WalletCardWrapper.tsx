@@ -34,15 +34,16 @@ export default function WalletCardWrapper({ className }: Props) {
   }
 
   const title = buildExchangeName(exchange);
-  const balance = buildBalanceString(wallet);
+  const balance = getBalance(wallet);
+  const formattedBalance = formatBalance(balance, exchange);
   const balanceDescription = buildBalanceDescription(exchange);
   const unrealizedProfit = buildTotalUnrealizedProfit(exchange, assets);
-  const totalBalance = buildTotalBalance(exchange, assets);
+  const totalBalance = buildTotalBalance(exchange, balance, assets);
 
   return (
     <WalletCard className={className} title={title} description={'지갑 정보'}>
       <WalletCardContent
-        balance={balance}
+        balance={formattedBalance}
         balanceDescription={balanceDescription}
         totalBalance={totalBalance}
         unrealizedProfit={unrealizedProfit}
@@ -64,16 +65,27 @@ function buildExchangeName(exchange: Exchange) {
   }
 }
 
-function buildBalanceString(wallet: Wallet | undefined) {
+function getBalance(wallet: Wallet | undefined): number {
   switch (wallet?.exchange) {
     case 'binance':
-      return `${formatNum(+wallet.usdt.free, 1)} USDT`;
+      return +wallet.usdt.free;
     case 'upbit':
-      return `${formatNum(+wallet.krw.balance, 1)} ₩`;
+      return +wallet.krw.balance;
     case 'bithumb':
-      return `${formatNum(+wallet.krw, 1)} ₩`;
+      return +wallet.krw;
     default:
-      return `Unknown`;
+      return 0;
+  }
+}
+
+function formatBalance(balance: number, exchange: Exchange): string {
+  switch (exchange) {
+    case 'binance':
+      return `${formatNum(balance)} USDT`;
+    case 'upbit':
+      return `${formatNum(balance)} ₩`;
+    case 'bithumb':
+      return `${formatNum(balance)} ₩`;
   }
 }
 
@@ -85,18 +97,16 @@ function buildBalanceDescription(exchange: Exchange) {
       return 'KRW 잔고';
     case 'bithumb':
       return 'KRW 잔고';
-    default:
-      return 'Unknown';
   }
 }
 
-function buildTotalBalance(exchange: Exchange, assets: Asset[]): string | null {
-  const totalBalance = calculateTotalBalance(exchange, assets);
+function buildTotalBalance(exchange: Exchange, balance: number, assets: Asset[]): string | null {
+  const totalBalance = calculateTotalBalance(exchange, balance, assets);
   const formattedTotalBalance = formatNum(totalBalance, 1);
 
   switch (exchange) {
     case 'binance':
-      return null;
+      return null; // Todo: check
 
     case 'upbit':
     case 'bithumb':
@@ -107,17 +117,24 @@ function buildTotalBalance(exchange: Exchange, assets: Asset[]): string | null {
   }
 }
 
-function calculateTotalBalance(exchange: Exchange, assets: Asset[]): number {
+/**
+ * @description Calculate total balance.
+ * @param {Exchange} exchange
+ * @param {number} balance - main balance (KRW, USDT)
+ * @param {Asset[]} assets - assets from exchange
+ * @returns {number} total balance - converted to KRW or USDT
+ */
+function calculateTotalBalance(exchange: Exchange, balance: number, assets: Asset[]): number {
   switch (exchange) {
     case 'upbit':
     case 'bithumb':
       return assets.reduce((acc, cur) => {
         return acc + cur.currentPrice * +cur.amount;
-      }, 0);
+      }, balance);
 
     case 'binance':
     default:
-      return 0;
+      return balance;
   }
 }
 
