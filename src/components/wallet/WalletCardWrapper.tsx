@@ -92,11 +92,11 @@ function formatBalance(balance: number, exchange: Exchange): string {
 function buildBalanceDescription(exchange: Exchange) {
   switch (exchange) {
     case 'binance':
-      return 'USDT 잔고';
+      return '보유 USDT';
     case 'upbit':
-      return 'KRW 잔고';
+      return '보유 KRW';
     case 'bithumb':
-      return 'KRW 잔고';
+      return '보유 KRW';
   }
 }
 
