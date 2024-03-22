@@ -117,6 +117,7 @@ export const WinRateSchema = z.object({
 export const AiSearchProgressResponseSchema = z.object({
   exchange_name: ExchangeSchema,
   enter_strategy: EnterStrategySchema,
+  current_progress_symbol: z.string(),
   completed_symbol_count: z.number(),
   total_symbol_count: z.number(),
 });

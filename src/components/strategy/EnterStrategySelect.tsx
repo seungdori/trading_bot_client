@@ -46,6 +46,15 @@ export default function EnterStrategySelect({ className }: Props) {
     });
   };
 
+  const isStarted = !!(
+    aiSearchProgressQuery.data && aiSearchProgressQuery.data.total_symbol_count !== DEFAULT_AI_SEARCH_SYMBOL_COUNT
+  );
+  const isProgressing = !!(
+    aiSearchMutation.isPending ||
+    (aiSearchProgressQuery.data &&
+      aiSearchProgressQuery.data.completed_symbol_count !== aiSearchProgressQuery.data.total_symbol_count)
+  );
+
   return (
     <div className={className}>
       <Form {...form}>
@@ -94,21 +103,17 @@ export default function EnterStrategySelect({ className }: Props) {
             />
           </div>
           <div className="w-full space-y-4">
-            <Button disabled={aiSearchMutation.isPending} className="w-full" type="submit">
-              {aiSearchMutation.isPending ? (
-                <Icons.spinner className="h-4 w-4 animate-spin" />
-              ) : (
-                <span>AI 탐색 시작</span>
-              )}
+            <Button disabled={isProgressing} className="w-full" type="submit">
+              {isProgressing ? <Icons.spinner className="h-4 w-4 animate-spin" /> : <span>AI 탐색 시작</span>}
             </Button>
-            {aiSearchProgressQuery.data &&
-              aiSearchProgressQuery.data.total_symbol_count !== DEFAULT_AI_SEARCH_SYMBOL_COUNT && (
-                <AiSearchProgress
-                  className="space-y-4"
-                  completedSymbolCount={aiSearchProgressQuery.data.completed_symbol_count}
-                  totalSymbolCount={aiSearchProgressQuery.data.total_symbol_count}
-                />
-              )}
+            {isStarted && (
+              <AiSearchProgress
+                className="space-y-4"
+                currentProgressSymbol={aiSearchProgressQuery.data.current_progress_symbol}
+                completedSymbolCount={aiSearchProgressQuery.data.completed_symbol_count}
+                totalSymbolCount={aiSearchProgressQuery.data.total_symbol_count}
+              />
+            )}
           </div>
         </form>
       </Form>
