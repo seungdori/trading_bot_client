@@ -10,16 +10,24 @@ export const useStartAiSearch = (exchange: Exchange) => {
     onSuccess: (responseDto) => {
       if (responseDto.success) {
         toast({
-          title: responseDto.message,
+          title: 'AI 탐색 시작',
+          description: responseDto.message,
         });
       } else {
         // Todo: display warning or error toast
         toast({
-          title: responseDto.message,
+          title: 'AI 탐색 시작 실패',
+          description: responseDto.message,
+          variant: 'destructive',
         });
       }
     },
     onError: (error) => {
+      toast({
+        title: 'AI 탐색 시작 실패',
+        description: error.message,
+        variant: 'destructive',
+      });
       throw new Error(error.message);
     },
   });

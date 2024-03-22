@@ -171,7 +171,10 @@ export async function getTransactionLogs(
   return transactionLogStore.logs;
 }
 
-export async function startAiSearch({ exchange, store }: Pick<ExchangeStateStore, 'exchange' | 'store'>) {
+export async function startAiSearch({
+  exchange,
+  store,
+}: Pick<ExchangeStateStore, 'exchange' | 'store'>): Promise<ResponseDto<unknown>> {
   console.log(`[startAiSearch] exchange, enterStrategy`);
 
   const dto: StartAiSearchRequest = {

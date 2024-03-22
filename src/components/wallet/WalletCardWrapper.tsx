@@ -6,12 +6,13 @@ import { Icons } from '@/components/common/Icons.tsx';
 import { toast } from '@/components/ui/use-toast.ts';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
 import { useAssetsData } from '@/hooks/useAssetsData.ts';
+import { formatNum } from '@/lib/format.ts';
 
 type Props = { className?: string };
 
 export default function WalletCardWrapper({ className }: Props) {
   const { exchange } = useExchangeStore();
-  const { isLoading, data: wallet, error } = useWallet();
+  const { isLoading, data: wallet, error } = useWallet({ exchange });
   const { assets } = useAssetsData();
 
   if (error) {
@@ -34,12 +35,18 @@ export default function WalletCardWrapper({ className }: Props) {
 
   const title = buildExchangeName(exchange);
   const balance = buildBalanceString(wallet);
+  const balanceDescription = buildBalanceDescription(exchange);
   const unrealizedProfit = buildTotalUnrealizedProfit(exchange, assets);
   const totalBalance = buildTotalBalance(exchange, assets);
 
   return (
     <WalletCard className={className} title={title} description={'지갑 정보'}>
-      <WalletCardContent balance={balance} totalBalance={totalBalance} unrealizedProfit={unrealizedProfit} />
+      <WalletCardContent
+        balance={balance}
+        balanceDescription={balanceDescription}
+        totalBalance={totalBalance}
+        unrealizedProfit={unrealizedProfit}
+      />
     </WalletCard>
   );
 }
@@ -60,28 +67,43 @@ function buildExchangeName(exchange: Exchange) {
 function buildBalanceString(wallet: Wallet | undefined) {
   switch (wallet?.exchange) {
     case 'binance':
-      return `${(+wallet.usdt.free).toFixed(1)} USDT`;
+      return `${formatNum(+wallet.usdt.free, 1)} USDT`;
     case 'upbit':
-      return `${(+wallet.krw.balance).toFixed(1)} ₩`;
+      return `${formatNum(+wallet.krw.balance, 1)} ₩`;
     case 'bithumb':
-      return `${(+wallet.krw).toFixed(1)} ₩`;
+      return `${formatNum(+wallet.krw, 1)} ₩`;
     default:
       return `Unknown`;
   }
 }
 
+function buildBalanceDescription(exchange: Exchange) {
+  switch (exchange) {
+    case 'binance':
+      return 'USDT 잔고';
+    case 'upbit':
+      return 'KRW 잔고';
+    case 'bithumb':
+      return 'KRW 잔고';
+    default:
+      return 'Unknown';
+  }
+}
+
 function buildTotalBalance(exchange: Exchange, assets: Asset[]): string | null {
-  const totalBalance = calculateTotalBalance(exchange, assets).toFixed(1);
+  const totalBalance = calculateTotalBalance(exchange, assets);
+  const formattedTotalBalance = formatNum(totalBalance, 1);
+
   switch (exchange) {
     case 'binance':
       return null;
 
     case 'upbit':
     case 'bithumb':
-      return `${totalBalance} ₩`;
+      return `${formattedTotalBalance} ₩`;
 
     default:
-      return `${totalBalance}`;
+      return `${formattedTotalBalance}`;
   }
 }
 
@@ -109,18 +131,18 @@ function buildTotalUnrealizedProfit(exchange: Exchange, assets: Asset[]): string
   });
 
   const totalUnrealizedProfit = unrealizedProfits.reduce((acc, cur) => acc + cur, 0);
-  const totalString = totalUnrealizedProfit.toFixed(1);
+  const formattedTotalUnrealizedProfit = formatNum(totalUnrealizedProfit, 1);
 
   switch (exchange) {
     case 'binance':
-      return `${totalString} USDT`;
+      return `${formattedTotalUnrealizedProfit} USDT`; // Todo: uncomment
 
     case 'upbit':
     case 'bithumb':
-      return `${totalString} ₩`;
+      return `${formattedTotalUnrealizedProfit} ₩`;
 
     default:
-      return totalString;
+      return formattedTotalUnrealizedProfit;
   }
 }
 

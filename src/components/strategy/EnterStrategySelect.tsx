@@ -15,29 +15,6 @@ const FormSchema = z.object({
 
 type Props = { className?: string };
 
-// function AiSearchStartButton() {
-//   // const { exchange, store } = useStrategyStore();
-//   const {
-//     keys: { apiKey, secret },
-//   } = useApiKeysStore(exchange);
-//   const aiSearchMutation = useStartAiSearch(exchange);
-//
-//   const handleAiSearch = () => {
-//     aiSearchMutation.mutate({
-//       exchange,
-//       store,
-//       apiKey,
-//       secret,
-//     });
-//   };
-//
-//   return (
-//     <Button onClick={handleAiSearch} className="w-full" type="submit">
-//       AI 탐색 시작
-//     </Button>
-//   );
-// }
-
 export default function EnterStrategySelect({ className }: Props) {
   const { exchange, store, setStore } = useStrategyStore();
   const { enterStrategy } = store;
@@ -57,16 +34,6 @@ export default function EnterStrategySelect({ className }: Props) {
       exchange,
       store,
     });
-
-    // await startAiSearch({ exchange, store });
-    // toast({
-    //   title: 'You submitted the following values:',
-    //   description: (
-    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-    //     </pre>
-    //   ),
-    // });
   };
 
   return (
