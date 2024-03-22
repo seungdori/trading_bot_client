@@ -1,4 +1,5 @@
 import {
+  AiSearchProgressResponseSchema,
   BinancePositionsResponseSchema,
   BithumbPositionsResponseSchema,
   ExchangeApiKeyRequestSchema,
@@ -64,3 +65,5 @@ export type TelegramTokenRequest = z.infer<typeof TelegramTokenRequestSchema>;
 export type TelegramTokenDto = z.infer<typeof TelegramTokenRequestSchema>;
 
 export type WinRate = z.infer<typeof WinRateSchema>;
+
+export type AiSearchProgressResponse = z.infer<typeof AiSearchProgressResponseSchema>;

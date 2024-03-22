@@ -8,6 +8,11 @@ import { Button } from '@/components/ui/button.tsx';
 import { EnterStrategySchema } from '@/schemas/exchangeSchema.ts';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form.tsx';
 import { useStartAiSearch } from '@/hooks/useStartAiSearch.ts';
+import { toast } from '@/components/ui/use-toast.ts';
+import { Icons } from '@/components/common/Icons.tsx';
+import { useAiSearchProgress } from '@/hooks/useAiSearchProgress.ts';
+import AiSearchProgress from '@/components/strategy/AiSearchProgress.tsx';
+import { DEFAULT_AI_SEARCH_SYMBOL_COUNT } from '@/constants/exchange.ts';
 
 const FormSchema = z.object({
   type: EnterStrategySchema,
@@ -19,6 +24,7 @@ export default function EnterStrategySelect({ className }: Props) {
   const { exchange, store, setStore } = useStrategyStore();
   const { enterStrategy } = store;
   const aiSearchMutation = useStartAiSearch(exchange);
+  const aiSearchProgressQuery = useAiSearchProgress(exchange, enterStrategy);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -29,6 +35,10 @@ export default function EnterStrategySelect({ className }: Props) {
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     console.log('[ENTER STRATEGY VALUE]', data);
+    toast({
+      title: 'AI 탐색을 시작합니다',
+      description: '이 작업은 최대 30분이 소요될 수 있습니다.',
+    });
 
     aiSearchMutation.mutate({
       exchange,
@@ -83,10 +93,23 @@ export default function EnterStrategySelect({ className }: Props) {
               )}
             />
           </div>
-          <Button className="w-full" type="submit">
-            AI 탐색 시작
-          </Button>
-          {/*{AiSearchStartButton()}*/}
+          <div className="w-full space-y-4">
+            <Button disabled={aiSearchMutation.isPending} className="w-full" type="submit">
+              {aiSearchMutation.isPending ? (
+                <Icons.spinner className="h-4 w-4 animate-spin" />
+              ) : (
+                <span>AI 탐색 시작</span>
+              )}
+            </Button>
+            {aiSearchProgressQuery.data &&
+              aiSearchProgressQuery.data.total_symbol_count !== DEFAULT_AI_SEARCH_SYMBOL_COUNT && (
+                <AiSearchProgress
+                  className="space-y-4"
+                  completedSymbolCount={aiSearchProgressQuery.data.completed_symbol_count}
+                  totalSymbolCount={aiSearchProgressQuery.data.total_symbol_count}
+                />
+              )}
+          </div>
         </form>
       </Form>
     </div>

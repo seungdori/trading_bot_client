@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ExchangeSchema } from '@/schemas/exchangeSchema.ts';
+import { EnterStrategySchema, ExchangeSchema } from '@/schemas/exchangeSchema.ts';
 
 export const DESKTOP_BACKEND_BASE_URL = 'http://localhost:8000';
 
@@ -112,4 +112,11 @@ export const WinRateSchema = z.object({
   long_win_rate: z.number(),
   short_win_rate: z.number(),
   total_win_rate: z.number(),
+});
+
+export const AiSearchProgressResponseSchema = z.object({
+  exchange_name: ExchangeSchema,
+  enter_strategy: EnterStrategySchema,
+  completed_symbol_count: z.number(),
+  total_symbol_count: z.number(),
 });

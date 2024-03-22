@@ -14,3 +14,5 @@ export const EXCHANGE = {
 } as const;
 
 export const DEFAULT_EXCHANGE = EXCHANGE.UPBIT.EXCHANGE;
+
+export const DEFAULT_AI_SEARCH_SYMBOL_COUNT = -1;

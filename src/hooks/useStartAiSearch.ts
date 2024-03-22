@@ -10,13 +10,13 @@ export const useStartAiSearch = (exchange: Exchange) => {
     onSuccess: (responseDto) => {
       if (responseDto.success) {
         toast({
-          title: 'AI 탐색 시작',
+          title: 'AI 탐색 성공',
           description: responseDto.message,
         });
       } else {
         // Todo: display warning or error toast
         toast({
-          title: 'AI 탐색 시작 실패',
+          title: 'AI 탐색 실패',
           description: responseDto.message,
           variant: 'destructive',
         });
@@ -24,7 +24,7 @@ export const useStartAiSearch = (exchange: Exchange) => {
     },
     onError: (error) => {
       toast({
-        title: 'AI 탐색 시작 실패',
+        title: 'AI 탐색 실패',
         description: error.message,
         variant: 'destructive',
       });

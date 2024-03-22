@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { Body, fetch } from '@tauri-apps/api/http';
 import { TradingSearchParamsSchema } from '@/schemas/searchParamsSchema.ts';
-import { BinanceStateStore, ExchangeStateStore } from '@/store/strategyStore.ts';
+import { BinanceStateStore, EnterStrategy, ExchangeStateStore } from '@/store/strategyStore.ts';
 import { Exchange, Upbit } from '@/types/exchangeTypes.ts';
 import {
   DESKTOP_BACKEND_BASE_URL,
@@ -11,6 +11,7 @@ import {
   UserExistSchema,
 } from '@/schemas/backendSchema.ts';
 import {
+  AiSearchProgressResponse,
   ExchangeRequest,
   PositionsResponse,
   ResponseDto,
@@ -512,6 +513,29 @@ export async function backendVersionCheck(): Promise<string> {
     return version;
   } catch (e) {
     console.error(e);
+    throw e;
+  }
+}
+
+export async function getAiSearchProgress(
+  exchange: Exchange,
+  enterStratey: EnterStrategy,
+): Promise<AiSearchProgressResponse> {
+  const endpoint = new URL(`/feature/ai/search/${exchange}/${enterStratey}/progress`, DESKTOP_BACKEND_BASE_URL);
+
+  try {
+    const response = await fetch<ResponseDto<AiSearchProgressResponse>>(endpoint.href, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    const responseDto = response.data;
+    if (responseDto.success) {
+      return responseDto.data;
+    } else {
+      throw new Error(responseDto.message);
+    }
+  } catch (e) {
     throw e;
   }
 }
