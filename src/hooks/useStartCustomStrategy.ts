@@ -20,6 +20,9 @@ export const useStartCustomStrategy = () => {
       }
     },
     onError: (error) => {
+      toast({
+        title: error.message ?? '전략 시작 실패',
+      });
       throw new Error(error.message);
     },
   });

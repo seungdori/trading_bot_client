@@ -16,10 +16,15 @@ export const useStopCustomStrategy = () => {
         // Todo: display warning or error toast
         toast({
           title: responseDto.message,
+          description: (responseDto.meta?.error as string) ?? '전략 중지 실패',
         });
       }
     },
     onError: (error) => {
+      toast({
+        title: error.name,
+        description: error.message ?? '전략 중지 실패',
+      });
       throw new Error(error.message);
     },
   });
