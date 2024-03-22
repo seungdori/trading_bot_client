@@ -7,7 +7,7 @@ import { Exchange } from '@/types/exchangeTypes.ts';
 export default function WinRateTabs({ className }: { className?: string }) {
   const { exchange } = useExchangeStore();
   const tabs = buildTabs(exchange);
-  return <InfoTabs className={className} defaultTableId={tabs.defaultId} tables={tabs.tabs} />;
+  return <InfoTabs className={className} defaultTableId={tabs.defaultId} tables={tabs.tabs} renderBackButton />;
 }
 
 function buildTabs(exchange: Exchange): {
