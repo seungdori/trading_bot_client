@@ -23,14 +23,14 @@ function buildTabs(exchange: Exchange): {
         component: <WinRateTableWrapper exchange="binance" />,
       },
       {
-        id: 'upbit',
-        displayName: '업비트',
-        component: <WinRateTableWrapper exchange="upbit" />,
-      },
-      {
         id: 'bithumb',
         displayName: '빗썸',
         component: <WinRateTableWrapper exchange="bithumb" />,
+      },
+      {
+        id: 'upbit',
+        displayName: '업비트',
+        component: <WinRateTableWrapper exchange="upbit" />,
       },
     ],
   };
