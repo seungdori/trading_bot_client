@@ -193,7 +193,7 @@ function buildTotalUnrealizedProfit_v2({
   exchange: Exchange;
   wallet: Wallet_v2 | undefined;
   assets: Asset[];
-}): string {
+}): string | null {
   if (wallet?.totalUnrealizedProfit) {
     return formatNum(wallet.totalUnrealizedProfit, 1);
   }
@@ -214,11 +214,12 @@ function buildTotalUnrealizedProfit_v2({
       return `${formattedTotalUnrealizedProfit} USDT`; // Todo: uncomment
 
     case 'upbit':
-    case 'bithumb':
       return `${formattedTotalUnrealizedProfit} ₩`;
 
+    case 'bithumb':
+      return null;
     default:
-      return formattedTotalUnrealizedProfit;
+      return null;
   }
 }
 
