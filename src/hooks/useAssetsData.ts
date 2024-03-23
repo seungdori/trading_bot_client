@@ -13,11 +13,11 @@ import { TradingDataResponseSchema, TradingDataSchema } from '@/schemas/backendS
 import { useFetchTradingData } from '@/hooks/useFetchTradingData.ts';
 import { toast } from '@/components/ui/use-toast.ts';
 
-export const useFetchPositions = (exchange: Exchange) => {
+export const useFetchPositions = (exchange: Exchange, refetchInterval?: number) => {
   return useQuery({
     queryKey: ['positions', exchange],
     queryFn: () => fetchPositions(exchange),
-    refetchInterval: 1000,
+    refetchInterval: refetchInterval ?? 1000,
   });
 };
 
