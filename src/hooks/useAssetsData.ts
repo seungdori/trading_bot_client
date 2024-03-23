@@ -40,6 +40,11 @@ export const useAssetsData = (): { isLoading: boolean; assets: Asset[] } => {
     };
   }
 
+  if (tradingDataQuery.isError) {
+    console.error(`[BACKEND TRADING DATA QUERY]`, tradingDataQuery.error.message);
+    toast({ title: tradingDataQuery.error.message });
+  }
+
   switch (exchange) {
     case 'upbit':
       return {
@@ -129,11 +134,11 @@ function buildBinanceAssets(
   );
 
   const assets: Asset[] = positions.map((coin) => {
+    const key = coin.symbol;
     const amount = coin.quantity.toString();
     const coinName = coin.symbol;
     const currentPrice = coin.mark_price;
     const initPrice = coin.entry_price;
-    const key = coin.symbol;
     const rateOfReturn = +coin.profit_percent.toFixed(2);
     const value = coin.value;
 

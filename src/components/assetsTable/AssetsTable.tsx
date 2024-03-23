@@ -157,6 +157,7 @@ export default function AssetsTable({ assetsData }: Props) {
           </Button>
         );
       },
+      cell: ({ getValue }) => <span>{formatNum(getValue() as number, 1)}</span>,
     },
   ];
 

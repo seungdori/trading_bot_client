@@ -1,32 +1,10 @@
-import { Wallet } from '@/types/exchangeTypes.ts';
+import { Exchange } from '@/types/exchangeTypes.ts';
 import { useQuery } from '@tanstack/react-query';
-import { fetchUpbitTradingData } from '@/components/api/desktopClient.ts';
-import { z } from 'zod';
-import { TradingDataResponseSchema } from '@/schemas/backendSchema.ts';
+import { fetchTradingData } from '@/components/api/desktopClient.ts';
 
-async function fetchTradingData({
-  exchange,
-  symbols,
-}: {
-  exchange: Wallet['exchange'];
-  symbols: string[];
-}): Promise<z.infer<typeof TradingDataResponseSchema>[]> {
-  switch (exchange) {
-    case 'upbit':
-      return fetchUpbitTradingData(exchange, symbols);
-    case 'binance':
-    // Todo: Impl
-    // return fetchBinaceTradingData(exchange, symbols);
-    case 'bithumb':
-    // Todo: Impl
-    default:
-      return [];
-  }
-}
-
-export const useFetchTradingData = ({ exchange, symbols }: { exchange: Wallet['exchange']; symbols: string[] }) => {
+export const useFetchTradingData = ({ exchange, symbols }: { exchange: Exchange; symbols: string[] }) => {
   return useQuery({
-    queryKey: ['upbitTradingData', exchange, symbols],
+    queryKey: ['fetchTradingData', exchange, symbols],
     queryFn: () => fetchTradingData({ exchange, symbols }),
   });
 };

@@ -72,21 +72,6 @@ function getBalance_v2(wallet: Wallet_v2 | undefined): number {
   return wallet?.walletBalance ?? 0;
 }
 
-// Todo: remove
-// function getBalance(wallet: Wallet | undefined): number {
-//   switch (wallet?.exchange) {
-//     case 'binance':
-//       return +wallet.usdt.free;
-//     case 'upbit':
-//       return +wallet.krw.balance;
-//     case 'bithumb':
-//       return +wallet.krw;
-//     default:
-//       return 0;
-//   }
-// }
-//
-
 function formatBalance(balance: number, exchange: Exchange): string {
   switch (exchange) {
     case 'binance':
@@ -108,6 +93,124 @@ function buildBalanceDescription(exchange: Exchange) {
       return '보유 KRW';
   }
 }
+
+function buildTotalUnrealizedProfit_v2({
+  exchange,
+  wallet,
+  assets,
+}: {
+  exchange: Exchange;
+  wallet: Wallet_v2 | undefined;
+  assets: Asset[];
+}): string | null {
+  if (wallet?.totalUnrealizedProfit) {
+    return formatNum(wallet.totalUnrealizedProfit, 1);
+  }
+
+  const unrealizedProfits = assets.map((asset) => {
+    return calculateUnrealizedProfit_v2({
+      profit: asset.rateOfReturn,
+      quantity: +asset.amount,
+      currentPrice: asset.currentPrice,
+    });
+  });
+
+  const totalUnrealizedProfit = unrealizedProfits.reduce((acc, cur) => acc + cur, 0);
+  const formattedTotalUnrealizedProfit = formatNum(totalUnrealizedProfit, 1);
+
+  switch (exchange) {
+    case 'binance':
+      return `${formattedTotalUnrealizedProfit} USDT`; // Todo: uncomment
+
+    case 'upbit':
+      return `${formattedTotalUnrealizedProfit} ₩`;
+
+    case 'bithumb':
+      return null;
+    default:
+      return null;
+  }
+}
+
+// 수익률/100x보유수량x현재가격
+function calculateUnrealizedProfit_v2({
+  profit,
+  quantity,
+  currentPrice,
+}: {
+  profit: number;
+  quantity: number;
+  currentPrice: number;
+}): number {
+  return (profit / 100) * quantity * currentPrice;
+}
+
+function buildTotalBalance_v2({
+  exchange,
+  balance,
+  wallet,
+  assets,
+}: {
+  exchange: Exchange;
+  balance: number;
+  wallet: Wallet_v2 | undefined;
+  assets: Asset[];
+}): string | null {
+  if (wallet?.totalBalance) {
+    return formatNum(wallet.totalBalance, 1);
+  }
+
+  const totalBalance = calculateTotalBalance_v2(exchange, balance, assets);
+  const formattedTotalBalance = formatNum(totalBalance, 1);
+
+  switch (exchange) {
+    case 'binance':
+      return null; // Todo: assert binance
+
+    case 'upbit':
+    case 'bithumb':
+      return `${formattedTotalBalance} ₩`;
+
+    default:
+      return `${formattedTotalBalance}`;
+  }
+}
+
+/**
+ * @description Calculate total balance.
+ * @param {Exchange} exchange
+ * @param {number} balance - main balance (KRW, USDT)
+ * @param {Asset[]} assets - assets from exchange
+ * @returns {number} total balance - converted to KRW or USDT
+ */
+function calculateTotalBalance_v2(exchange: Exchange, balance: number, assets: Asset[]): number {
+  switch (exchange) {
+    case 'upbit':
+    case 'bithumb':
+      return assets.reduce((acc, cur) => {
+        return acc + cur.currentPrice * +cur.amount;
+      }, balance);
+
+    case 'binance':
+    default:
+      return balance;
+  }
+}
+
+// Todo: remove
+// function getBalance(wallet: Wallet | undefined): number {
+//   switch (wallet?.exchange) {
+//     case 'binance':
+//       return +wallet.usdt.free;
+//     case 'upbit':
+//       return +wallet.krw.balance;
+//     case 'bithumb':
+//       return +wallet.krw;
+//     default:
+//       return 0;
+//   }
+// }
+//
 
 // function buildTotalBalance(exchange: Exchange, balance: number, assets: Asset[]): string | null {
 //   const totalBalance = calculateTotalBalance(exchange, balance, assets);
@@ -184,106 +287,3 @@ function buildBalanceDescription(exchange: Exchange) {
 // }): number {
 //   return (profit / 100) * quantity * currentPrice;
 // }
-
-function buildTotalUnrealizedProfit_v2({
-  exchange,
-  wallet,
-  assets,
-}: {
-  exchange: Exchange;
-  wallet: Wallet_v2 | undefined;
-  assets: Asset[];
-}): string | null {
-  if (wallet?.totalUnrealizedProfit) {
-    return formatNum(wallet.totalUnrealizedProfit, 1);
-  }
-
-  const unrealizedProfits = assets.map((asset) => {
-    return calculateUnrealizedProfit_v2({
-      profit: asset.rateOfReturn,
-      quantity: +asset.amount,
-      currentPrice: asset.currentPrice,
-    });
-  });
-
-  const totalUnrealizedProfit = unrealizedProfits.reduce((acc, cur) => acc + cur, 0);
-  const formattedTotalUnrealizedProfit = formatNum(totalUnrealizedProfit, 1);
-
-  switch (exchange) {
-    case 'binance':
-      return `${formattedTotalUnrealizedProfit} USDT`; // Todo: uncomment
-
-    case 'upbit':
-      return `${formattedTotalUnrealizedProfit} ₩`;
-
-    case 'bithumb':
-      return null;
-    default:
-      return null;
-  }
-}
-
-// 수익률/100x보유수량x현재가격
-function calculateUnrealizedProfit_v2({
-  profit,
-  quantity,
-  currentPrice,
-}: {
-  profit: number;
-  quantity: number;
-  currentPrice: number;
-}): number {
-  return (profit / 100) * quantity * currentPrice;
-}
-
-function buildTotalBalance_v2({
-  exchange,
-  balance,
-  wallet,
-  assets,
-}: {
-  exchange: Exchange;
-  balance: number;
-  wallet: Wallet_v2 | undefined;
-  assets: Asset[];
-}): string | null {
-  if (wallet?.totalBalance) {
-    return formatNum(wallet.totalBalance, 1);
-  }
-
-  const totalBalance = calculateTotalBalance_v2(exchange, balance, assets);
-  const formattedTotalBalance = formatNum(totalBalance, 1);
-
-  switch (exchange) {
-    case 'binance':
-      return null; // Todo: check
-
-    case 'upbit':
-    case 'bithumb':
-      return `${formattedTotalBalance} ₩`;
-
-    default:
-      return `${formattedTotalBalance}`;
-  }
-}
-
-/**
- * @description Calculate total balance.
- * @param {Exchange} exchange
- * @param {number} balance - main balance (KRW, USDT)
- * @param {Asset[]} assets - assets from exchange
- * @returns {number} total balance - converted to KRW or USDT
- */
-function calculateTotalBalance_v2(exchange: Exchange, balance: number, assets: Asset[]): number {
-  switch (exchange) {
-    case 'upbit':
-    case 'bithumb':
-      return assets.reduce((acc, cur) => {
-        return acc + cur.currentPrice * +cur.amount;
-      }, balance);
-
-    case 'binance':
-    default:
-      return balance;
-  }
-}

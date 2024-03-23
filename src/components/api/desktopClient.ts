@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { Body, fetch } from '@tauri-apps/api/http';
 import { TradingSearchParamsSchema } from '@/schemas/searchParamsSchema.ts';
 import { BinanceStateStore, EnterStrategy, ExchangeStateStore } from '@/store/strategyStore.ts';
-import { Exchange, Upbit, Wallet_v2 } from '@/types/exchangeTypes.ts';
+import { Exchange, Wallet_v2 } from '@/types/exchangeTypes.ts';
 import {
   DESKTOP_BACKEND_BASE_URL,
   LoginSchema,
@@ -206,10 +206,13 @@ export async function startAiSearch({
  * @param exchange - 'upbit'
  * @param symbols - e.g. ['KRW-BTC', 'KRW-ETH', 'KRW-DOGE']
  */
-export async function fetchUpbitTradingData(
-  exchange: Upbit,
-  symbols: UpbitPositionsResponse['currency'][],
-): Promise<z.infer<typeof TradingDataResponseSchema>[]> {
+export async function fetchTradingData({
+  exchange,
+  symbols,
+}: {
+  exchange: Exchange;
+  symbols: UpbitPositionsResponse['currency'][];
+}): Promise<z.infer<typeof TradingDataResponseSchema>[]> {
   // Todo: 상장폐지 심볼 처리
   const endpoint = new URL(`/trading/${exchange}`, DESKTOP_BACKEND_BASE_URL);
   const queryParams = JSON.stringify(symbols);
@@ -220,16 +223,17 @@ export async function fetchUpbitTradingData(
     headers: { 'Content-Type': 'application/json' },
   });
 
-  const backendResponse = response.data;
+  const responseDto = response.data;
 
-  console.log(`[UPBIT TRADING DATA FROM BACKEND]`, backendResponse);
+  console.log(`[TRADING DATA FROM BACKEND]`, responseDto);
 
-  if (backendResponse.success) {
-    return backendResponse.data;
+  if (responseDto.success) {
+    return responseDto.data;
   } else {
     // Todo: handle error
     // throw new Error(backendResponse.message);
-    return [];
+    throw new Error(responseDto.message);
+    // return [];
   }
 }
 
