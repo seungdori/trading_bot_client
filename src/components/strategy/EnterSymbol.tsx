@@ -7,13 +7,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '@/components/ui/label.tsx';
 import { Input } from '@/components/ui/input.tsx';
 import { cn } from '@/lib/utils.ts';
+import { Exchange } from '@/types/exchangeTypes.ts';
 
 const FormSchema = EnterSymbolSchema;
 
 type Props = { className?: string };
 
 export default function EnterSymbol({ className }: Props) {
-  const { store, setStore } = useStrategyStore();
+  const { exchange, store, setStore } = useStrategyStore();
   const { enterSymbolCount, enterSymbolAmount } = store;
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -52,10 +53,6 @@ export default function EnterSymbol({ className }: Props) {
                         value={enterSymbolCount.toString()}
                         onChange={(e) => {
                           const enterSymbolCount = +e.target.value;
-                          // setEnterSymbol({
-                          //   ...enterSymbol,
-                          //   enterSymbolCount,
-                          // });
                           handleEtnerSymbolCount(enterSymbolCount);
                           field.onChange(enterSymbolCount);
                         }}
@@ -73,7 +70,7 @@ export default function EnterSymbol({ className }: Props) {
                 <FormItem className="space-y-3 w-full">
                   <FormControl>
                     <>
-                      <Label htmlFor="enterSymbolAmount">종목당 투입금 ₩</Label>
+                      <Label htmlFor="enterSymbolAmount">{buildEnterSymbolLabel(exchange)}</Label>
                       <Input
                         id="enterSymbolAmount"
                         type="number"
@@ -84,10 +81,6 @@ export default function EnterSymbol({ className }: Props) {
                         onChange={(e) => {
                           const enterSymbolAmount = +e.target.value;
                           handleEnterSymbolAmount(enterSymbolAmount);
-                          // setEnterSymbol({
-                          //   ...enterSymbol,
-                          //   enterSymbolAmount,
-                          // });
                           field.onChange(enterSymbolAmount);
                         }}
                       />
@@ -102,4 +95,18 @@ export default function EnterSymbol({ className }: Props) {
       </Form>
     </div>
   );
+}
+
+function buildEnterSymbolLabel(exchange: Exchange): string {
+  switch (exchange) {
+    case 'binance':
+      return '종목당 투입금 $';
+
+    case 'bithumb':
+    case 'upbit':
+      return '종목당 투입금 ₩';
+
+    default:
+      return '종목당 투입금 ₩';
+  }
 }

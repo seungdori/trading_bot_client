@@ -9,6 +9,9 @@ export type CustomStrategy = z.infer<typeof CustomStrategySchema>;
 const LEVERAGE_KEY = 'leverage';
 const DEFAULT_LEVERAGE = 10;
 
+const DEFAULT_ENTER_SYMBOL_AMOUNT = 500;
+const DEFAULT_ENTER_SYMBOL_COUNT = 10;
+
 export function saveLeverage(leverage: number) {
   localStorage.setItem(LEVERAGE_KEY, leverage.toString());
 }
@@ -32,8 +35,8 @@ export const useBinanceStateStore = () => {
     leverage: withDefault(NumberParam, defaultLeverage()),
     enterStrategy: withDefault(createEnumParam<EnterStrategy>([...EnterStrategist]), 'long' as const),
     customStrategy: withDefault(createEnumParam<CustomStrategy>([...CustomStrategist]), '전략1' as const),
-    enterSymbolAmount: withDefault(NumberParam, 10),
-    enterSymbolCount: withDefault(NumberParam, 500),
+    enterSymbolAmount: withDefault(NumberParam, DEFAULT_ENTER_SYMBOL_AMOUNT),
+    enterSymbolCount: withDefault(NumberParam, DEFAULT_ENTER_SYMBOL_COUNT),
   });
 
   return {
@@ -49,8 +52,8 @@ export const useUpbitStateStore = () => {
   const [query, setQuery] = useQueryParams({
     enterStrategy: withDefault(createEnumParam<EnterStrategy>([...EnterStrategist]), 'long' as const),
     customStrategy: withDefault(createEnumParam<CustomStrategy>([...CustomStrategist]), '전략1' as const),
-    enterSymbolAmount: withDefault(NumberParam, 10),
-    enterSymbolCount: withDefault(NumberParam, 500),
+    enterSymbolAmount: withDefault(NumberParam, DEFAULT_ENTER_SYMBOL_AMOUNT),
+    enterSymbolCount: withDefault(NumberParam, DEFAULT_ENTER_SYMBOL_COUNT),
   });
 
   return {
@@ -66,8 +69,8 @@ export const useBithumbStateStore = () => {
   const [query, setQuery] = useQueryParams({
     enterStrategy: withDefault(createEnumParam<EnterStrategy>([...EnterStrategist]), 'long' as const),
     customStrategy: withDefault(createEnumParam<CustomStrategy>([...CustomStrategist]), '전략1' as const),
-    enterSymbolAmount: withDefault(NumberParam, 10),
-    enterSymbolCount: withDefault(NumberParam, 500),
+    enterSymbolAmount: withDefault(NumberParam, DEFAULT_ENTER_SYMBOL_AMOUNT),
+    enterSymbolCount: withDefault(NumberParam, DEFAULT_ENTER_SYMBOL_COUNT),
   });
 
   return {

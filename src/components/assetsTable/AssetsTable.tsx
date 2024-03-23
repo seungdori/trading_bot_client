@@ -7,6 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox.tsx';
 import { useSelectedCoinsStore } from '@/store/selectedCoinStore.ts';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
 import { Asset } from '@/types/exchangeTypes.ts';
+import { formatNum } from '@/lib/format.ts';
 
 type Props = { assetsData: Asset[] };
 
@@ -66,6 +67,7 @@ export default function AssetsTable({ assetsData }: Props) {
           </Button>
         );
       },
+      cell: ({ getValue }) => <span>{formatNum(getValue() as number, 1)}</span>,
     },
     {
       accessorKey: 'currentPrice',
@@ -77,6 +79,7 @@ export default function AssetsTable({ assetsData }: Props) {
           </Button>
         );
       },
+      cell: ({ getValue }) => <span>{formatNum(getValue() as number, 1)}</span>,
     },
     {
       accessorKey: 'amount',

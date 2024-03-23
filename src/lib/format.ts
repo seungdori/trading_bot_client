@@ -10,6 +10,10 @@ const formatter = new Intl.NumberFormat(LOCALE);
  * numFormat(1234567.89); // 1,234,567.89
  */
 export function formatNum(num: number, precision?: number): string {
+  if (Number.isNaN(num)) {
+    return '';
+  }
+
   const fixedNum = precision ? +num.toFixed(precision) : num;
   return formatter.format(fixedNum);
 }

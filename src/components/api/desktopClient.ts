@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { Body, fetch } from '@tauri-apps/api/http';
 import { TradingSearchParamsSchema } from '@/schemas/searchParamsSchema.ts';
 import { BinanceStateStore, EnterStrategy, ExchangeStateStore } from '@/store/strategyStore.ts';
-import { Exchange, Upbit } from '@/types/exchangeTypes.ts';
+import { Exchange, Upbit, Wallet_v2 } from '@/types/exchangeTypes.ts';
 import {
   DESKTOP_BACKEND_BASE_URL,
   LoginSchema,
@@ -26,6 +26,7 @@ import {
   TestFeatureRequest,
   UpbitPositionsResponse,
   User,
+  WalletResponse,
   WinRate,
 } from '@/types/backendTypes.ts';
 import { useTransactionLogStore } from '@/store/transactionLogStore.ts';
@@ -537,5 +538,34 @@ export async function getAiSearchProgress(
     }
   } catch (e) {
     throw e;
+  }
+}
+
+export async function fetchWalletFromBackend(exchange: Exchange): Promise<Wallet_v2> {
+  const endpoint = new URL(`/exchange/${exchange}/wallet`, DESKTOP_BACKEND_BASE_URL);
+
+  const response = await fetch<ResponseDto<WalletResponse>>(endpoint.href, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  }).catch((e) => {
+    console.error('[FETCH WALLET FROM BACKEND]', e);
+    throw e;
+  });
+
+  const responseDto = response.data;
+
+  console.log(`[WALLET RESPONSE]`, responseDto);
+
+  if (responseDto.success) {
+    const wallet = responseDto.data;
+    return {
+      exchange: wallet.exchange_name,
+      totalBalance: wallet.total_balance,
+      walletBalance: wallet.wallet_balance,
+      totalUnrealizedProfit: wallet.total_unrealized_profit,
+    };
+  } else {
+    console.error('[FETCH WALLET FROM BACKEND ERROR]', responseDto.message);
+    throw new Error(responseDto.message);
   }
 }

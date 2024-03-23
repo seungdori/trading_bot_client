@@ -121,3 +121,10 @@ export const AiSearchProgressResponseSchema = z.object({
   completed_symbol_count: z.number(),
   total_symbol_count: z.number(),
 });
+
+export const WalletResponseSchema = z.object({
+  exchange_name: ExchangeSchema,
+  total_balance: z.number(),
+  wallet_balance: z.number().nullish(),
+  total_unrealized_profit: z.number().nullish(),
+});
