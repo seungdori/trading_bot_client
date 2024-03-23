@@ -70,16 +70,6 @@ function buildExchangeName(exchange: Exchange) {
 
 function getBalance_v2(wallet: Wallet_v2 | undefined): number {
   return wallet?.walletBalance ?? 0;
-  // switch (wallet?.exchange) {
-  // case 'binance':
-  //   return wallet.walletBalance ?? 0;
-  // case 'upbit':
-  //   return +wallet.krw.balance;
-  // case 'bithumb':
-  //   return +wallet.krw;
-  // default:
-  //   return 0;
-  // }
 }
 
 // Todo: remove
