@@ -2,12 +2,12 @@ import { InfoTab } from '@/types/tableTypes.ts';
 import InfoTabs from '@/components/assetsTable/InfoTabs.tsx';
 import AssetsTableWrapper from '@/components/assetsTable/AssetsTableWrapper.tsx';
 import TransactionLogWrapper from '@/components/transaction/TransactionLogWrapper.tsx';
-import { useCachePosition } from '@/hooks/useCachePosition.ts';
+import { cachePositions } from '@/hooks/useCachePosition.ts';
 
 type Props = { className?: string };
 
 export default function DataTablesWrapper({ className }: Props) {
-  useCachePosition();
+  cachePositions();
 
   const tabs = buildTabs();
   return <InfoTabs className={className} defaultTableId={tabs.defaultId} tables={tabs.tabs} />;
