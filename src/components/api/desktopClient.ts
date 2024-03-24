@@ -29,7 +29,7 @@ import {
   WalletResponse,
   WinRate,
 } from '@/types/backendTypes.ts';
-import { useTransactionLogStore } from '@/store/transactionLogStore.ts';
+import { useTadingLogStore } from '@/store/transactionLogStore.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
 import { convertFileSrc } from '@tauri-apps/api/tauri';
 
@@ -155,7 +155,7 @@ export async function updateExchangeApiKeys({ exchange, apiKey, secret }: { exch
 export async function getTransactionLogs(
   exchange: z.infer<typeof TradingSearchParamsSchema>['exchange'],
 ): Promise<string[]> {
-  const transactionLogStore = useTransactionLogStore(exchange);
+  const transactionLogStore = useTadingLogStore(exchange);
   const endpoint = new URL('/trading/logs', DESKTOP_BACKEND_BASE_URL);
 
   const response = await fetch<ResponseDto<string[]>>(endpoint.href, {

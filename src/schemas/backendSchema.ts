@@ -3,6 +3,8 @@ import { EnterStrategySchema, ExchangeSchema } from '@/schemas/exchangeSchema.ts
 
 export const DESKTOP_BACKEND_BASE_URL = 'http://localhost:8000';
 
+export const DESKTOP_BACKEND_WS_URL = 'ws://localhost:8000';
+
 export const UserExistSchema = z.object({
   user_exist: z.boolean(),
 });

@@ -7,11 +7,12 @@ import { z } from 'zod';
  * @param exchange 거래소 이름.
  * @returns 거래내역을 가져오는 함수와 거래내역을 추가하는 함수.
  * @example
- * const { getTransactionLog, appendTransactionLog } = useTransactionLogStore('upbit');
- * const logs = getTransactionLog();
- * appendTransactionLog('거래내역 추가');
+ * const { logs, append, clear } = useTadingLogStore('upbit');
+ * logs.join('\n');
+ * append('거래내역 추가');
+ * clear();
  */
-export const useTransactionLogStore = (exchange: Exchange) => {
+export const useTadingLogStore = (exchange: Exchange) => {
   const { get, set } = useLocalStorage();
   console.log(exchange);
   // const key = `${exchange}-transaction-log`; // Todo: 거래소별 거래내역을 저장할 수 있도록 요구사항 변경시 사용.
@@ -43,5 +44,9 @@ export const useTransactionLogStore = (exchange: Exchange) => {
     set(key, JSON.stringify(prevLogs));
   };
 
-  return { logs: getTransactionLogs(), append };
+  const clear = () => {
+    set(key, JSON.stringify([]));
+  };
+
+  return { logs: getTransactionLogs(), append, clear };
 };

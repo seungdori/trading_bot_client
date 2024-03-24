@@ -102,19 +102,21 @@ export default function EnterStrategySelect({ className }: Props) {
               )}
             />
           </div>
-          <div className="w-full space-y-4">
-            <Button disabled={isProgressing} className="w-full" type="submit">
-              {isProgressing ? <Icons.spinner className="h-4 w-4 animate-spin" /> : <span>AI 탐색 시작</span>}
-            </Button>
-            {isStarted && (
-              <AiSearchProgress
-                className="space-y-4"
-                currentProgressSymbol={aiSearchProgressQuery.data.current_progress_symbol}
-                completedSymbolCount={aiSearchProgressQuery.data.completed_symbol_count}
-                totalSymbolCount={aiSearchProgressQuery.data.total_symbol_count}
-              />
-            )}
-          </div>
+          {!aiSearchProgressQuery.isError && (
+            <div className="w-full space-y-4">
+              <Button disabled={isProgressing} className="w-full" type="submit">
+                {isProgressing ? <Icons.spinner className="h-4 w-4 animate-spin" /> : <span>AI 탐색 시작</span>}
+              </Button>
+              {isStarted && (
+                <AiSearchProgress
+                  className="space-y-4"
+                  currentProgressSymbol={aiSearchProgressQuery.data.current_progress_symbol}
+                  completedSymbolCount={aiSearchProgressQuery.data.completed_symbol_count}
+                  totalSymbolCount={aiSearchProgressQuery.data.total_symbol_count}
+                />
+              )}
+            </div>
+          )}
         </form>
       </Form>
     </div>

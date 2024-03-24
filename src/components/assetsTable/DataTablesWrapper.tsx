@@ -1,8 +1,8 @@
 import { InfoTab } from '@/types/tableTypes.ts';
 import InfoTabs from '@/components/assetsTable/InfoTabs.tsx';
 import AssetsTableWrapper from '@/components/assetsTable/AssetsTableWrapper.tsx';
-import TransactionLogWrapper from '@/components/transaction/TransactionLogWrapper.tsx';
 import { cachePositions } from '@/hooks/useCachePosition.ts';
+import TransactionLogWrapper from '@/components/transaction/TransactionLogWrapper';
 
 type Props = { className?: string };
 

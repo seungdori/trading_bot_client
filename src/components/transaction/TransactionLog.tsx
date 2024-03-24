@@ -1,6 +1,17 @@
-import { Textarea } from '@/components/ui/textarea';
+import { RemovableTextArea } from '@/components/common/RemovableTextArea.tsx';
 
-type Props = { content: string; className?: string };
-export default function TransactionLog({ content, className }: Props) {
-  return <Textarea className={className} placeholder="Trading log" value={content} disabled />;
+import { ReactNode } from 'react';
+
+type Props = {
+  content: string;
+  className?: string;
+  children?: ReactNode;
+};
+
+export default function TransactionLog({ className, content, children }: Props) {
+  return (
+    <RemovableTextArea className={className} placeholder="Trading log" value={content}>
+      {children}
+    </RemovableTextArea>
+  );
 }
