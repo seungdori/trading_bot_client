@@ -33,6 +33,7 @@ export default function AllCoinSellButton({ exchange }: Props) {
     <>
       <CoinSellConfirmAlertModal
         rootModal
+        disabled={true} // Todo: 전체 매도 요구사항 추가시 활성화
         id={rootModalId}
         buttonLabel="전체 매도"
         title="전체 매도"

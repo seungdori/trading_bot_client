@@ -17,6 +17,7 @@ type Props = {
   id: string;
   rootModal?: boolean;
   buttonLabel?: string;
+  disabled?: boolean;
   title: string;
   description: string;
   cancelLabel: string;
@@ -27,6 +28,7 @@ type Props = {
 
 export default function CoinSellConfirmAlertModal({
   id,
+  disabled,
   rootModal,
   buttonLabel,
   title,
@@ -44,17 +46,10 @@ export default function CoinSellConfirmAlertModal({
   return (
     <>
       {/*Insure clean url query param when modal closed*/}
-      <AlertDialog
-        defaultOpen={!rootModal}
-        onOpenChange={(open) => {
-          console.log(`[MODAL STATE CHANGED ID]`, id);
-          console.log(`[OPEN]`, open);
-          setOpen(open);
-        }}
-      >
+      <AlertDialog defaultOpen={!rootModal} onOpenChange={(open) => setOpen(open)}>
         {rootModal ? (
           <AlertDialogTrigger asChild>
-            <Button>{buttonLabel}</Button>
+            <Button disabled={disabled}>{buttonLabel}</Button>
           </AlertDialogTrigger>
         ) : null}
         <AlertDialogContent>
