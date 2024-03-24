@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { Body, fetch } from '@tauri-apps/api/http';
-import { TradingSearchParamsSchema } from '@/schemas/searchParamsSchema.ts';
 import { BinanceStateStore, EnterStrategy, ExchangeStateStore } from '@/store/strategyStore.ts';
 import { Exchange, Wallet } from '@/types/exchangeTypes.ts';
 import {
@@ -29,7 +28,6 @@ import {
   WalletResponse,
   WinRate,
 } from '@/types/backendTypes.ts';
-import { useTadingLogStore } from '@/store/transactionLogStore.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
 import { convertFileSrc } from '@tauri-apps/api/tauri';
 
@@ -149,30 +147,6 @@ export async function updateExchangeApiKeys({ exchange, apiKey, secret }: { exch
   return responseDto;
 }
 
-/**
- * @description 로컬 백엔드에 사용자 거래 내역 요청.
- */
-export async function getTransactionLogs(
-  exchange: z.infer<typeof TradingSearchParamsSchema>['exchange'],
-): Promise<string[]> {
-  const transactionLogStore = useTadingLogStore(exchange);
-  const endpoint = new URL('/trading/logs', DESKTOP_BACKEND_BASE_URL);
-
-  const response = await fetch<ResponseDto<string[]>>(endpoint.href, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-  });
-
-  const responseDto = response.data;
-
-  if (responseDto.success) {
-    const logs = responseDto.data;
-    transactionLogStore.append(logs);
-  }
-
-  return transactionLogStore.logs;
-}
-
 export async function startAiSearch({
   exchange,
   store,
@@ -266,7 +240,10 @@ export async function fetchPositions(exchange: Exchange): Promise<PositionsRespo
 /**
  * @description 백엔드에 사용자가 설정한 전략 시작 요청. 백엔드는 거래소 api를 통해 사용자의 전략을 실행.
  */
-export async function startCustomStrategy({ exchange, store }: Pick<ExchangeStateStore, 'exchange' | 'store'>) {
+export async function startCustomStrategy({
+  exchange,
+  store,
+}: Pick<ExchangeStateStore, 'exchange' | 'store'>): Promise<ResponseDto<unknown>> {
   const endpoint = new URL(`/feature/start`, DESKTOP_BACKEND_BASE_URL);
   const dto: StartFeatureRequest = {
     exchange_name: exchange,
@@ -277,7 +254,7 @@ export async function startCustomStrategy({ exchange, store }: Pick<ExchangeStat
     leverage: exchange === 'binance' ? (store as BinanceStateStore['store']).leverage : undefined,
   };
 
-  console.log(`[START CUSTOM STARKEY DTO]`, dto);
+  console.log(`[START CUSTOM STRATEGY DTO]`, dto);
 
   try {
     const response = await fetch<ResponseDto<unknown>>(endpoint.href, {
@@ -289,7 +266,7 @@ export async function startCustomStrategy({ exchange, store }: Pick<ExchangeStat
     });
 
     const responseDto = response.data;
-    console.log('[START CUSTOM REPOSITORY]', responseDto);
+    console.log('[START CUSTOM STRATEGY]', responseDto);
 
     return responseDto;
   } catch (e) {
@@ -302,7 +279,10 @@ export async function startCustomStrategy({ exchange, store }: Pick<ExchangeStat
 /**
  * @description 백엔드에 사용자가 설정한 전략을 중지 요청. 백엔드는 거래소 api를 통해 사용자의 전략을 중지.
  */
-export async function stopCustomStrategy({ exchange, store }: Pick<ExchangeStateStore, 'exchange' | 'store'>) {
+export async function stopCustomStrategy({
+  exchange,
+  store,
+}: Pick<ExchangeStateStore, 'exchange' | 'store'>): Promise<ResponseDto<unknown>> {
   const endpoint = new URL(`/feature/stop`, DESKTOP_BACKEND_BASE_URL);
   const dto: StopFeatureRequest = {
     exchange_name: exchange,
@@ -338,7 +318,9 @@ export async function stopCustomStrategy({ exchange, store }: Pick<ExchangeState
 export async function testFeature({
   exchange,
   leverage,
-}: Pick<ExchangeStateStore, 'exchange'> & Partial<Pick<BinanceStateStore['store'], 'leverage'>>) {
+}: Pick<ExchangeStateStore, 'exchange'> & Partial<Pick<BinanceStateStore['store'], 'leverage'>>): Promise<
+  ResponseDto<unknown>
+> {
   const endpoint = new URL(`/feature/test`, DESKTOP_BACKEND_BASE_URL);
   const dto: TestFeatureRequest = {
     exchange_name: exchange,
@@ -353,6 +335,7 @@ export async function testFeature({
     });
 
     const responseDto = response.data;
+    console.log('[TEST FEATURE]', responseDto);
     return responseDto;
   } catch (e) {
     console.error(e);
@@ -477,7 +460,6 @@ export async function createChartImage({ exchange, coin }: { exchange: Exchange;
 
   const responseDto = response.data;
   if (responseDto.success) {
-    // const fileUrl = responseDto.data;
     const localFilePath = convertFileSrc(responseDto.data);
     return localFilePath;
   } else {
@@ -524,9 +506,9 @@ export async function backendVersionCheck(): Promise<string> {
 
 export async function getAiSearchProgress(
   exchange: Exchange,
-  enterStratey: EnterStrategy,
+  enterStrategy: EnterStrategy,
 ): Promise<AiSearchProgressResponse> {
-  const endpoint = new URL(`/feature/ai/search/${exchange}/${enterStratey}/progress`, DESKTOP_BACKEND_BASE_URL);
+  const endpoint = new URL(`/feature/ai/search/${exchange}/${enterStrategy}/progress`, DESKTOP_BACKEND_BASE_URL);
 
   try {
     const response = await fetch<ResponseDto<AiSearchProgressResponse>>(endpoint.href, {

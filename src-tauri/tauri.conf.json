@@ -16,6 +16,11 @@
         "asset": true,
         "assetScope": ["*/**"]
       },
+      "clipboard": {
+        "all": true,
+        "writeText": true,
+        "readText": true
+      },
       "shell": {
         "all": true,
         "open": true,

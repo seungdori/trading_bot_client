@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Exchange } from '@/types/exchangeTypes.ts';
 import { DESKTOP_BACKEND_WS_URL } from '@/schemas/backendSchema.ts';
 import { useTadingLogStore } from '@/store/transactionLogStore.ts';
@@ -15,13 +15,8 @@ export const useTradingLog = ({
 }) => {
   const endpoint = new URL(`/trading/${exchange}/logs`, DESKTOP_BACKEND_WS_URL);
   const { lastMessage, readyState } = useWebSocket(endpoint.href);
-  const { logs, append, clear } = useTadingLogStore(exchange);
-
-  useEffect(() => {
-    if (lastMessage !== null) {
-      append(lastMessage.data);
-    }
-  }, [lastMessage]);
+  const { logs, append, clearStorage } = useTadingLogStore(exchange);
+  const [log, setLog] = useState<string>(logs?.join(delimiter) ?? defaultMessage);
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',
@@ -31,5 +26,17 @@ export const useTradingLog = ({
     [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
   }[readyState];
 
-  return { status: connectionStatus, logs: logs?.join(delimiter) ?? defaultMessage, clear };
+  const clear = () => {
+    clearStorage();
+    setLog('');
+  };
+
+  useEffect(() => {
+    if (lastMessage !== null) {
+      append(lastMessage.data);
+      setLog((prev) => prev + delimiter + lastMessage.data);
+    }
+  }, [lastMessage]);
+
+  return { status: connectionStatus, log, clear };
 };

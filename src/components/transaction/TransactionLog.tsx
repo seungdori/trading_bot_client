@@ -1,5 +1,4 @@
 import { RemovableTextArea } from '@/components/common/RemovableTextArea.tsx';
-
 import { ReactNode } from 'react';
 
 type Props = {
@@ -10,7 +9,7 @@ type Props = {
 
 export default function TransactionLog({ className, content, children }: Props) {
   return (
-    <RemovableTextArea className={className} placeholder="Trading log" value={content}>
+    <RemovableTextArea className={className} placeholder="Trading log" value={content} disabled>
       {children}
     </RemovableTextArea>
   );

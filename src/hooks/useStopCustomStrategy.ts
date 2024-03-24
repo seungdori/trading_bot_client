@@ -1,10 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
 import { stopCustomStrategy } from '@/components/api/desktopClient.ts';
 import { toast } from '@/components/ui/use-toast.ts';
+import { Exchange } from '@/types/exchangeTypes.ts';
+import { CustomStrategy } from '@/store/strategyStore.ts';
 
-export const useStopCustomStrategy = () => {
+export const useStopCustomStrategy = ({ exchange, strategy }: { exchange: Exchange; strategy: CustomStrategy }) => {
   return useMutation({
-    mutationKey: ['stopCustomStrategy'],
+    mutationKey: ['stopCustomStrategy', exchange, strategy],
     mutationFn: stopCustomStrategy,
     // Todo: refactor backend
     onSuccess: (responseDto) => {
