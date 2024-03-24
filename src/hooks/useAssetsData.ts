@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Asset, Exchange, Wallet } from '@/types/exchangeTypes.ts';
+import { Asset, Exchange } from '@/types/exchangeTypes.ts';
 import { fetchPositions } from '@/components/api/desktopClient.ts';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -69,7 +69,7 @@ export const useAssetsData = (): { isLoading: boolean; assets: Asset[] } => {
   }
 };
 
-export function buildMarketSymbols(exchange: Wallet['exchange'], positions?: PositionsResponse[]): string[] {
+export function buildMarketSymbols(exchange: Exchange, positions?: PositionsResponse[]): string[] {
   switch (exchange) {
     case 'binance':
       return buildBinanceSymbols(positions as BinancePositionsResponse[]);

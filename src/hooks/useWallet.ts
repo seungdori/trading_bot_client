@@ -7,18 +7,6 @@ export const useWallet = ({ exchange, refetchInterval }: { exchange: Exchange; r
     enabled: !!exchange,
     queryKey: ['wallet', exchange],
     queryFn: () => getWalletFromBackend(exchange),
-    refetchInterval: refetchInterval ?? 1000,
+    refetchInterval: refetchInterval ?? 2000,
   });
 };
-
-// Todo: remove
-// export const useWallet = ({ exchange, refetchInterval }: { exchange: Exchange; refetchInterval?: number }) => {
-//   const { keys } = useApiKeysStore(exchange);
-//
-//   return useQuery({
-//     enabled: !!exchange,
-//     queryKey: ['wallet', exchange],
-//     queryFn: () => getWallet(exchange, { apiKey: keys.apiKey, secret: keys.secret }),
-//     refetchInterval: refetchInterval ?? 1000,
-//   });
-// };
