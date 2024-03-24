@@ -67,7 +67,14 @@ export default function AssetsTable({ assetsData }: Props) {
           </Button>
         );
       },
-      cell: ({ getValue }) => <span>{formatNum(getValue() as number, 1)}</span>,
+      cell: ({ getValue }) => (
+        <span>
+          {formatNum({
+            num: getValue() as number,
+            precision: 1,
+          })}
+        </span>
+      ),
     },
     {
       accessorKey: 'currentPrice',
@@ -79,7 +86,14 @@ export default function AssetsTable({ assetsData }: Props) {
           </Button>
         );
       },
-      cell: ({ getValue }) => <span>{formatNum(getValue() as number, 1)}</span>,
+      cell: ({ getValue }) => (
+        <span>
+          {formatNum({
+            num: getValue() as number,
+            precision: 1,
+          })}
+        </span>
+      ),
     },
     {
       accessorKey: 'amount',
@@ -157,7 +171,14 @@ export default function AssetsTable({ assetsData }: Props) {
           </Button>
         );
       },
-      cell: ({ getValue }) => <span>{formatNum(getValue() as number, 1)}</span>,
+      cell: ({ getValue }) => (
+        <span>
+          {formatNum({
+            num: getValue() as number,
+            precision: 1,
+          })}
+        </span>
+      ),
     },
   ];
 
