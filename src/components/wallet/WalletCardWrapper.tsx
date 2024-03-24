@@ -26,8 +26,9 @@ export default function WalletCardWrapper({ className }: Props) {
 
   if (isLoading) {
     return (
-      <div className="flex w-full h-full items-center justify-center">
-        <Icons.spinner className="h-8 w-8 animate-spin" />
+      <div className="flex flex-col w-full h-full items-center justify-center">
+        <Icons.spinner className="h-4 w-4 animate-spin" />
+        <p className="mt-4 text-lg font-bold">지갑정보 조회중...</p>
       </div>
     );
   }

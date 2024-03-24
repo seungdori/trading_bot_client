@@ -1,11 +1,13 @@
 import { Exchange } from '@/types/exchangeTypes.ts';
 import { useLocalStorage } from '@/store/settingsStore.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateExchangeApiKeys } from '@/components/api/desktopClient.ts';
 import { toast } from '@/components/ui/use-toast.ts';
 
 const useUpdateExchangeApiKey = (exchange: Exchange) => {
+  const client = useQueryClient();
+
   return useMutation({
     mutationKey: ['updateExchangeApiKeys', exchange],
     mutationFn: updateExchangeApiKeys,
@@ -22,6 +24,13 @@ const useUpdateExchangeApiKey = (exchange: Exchange) => {
     },
     onError: (error) => {
       throw new Error(error.message);
+    },
+    onSettled: () => {
+      client.resetQueries({ queryKey: ['positions', exchange] });
+      client.resetQueries({ queryKey: ['wallet', exchange] });
+      client.resetQueries({ queryKey: ['getAiSearchProgress', exchange] });
+      client.resetQueries({ queryKey: ['fetchTradingData', exchange] });
+      // client.resetQueries({ queryKey: ['transactionLog', exchange] }); // Todo: Impl
     },
   });
 };
