@@ -34,7 +34,7 @@ export const AssetsSchemaWithKey = AssetsSchema.extend({
   key: z.string(),
 });
 
-export const WalletSchema_v2 = z.object({
+export const WalletSchema = z.object({
   exchange: ExchangeSchema,
   totalBalance: z.number(),
   walletBalance: z.number().nullish(),

@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { Body, fetch } from '@tauri-apps/api/http';
 import { TradingSearchParamsSchema } from '@/schemas/searchParamsSchema.ts';
 import { BinanceStateStore, EnterStrategy, ExchangeStateStore } from '@/store/strategyStore.ts';
-import { Exchange, Wallet_v2 } from '@/types/exchangeTypes.ts';
+import { Exchange, Wallet } from '@/types/exchangeTypes.ts';
 import {
   DESKTOP_BACKEND_BASE_URL,
   LoginSchema,
@@ -545,7 +545,7 @@ export async function getAiSearchProgress(
   }
 }
 
-export async function fetchWalletFromBackend(exchange: Exchange): Promise<Wallet_v2> {
+export async function fetchWalletFromBackend(exchange: Exchange): Promise<Wallet> {
   const endpoint = new URL(`/exchange/${exchange}/wallet`, DESKTOP_BACKEND_BASE_URL);
 
   const response = await fetch<ResponseDto<WalletResponse>>(endpoint.href, {

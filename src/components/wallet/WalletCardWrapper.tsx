@@ -1,7 +1,7 @@
 import WalletCardContent from '@/components/wallet/WalletCardContent.tsx';
 import WalletCard from '@/components/wallet/WalletCard.tsx';
 import { useWallet } from '@/hooks/useWallet.ts';
-import { Exchange, Wallet_v2 } from '@/types/exchangeTypes.ts';
+import { Exchange, Wallet } from '@/types/exchangeTypes.ts';
 import { Icons } from '@/components/common/Icons.tsx';
 import { toast } from '@/components/ui/use-toast.ts';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
@@ -64,7 +64,7 @@ function buildExchangeName(exchange: Exchange) {
   }
 }
 
-function getBalance(wallet: Wallet_v2 | undefined): number {
+function getBalance(wallet: Wallet | undefined): number {
   return wallet?.walletBalance ?? 0;
 }
 
@@ -104,7 +104,7 @@ function buildTotalUnrealizedProfit({
   wallet,
 }: {
   exchange: Exchange;
-  wallet: Wallet_v2 | undefined;
+  wallet: Wallet | undefined;
 }): string | null {
   const validTotalUnrealizedProfit = z.number().safeParse(wallet?.totalUnrealizedProfit);
   if (!validTotalUnrealizedProfit.success) {
@@ -135,7 +135,7 @@ function buildTotalUnrealizedProfit({
   }
 }
 
-function buildTotalBalance({ exchange, wallet }: { exchange: Exchange; wallet: Wallet_v2 | undefined }): string | null {
+function buildTotalBalance({ exchange, wallet }: { exchange: Exchange; wallet: Wallet | undefined }): string | null {
   const validTotalBalance = z.number().safeParse(wallet?.totalBalance);
   if (!validTotalBalance.success) {
     return null;
