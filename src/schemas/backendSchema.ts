@@ -130,3 +130,27 @@ export const WalletResponseSchema = z.object({
   wallet_balance: z.number().nullish(),
   total_unrealized_profit: z.number().nullish(),
 });
+
+export const TradingErrorName = z.union([
+  z.literal('start_feature_fail'),
+  z.literal('stop_feature_fail'),
+  z.literal('test_feature_fail'),
+]);
+
+export const BotStateErrorSchema = z.object({
+  name: TradingErrorName,
+  message: z.string(),
+  meta: z.record(z.string()).nullish(),
+});
+
+export const BotKeyStateSchema = z.object({
+  exchange_name: z.string(),
+  enter_strategy: z.string(),
+  custom_strategy: z.string(),
+});
+
+export const BotStateSchema = BotKeyStateSchema.extend({
+  key: z.string(),
+  is_running: z.boolean(),
+  error: BotStateErrorSchema.nullable(),
+});

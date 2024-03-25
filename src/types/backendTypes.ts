@@ -2,6 +2,8 @@ import {
   AiSearchProgressResponseSchema,
   BinancePositionsResponseSchema,
   BithumbPositionsResponseSchema,
+  BotKeyStateSchema,
+  BotStateSchema,
   ExchangeApiKeyRequestSchema,
   PositionsResponseSchema,
   SellAllCoinsRequestSchema,
@@ -18,6 +20,8 @@ import {
   WinRateSchema,
 } from '@/schemas/backendSchema.ts';
 import { z } from 'zod';
+import { Exchange } from '@/types/exchangeTypes.ts';
+import { CustomStrategy, EnterStrategy } from '@/store/strategyStore.ts';
 
 type ResponseDtoSuccess<T> = {
   success: true;
@@ -70,3 +74,9 @@ export type WinRate = z.infer<typeof WinRateSchema>;
 export type AiSearchProgressResponse = z.infer<typeof AiSearchProgressResponseSchema>;
 
 export type WalletResponse = z.infer<typeof WalletResponseSchema>;
+
+export type BotStateKeyArgs = { exchange: Exchange; enterStrategy: EnterStrategy; customStrategy: CustomStrategy };
+
+export type BotStateKeyDto = z.infer<typeof BotKeyStateSchema>;
+
+export type BotState = z.infer<typeof BotStateSchema>;

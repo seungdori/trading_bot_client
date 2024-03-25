@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { Body, fetch } from '@tauri-apps/api/http';
-import { BinanceStateStore, EnterStrategy, ExchangeStateStore } from '@/store/strategyStore.ts';
+import { BinanceStateStore, CustomStrategy, EnterStrategy, ExchangeStateStore } from '@/store/strategyStore.ts';
 import { Exchange, Wallet } from '@/types/exchangeTypes.ts';
 import {
   DESKTOP_BACKEND_BASE_URL,
@@ -11,6 +11,9 @@ import {
 } from '@/schemas/backendSchema.ts';
 import {
   AiSearchProgressResponse,
+  BotStateKeyDto,
+  BotState,
+  BotStateKeyArgs,
   ExchangeRequest,
   PositionsResponse,
   ResponseDto,
@@ -553,5 +556,65 @@ export async function fetchWalletFromBackend(exchange: Exchange): Promise<Wallet
   } else {
     console.error('[FETCH WALLET FROM BACKEND ERROR]', responseDto.message);
     throw new Error(responseDto.message);
+  }
+}
+
+export async function checkTradingBotState({
+  exchange,
+  enterStrategy,
+  customStrategy,
+}: {
+  exchange: Exchange;
+  enterStrategy: EnterStrategy;
+  customStrategy: CustomStrategy;
+}): Promise<BotState> {
+  const endpoint = new URL(`/state/${exchange}/${enterStrategy}/${customStrategy}`, DESKTOP_BACKEND_BASE_URL);
+
+  try {
+    const response = await fetch<ResponseDto<BotState>>(endpoint.href, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    const responseDto = response.data;
+    console.log(`[CHECK TRADING BOT STATE]`, responseDto);
+
+    if (responseDto.success) {
+      return responseDto.data;
+    } else {
+      const errorMessage = `${responseDto.message}\n${JSON.stringify(responseDto.meta)}`;
+      throw new Error(errorMessage);
+    }
+  } catch (e) {
+    console.error('[CATCH TRADING BOT STATE]', e);
+    throw e;
+  }
+}
+
+export async function clearBotErrorState(args: BotStateKeyArgs) {
+  const endpoint = new URL('/state/error', DESKTOP_BACKEND_BASE_URL);
+  const dto: Pick<BotStateKeyDto, 'exchange_name' | 'enter_strategy' | 'custom_strategy'> = {
+    exchange_name: args.exchange,
+    custom_strategy: args.customStrategy,
+    enter_strategy: args.enterStrategy,
+  };
+
+  try {
+    const response = await fetch<ResponseDto<BotState>>(endpoint.href, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: Body.json(dto),
+    });
+
+    const responseDto = response.data;
+    console.log('[CLEAR BOT STATE ERROR RESPONSE]', responseDto);
+    if (responseDto.success) {
+      return responseDto.data;
+    } else {
+      throw new Error(responseDto.message);
+    }
+  } catch (e) {
+    console.error('[CLEAR BOT STATE ERROR CATCH]', e);
+    throw e;
   }
 }

@@ -13,25 +13,75 @@ import {
 } from '@/components/ui/alert-dialog.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Icons } from '@/components/common/Icons.tsx';
+import { useCheckBotState } from '@/hooks/useCheckBotState.ts';
+import { toast } from '@/components/ui/use-toast.ts';
+import { useClearBotStateError } from '@/hooks/useClearBotStateError.ts';
+import { NEED_AI_SEARCH_FIRST_ERROR_MESSAGE, START_FEATURE_ERROR_METADATA_DETAIL } from '@/constants/error.ts';
+import { useEffect } from 'react';
+import { BotStateErrorSchema } from '@/schemas/backendSchema.ts';
 
 type Props = { className?: string };
 
 export default function StartFeatureButton({ className }: Props) {
   const { exchange, store } = useStrategyStore();
   const startMutation = useStartCustomStrategy({ exchange, strategy: store.customStrategy });
-  const handleStart = () => {
-    // Todo: Add start strategy logic
+  const clearErrorMutation = useClearBotStateError({ exchange, ...store });
+  const botStateQuery = useCheckBotState({
+    exchange,
+    customStrategy: store.customStrategy,
+    enterStrategy: store.enterStrategy,
+  });
+
+  const handleStart = async () => {
     startMutation.mutate({
       exchange,
       store,
     });
+
+    setTimeout(botStateQuery.refetch, 3000);
   };
+
+  useEffect(() => {
+    console.log(`[RENDER START FEATURE BUTTON]`);
+    const validBackendError = BotStateErrorSchema.safeParse(botStateQuery.data?.error);
+    if (validBackendError.success) {
+      const backendError = validBackendError.data;
+
+      if (
+        backendError.name === 'start_feature_fail' &&
+        backendError.meta?.error_detail?.includes(START_FEATURE_ERROR_METADATA_DETAIL)
+      ) {
+        clearErrorMutation.mutate({ exchange, ...store });
+      }
+
+      toast({
+        title: '매매 시작에 실패했습니다.',
+        description: (
+          <div className="whitespace-pre-wrap">
+            <p>{NEED_AI_SEARCH_FIRST_ERROR_MESSAGE}</p>
+            <span>Error: </span>
+            <p className="bold">{backendError.name}</p>
+            <p>{backendError.message}</p>
+            {backendError.meta && <p>{JSON.stringify(backendError.meta)}</p>}
+          </div>
+        ),
+        duration: 60000,
+        variant: 'destructive',
+      });
+    }
+  }, [botStateQuery.data]);
+
+  const isStartFeatureRunning = !!botStateQuery.data?.is_running;
 
   return (
     <AlertDialog>
       <AlertDialogTrigger>
-        <Button className={className} disabled={startMutation.isPending}>
-          {startMutation.isPending ? <Icons.spinner className="h-4 w-4 animate-spin" /> : <span>Start</span>}
+        <Button className={className} disabled={startMutation.isPending || isStartFeatureRunning}>
+          {startMutation.isPending || isStartFeatureRunning ? (
+            <Icons.spinner className="h-4 w-4 animate-spin" />
+          ) : (
+            <span>Start</span>
+          )}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
