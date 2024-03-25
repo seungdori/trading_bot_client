@@ -8,7 +8,7 @@ type SliderProps = ComponentProps<typeof Slider>;
 
 const LEVERAGE_STEP = 1;
 const MIN_LEVERAGE = 1;
-const MAX_LEVERAGE = 50;
+const MAX_LEVERAGE = 20;
 
 export default function LeveragePanel({ className, ...props }: SliderProps) {
   const { store, setStore } = useBinanceStateStore();
