@@ -20,21 +20,21 @@ export default function WalletCardContent({
     <div className={className}>
       <CardContent className="flex flex-col justify-center space-y-2 p-6">
         {/*총 잔고*/}
-        <div className="flex flex-col">
-          <div className="text-3xl font-bold">총 잔고</div>
-          <div className="text-sm font-medium text-gray-500 dark:text-gray-400">{totalBalance}</div>
-        </div>
+        <div className="text-xl font-bold">{totalBalance}</div>
+        <div className="text-sm font-medium text-gray-500 dark:text-gray-400">총 잔고</div>
       </CardContent>
       <Separator />
       <CardContent className="flex flex-col space-y-2 p-6">
         {/*보유 잔고 e.g. (KRW, USDT)*/}
-        <div className="font-bold">{balance}</div>
-        <div className="font-semibold">{balanceDescription}</div>
+        <div className="flex flex-col">
+          <div className="text-xl font-bold">{balance}</div>
+          <div className="text-sm font-medium text-gray-500 dark:text-gray-400">{balanceDescription}</div>
+        </div>
         {/*미실현 이익*/}
         {unrealizedProfit && (
           <div className="flex flex-col">
-            <div className="font-bold">미실현 이익</div>
-            <div className="font-semibold">{unrealizedProfit}</div>
+            <div className="text-xl font-bold">{unrealizedProfit}</div>
+            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">미실현 이익</div>
           </div>
         )}
       </CardContent>
