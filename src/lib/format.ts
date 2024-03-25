@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 const LOCALE = 'en-US';
 const formatter = new Intl.NumberFormat(LOCALE);
 
@@ -18,7 +20,8 @@ export function formatNum({
   precision?: number;
   currencySymbol?: string;
 }): string {
-  if (Number.isNaN(num)) {
+  const isNumber = z.number().safeParse(num).success;
+  if (!isNumber || Number.isNaN(num)) {
     return '';
   }
 

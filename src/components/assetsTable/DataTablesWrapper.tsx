@@ -1,13 +1,13 @@
 import { InfoTab } from '@/types/tableTypes.ts';
 import InfoTabs from '@/components/assetsTable/InfoTabs.tsx';
 import AssetsTableWrapper from '@/components/assetsTable/AssetsTableWrapper.tsx';
-import { cachePositions } from '@/hooks/useCachePosition.ts';
+// import { cachePositions } from '@/hooks/useCachePosition.ts';
 import TransactionLogWrapper from '@/components/transaction/TransactionLogWrapper';
 
 type Props = { className?: string };
 
 export default function DataTablesWrapper({ className }: Props) {
-  cachePositions();
+  // cachePositions(); // Todo: remove
 
   const tabs = buildTabs();
   return <InfoTabs className={className} defaultTableId={tabs.defaultId} tables={tabs.tabs} />;
@@ -23,7 +23,7 @@ function buildTabs(): {
       {
         id: 'history',
         displayName: '거래 기록',
-        component: <TransactionLogWrapper className="h-[30vh] md:h-[40vh]" />,
+        component: <TransactionLogWrapper className="" />,
       },
       {
         id: 'assets',

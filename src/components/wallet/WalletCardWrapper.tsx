@@ -74,16 +74,19 @@ function formatBalance(balance: number, exchange: Exchange): string {
     case 'binance':
       return formatNum({
         num: balance,
+        precision: 1,
         currencySymbol: 'USDT',
       });
     case 'upbit':
       return formatNum({
         num: balance,
+        precision: 1,
         currencySymbol: '₩',
       });
     case 'bithumb':
       return formatNum({
         num: balance,
+        precision: 1,
         currencySymbol: '₩',
       });
   }
@@ -136,10 +139,10 @@ function buildTotalUnrealizedProfit({
   }
 }
 
-function buildTotalBalance({ exchange, wallet }: { exchange: Exchange; wallet: Wallet | undefined }): string | null {
+function buildTotalBalance({ exchange, wallet }: { exchange: Exchange; wallet: Wallet | undefined }): string {
   const validTotalBalance = z.number().safeParse(wallet?.totalBalance);
   if (!validTotalBalance.success) {
-    return null;
+    return 'Unknown';
   }
 
   const totalBalance = validTotalBalance.data;
@@ -160,6 +163,6 @@ function buildTotalBalance({ exchange, wallet }: { exchange: Exchange; wallet: W
       });
 
     default:
-      return null;
+      return 'Unknown';
   }
 }
