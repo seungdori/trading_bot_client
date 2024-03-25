@@ -6,7 +6,7 @@
 
 ## Fast API 코드 수정 & 배포 방법
 
-1. 기존 trading_bot_backend 레포지토리의 README.md를 참조하여 기능 추가를 진행합니다.
+1. trading_bot_backend 레포지토리의 README.md를 참조하여 기능 추가를 진행합니다.
 2. 기능 추가를 완료했다면 작업 내용을 commit 이후 main 브랜치에 push 합니다.
 3. main 브랜치에 코드가 push 되면 프로젝트 루트 디렉토리/.github/workflows/build-binaries.yml 스크립트가 실행됩니다.
    1. 빌드 및 패키징 진행 상황은 Github 레포지토리 페이지의 Actions 탭에서 확인 가능합니다.
@@ -20,7 +20,7 @@
 
 ## 데스크탑 클라이언트 코드 수정 & 배포 방법
 
-1. 기존 trading_bot_client 레포지토리의 CLIENT.md를 참조하여 기능 추가를 진행합니다.
+1. trading_bot_client 레포지토리의 CLIENT.md를 참조하여 기능 추가를 진행합니다.
 2. 기능 추가를 완료했다면 작업 내용을 commit 이후 main 브랜치에 push 합니다.
 3. main 브랜치에 코드가 push 되면 프로젝트 루트 디렉토리/.github/workflows/build.yml 스크립트가 실행됩니다.
    1. 빌드 및 패키징 진행 상황은 Github 레포지토리 페이지의 Actions 탭에서 확인 가능합니다.
