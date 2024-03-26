@@ -7,6 +7,6 @@ export const useAiSearchProgress = (exchange: Exchange, enterStrategy: EnterStra
   return useQuery({
     queryKey: ['getAiSearchProgress', exchange, enterStrategy],
     queryFn: () => getAiSearchProgress(exchange, enterStrategy),
-    refetchInterval: fetchInterval ?? 1000,
+    refetchInterval: fetchInterval ?? 3000,
   });
 };

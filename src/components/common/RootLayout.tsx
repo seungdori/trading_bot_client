@@ -15,7 +15,7 @@ export default function RootLayout() {
           routes={Object.values(EXCHANGE).map((exchange) => ({
             name: exchange.NAME,
             exchange: exchange.EXCHANGE,
-            url: `/trading?exchange=${exchange.EXCHANGE}`,
+            url: `/trading`,
           }))}
         />
       )}
