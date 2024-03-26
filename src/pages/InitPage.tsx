@@ -6,6 +6,7 @@ import { ToastAction } from '@/components/ui/toast.tsx';
 import { useNavigate } from 'react-router-dom';
 import { useCheckUpdate } from '@/hooks/useCheckUpdate.ts';
 import UpdateDialog from '@/components/settings/UpdateDialog.tsx';
+import { clearAiSearchStatus } from '@/store/progressStore.ts';
 
 export default function InitPage() {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ export default function InitPage() {
   const handleSkip = () => navigate('/healthCheck', { replace: true });
 
   useEffect(() => {
+    clearAiSearchStatus();
+
     const unlistenPromise = onUpdaterEvent(({ error, status }) => {
       // This will log all updater events, including status updates and errors.
       console.log('Updater event', error, status);
