@@ -12,10 +12,9 @@ type Props = { className?: string };
 
 export default function WalletCardWrapper({ className }: Props) {
   const { exchange } = useExchangeStore();
-  const { isLoading, data: wallet, error } = useWallet({ exchange });
+  const { isLoading, data: wallet, isError, error } = useWallet({ exchange });
 
-  if (error) {
-    console.error(`[WALLET ERROR]`, error);
+  if (isError) {
     toast({ title: '거래소 조회 실패', description: error.message });
     return (
       <div className="flex w-full h-full items-center justify-center">

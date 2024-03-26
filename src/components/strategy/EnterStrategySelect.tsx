@@ -12,7 +12,9 @@ import { toast } from '@/components/ui/use-toast.ts';
 import { Icons } from '@/components/common/Icons.tsx';
 import { useAiSearchProgress } from '@/hooks/useAiSearchProgress.ts';
 import AiSearchProgress from '@/components/strategy/AiSearchProgress.tsx';
-import { DEFAULT_AI_SEARCH_SYMBOL_COUNT } from '@/constants/exchange.ts';
+import { DEFAULT_AI_SEARCH_CURRENT_SYMBOL, DEFAULT_AI_SEARCH_SYMBOL_COUNT } from '@/constants/exchange.ts';
+import { useAiSearchStatusStore } from '@/store/progressStore.ts';
+import { useEffect } from 'react';
 
 const FormSchema = z.object({
   type: EnterStrategySchema,
@@ -25,7 +27,7 @@ export default function EnterStrategySelect({ className }: Props) {
   const { enterStrategy } = store;
   const aiSearchMutation = useStartAiSearch(exchange);
   const aiSearchProgressQuery = useAiSearchProgress(exchange, enterStrategy);
-
+  const aiSearchStatusStore = useAiSearchStatusStore({ exchange, store });
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -39,21 +41,42 @@ export default function EnterStrategySelect({ className }: Props) {
       title: 'AI 탐색을 시작합니다',
       description: '이 작업은 최대 30분이 소요될 수 있습니다.',
     });
-
     aiSearchMutation.mutate({
       exchange,
       store,
     });
+    aiSearchStatusStore.setStatus('started');
   };
 
-  const isStarted = !!(
-    aiSearchProgressQuery.data && aiSearchProgressQuery.data.total_symbol_count !== DEFAULT_AI_SEARCH_SYMBOL_COUNT
-  );
-  const isProgressing = !!(
-    aiSearchMutation.isPending ||
-    (aiSearchProgressQuery.data &&
-      aiSearchProgressQuery.data.completed_symbol_count !== aiSearchProgressQuery.data.total_symbol_count)
-  );
+  // Synchronize the component state with the initial search status from local storage
+  useEffect(() => {
+    const isProgressing = (currentSymbol: string) => currentSymbol !== DEFAULT_AI_SEARCH_CURRENT_SYMBOL;
+    const isCompleted = (totalSymbolCount: number, completedSymbolCount: number) =>
+      totalSymbolCount === completedSymbolCount && totalSymbolCount !== DEFAULT_AI_SEARCH_SYMBOL_COUNT;
+
+    const syncStatusWithServer = () => {
+      if (!aiSearchProgressQuery.data) {
+        return;
+      }
+
+      if (isProgressing(aiSearchProgressQuery.data.current_progress_symbol)) {
+        if (
+          isCompleted(aiSearchProgressQuery.data.total_symbol_count, aiSearchProgressQuery.data.completed_symbol_count)
+        ) {
+          aiSearchStatusStore.setStatus('completed');
+          return;
+        } else {
+          aiSearchStatusStore.setStatus('progressing');
+          return;
+        }
+      }
+    };
+
+    syncStatusWithServer();
+  }, [aiSearchProgressQuery.data, aiSearchStatusStore]);
+
+  const isSearchButtonActive = aiSearchStatusStore.status === 'started' || aiSearchStatusStore.status === 'progressing';
+  const isSearchCompleted = aiSearchStatusStore.status === 'completed';
 
   return (
     <div className={className}>
@@ -104,10 +127,15 @@ export default function EnterStrategySelect({ className }: Props) {
           </div>
           {!aiSearchProgressQuery.isError && (
             <div className="w-full space-y-4">
-              <Button disabled={isProgressing} className="w-full" type="submit">
-                {isProgressing ? <Icons.spinner className="h-4 w-4 animate-spin" /> : <span>AI 탐색 시작</span>}
+              <Button disabled={isSearchButtonActive || isSearchCompleted} className="w-full" type="submit">
+                {isSearchButtonActive ? <Icons.spinner className="h-4 w-4 animate-spin" /> : <span>AI 탐색 시작</span>}
               </Button>
-              {isStarted && (
+              {aiSearchStatusStore.status === 'started' && (
+                <div className="flex flex-col items-center">
+                  <p className="text-xs">잠시후 진행 현황이 표시됩니다.</p>
+                </div>
+              )}
+              {aiSearchStatusStore.status === 'progressing' && aiSearchProgressQuery.data && (
                 <AiSearchProgress
                   className="space-y-4"
                   currentProgressSymbol={aiSearchProgressQuery.data.current_progress_symbol}
