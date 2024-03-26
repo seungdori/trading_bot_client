@@ -65,7 +65,7 @@
     "updater": {
       "active": true,
       "dialog": false,
-      "endpoints": ["https://github.com/KGESH/trading_bot_client/releases/latest/download/latest.json"],
+      "endpoints": ["https://github.com/seungdori/trading_bot_client/releases/latest/download/latest.json"],
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEYyQUUwMUVCNkI2RjdGNEQKUldSTmYyOXI2d0d1OGpTWmNtK1loWmNkRmtTemtUcFZlcittVGQ0ZkFLcTR1ZmlMS0pjbk8wajgK",
       "windows": {
         "installMode": "passive"
