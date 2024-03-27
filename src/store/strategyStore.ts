@@ -82,4 +82,22 @@ export const useBithumbStateStore = () => {
 export type BithumbStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
   ReturnType<typeof useBithumbStateStore>;
 
-export type ExchangeStateStore = BinanceStateStore | UpbitStateStore | BithumbStateStore;
+export const useBitgetStateStore = () => {
+  const [query, setQuery] = useQueryParams({
+    leverage: withDefault(NumberParam, defaultLeverage()),
+    enterStrategy: withDefault(createEnumParam<EnterStrategy>([...EnterStrategist]), 'long' as const),
+    customStrategy: withDefault(createEnumParam<CustomStrategy>([...CustomStrategist]), '전략1' as const),
+    enterSymbolAmount: withDefault(NumberParam, DEFAULT_ENTER_SYMBOL_AMOUNT),
+    enterSymbolCount: withDefault(NumberParam, DEFAULT_ENTER_SYMBOL_COUNT),
+  });
+
+  return {
+    store: query,
+    setStore: setQuery,
+  };
+};
+
+export type BitgetStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
+  ReturnType<typeof useBitgetStateStore>;
+
+export type ExchangeStateStore = BinanceStateStore | UpbitStateStore | BithumbStateStore | BitgetStateStore;

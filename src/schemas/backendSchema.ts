@@ -53,10 +53,18 @@ export const BithumbPositionsResponseSchema = z.object({
   balance: z.string(),
 });
 
+// Todo: Impl
+export const BitgetPositionsResponseSchema = z.object({
+  currency: z.string(),
+  current_price: z.number(),
+  balance: z.string(),
+});
+
 export const PositionsResponseSchema = z.union([
   BinancePositionsResponseSchema,
   UpbitPositionsResponseSchema,
   BithumbPositionsResponseSchema,
+  BitgetPositionsResponseSchema,
 ]);
 
 export const ExchangeApiKeyRequestSchema = z.object({

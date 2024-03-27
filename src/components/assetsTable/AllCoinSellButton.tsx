@@ -3,6 +3,7 @@ import { useSellAllCoins } from '@/hooks/useSellAllCoins.ts';
 import { useId } from 'react';
 import { BooleanParam, useQueryParam } from 'use-query-params';
 import CoinSellConfirmAlertModal from '@/components/assetsTable/CoinSellConfirmAlertModal.tsx';
+import { toast } from '@/components/ui/use-toast.ts';
 
 type Props = { exchange: Exchange };
 
@@ -28,6 +29,14 @@ export default function AllCoinSellButton({ exchange }: Props) {
   const handleSellAllCoins = () => {
     sellAllCoinsMutation.mutate();
   };
+
+  if (sellAllCoinsMutation.isError) {
+    toast({
+      title: '코인 전체 매도에 실패했습니다.',
+      description: <p className="whitespace-pre-wrap">{sellAllCoinsMutation.error.message}</p>,
+      variant: 'destructive',
+    });
+  }
 
   return (
     <>

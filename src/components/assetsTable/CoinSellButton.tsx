@@ -31,6 +31,14 @@ export default function CoinSellButton({ exchange }: Props) {
     sellCoinsMutation.mutate({ exchange, coins });
   };
 
+  if (sellCoinsMutation.isError) {
+    toast({
+      title: '코인 매도에 실패했습니다.',
+      description: <p className="whitespace-pre-wrap">{sellCoinsMutation.error.message}</p>,
+      variant: 'destructive',
+    });
+  }
+
   return (
     <>
       <CoinSellConfirmAlertModal

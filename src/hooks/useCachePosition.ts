@@ -1,4 +1,4 @@
-import { useFetchPositions } from '@/hooks/useAssetsData.ts';
+import { useFetchPositions } from '@/hooks/useAssetsData.tsx';
 
 const CACHE_INTERVAL = 1000 * 60 * 5;
 
@@ -9,4 +9,5 @@ export function cachePositions() {
   useFetchPositions('binance', CACHE_INTERVAL);
   useFetchPositions('upbit', CACHE_INTERVAL);
   useFetchPositions('bithumb', CACHE_INTERVAL);
+  useFetchPositions('bitget', CACHE_INTERVAL);
 }

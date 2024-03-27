@@ -4,6 +4,7 @@ import { fetchPositions } from '@/components/api/desktopClient.ts';
 import { useQuery } from '@tanstack/react-query';
 import {
   BinancePositionsResponse,
+  BitgetPositionsResponse,
   BithumbPositionsResponse,
   PositionsResponse,
   UpbitPositionsResponse,
@@ -21,7 +22,6 @@ export const useFetchPositions = (exchange: Exchange, refetchInterval?: number) 
   });
 };
 
-// Todo: Separate
 export const useAssetsData = (): { isLoading: boolean; assets: Asset[] } => {
   const { exchange } = useExchangeStore();
   const positionsQuery = useFetchPositions(exchange);
@@ -42,7 +42,20 @@ export const useAssetsData = (): { isLoading: boolean; assets: Asset[] } => {
 
   if (tradingDataQuery.isError) {
     console.error(`[BACKEND TRADING DATA QUERY]`, tradingDataQuery.error.message);
-    toast({ title: tradingDataQuery.error.message });
+    toast({
+      title: '매매 내역 조회에 실패했습니다.',
+      description: <p className="whitespace-pre-wrap">{tradingDataQuery.error.message}</p>,
+      variant: 'destructive',
+    });
+  }
+
+  if (positionsQuery.isError) {
+    console.error(`[BACKEND POSITIONS QUERY]`, positionsQuery.error.message);
+    toast({
+      title: '포지션 조회에 실패했습니다.',
+      description: <p className="whitespace-pre-wrap">{positionsQuery.error.message}</p>,
+      variant: 'destructive',
+    });
   }
 
   switch (exchange) {
@@ -61,6 +74,11 @@ export const useAssetsData = (): { isLoading: boolean; assets: Asset[] } => {
         isLoading: false,
         assets: buildBithumbAssets(positionsQuery.data as BithumbPositionsResponse[], tradingDataQuery.data ?? []),
       };
+    case 'bitget':
+      return {
+        isLoading: false,
+        assets: buildBitgetAssets(positionsQuery.data as BitgetPositionsResponse[], tradingDataQuery.data ?? []),
+      };
     default:
       return {
         isLoading: false,
@@ -77,6 +95,8 @@ export function buildMarketSymbols(exchange: Exchange, positions?: PositionsResp
       return buildBithumbSymbols(positions as BithumbPositionsResponse[]);
     case 'upbit':
       return buildUpbitSymbols(positions as UpbitPositionsResponse[]);
+    case 'bitget':
+      return buildBitgetSymbols(positions as UpbitPositionsResponse[]);
     default:
       return [];
   }
@@ -93,6 +113,20 @@ export function buildUpbitSymbols(positions?: UpbitPositionsResponse[]): string[
   }
 
   return positions.map((position) => buildUpbitSymbol(position.currency));
+}
+
+// Todo: Impl
+function buildBitgetSymbol(currency: string) {
+  return currency;
+}
+
+// Todo: Impl
+export function buildBitgetSymbols(positions?: UpbitPositionsResponse[]): string[] {
+  if (!positions) {
+    return [];
+  }
+
+  return positions.map((position) => buildBitgetSymbol(position.currency));
 }
 
 function buildBinanceSymbol(symbol: string) {
@@ -178,6 +212,65 @@ function buildBinanceAssets(
 }
 
 function buildBithumbAssets(
+  positions: BithumbPositionsResponse[],
+  tradingData: z.infer<typeof TradingDataResponseSchema>[],
+): Asset[] {
+  const tradingDataWithKey = tradingData.reduce(
+    (acc, item) => {
+      return {
+        ...acc,
+        [item.symbol]: item,
+      };
+    },
+    {} as Record<string, z.infer<typeof TradingDataResponseSchema>>,
+  );
+
+  const assets: Asset[] = positions.map((coin) => {
+    const key = coin.currency;
+    const coinName = coin.currency;
+    const amount = coin.balance;
+    const currentPrice = coin.current_price;
+    const initPrice = 0;
+    const rateOfReturn = 0;
+    const value = Math.abs(+amount * currentPrice);
+
+    const validatedTradingData = TradingDataSchema.safeParse(tradingData);
+    if (validatedTradingData.success) {
+      return {
+        key,
+        amount,
+        coinName,
+        currentPrice,
+        initPrice,
+        rateOfReturn,
+        sellPrice: tradingDataWithKey[key].long_sl_price.toFixed(2),
+        tp1: tradingDataWithKey[key].long_tp1_price.toFixed(2),
+        tp2: tradingDataWithKey[key].long_tp2_price.toFixed(2),
+        tp3: tradingDataWithKey[key].long_tp3_price.toFixed(2),
+        value,
+      };
+    } else {
+      return {
+        key,
+        amount,
+        coinName,
+        currentPrice,
+        initPrice,
+        rateOfReturn,
+        sellPrice: '',
+        tp1: '',
+        tp2: '',
+        tp3: '',
+        value,
+      };
+    }
+  });
+
+  return assets;
+}
+
+// Todo: Impl
+function buildBitgetAssets(
   positions: BithumbPositionsResponse[],
   tradingData: z.infer<typeof TradingDataResponseSchema>[],
 ): Asset[] {

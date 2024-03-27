@@ -2,6 +2,8 @@ import { Exchange } from '@/types/exchangeTypes.ts';
 import { useLocalStorage } from '@/store/settingsStore.ts';
 import { z } from 'zod';
 
+const MAX_TRADING_LOG_LINE_COUNT = 2000;
+
 /**
  * @description 거래소별 거래내역을 저장하는 훅.
  * @param exchange 거래소 이름.
@@ -18,7 +20,6 @@ export const useTadingLogStore = (exchange: Exchange) => {
   console.log(exchange);
   // const key = `${exchange}-transaction-log`; // Todo: 거래소별 거래내역을 저장할 수 있도록 요구사항 변경시 사용.
   const key = `transaction-log`;
-  const maxItemCount = 300;
 
   const getTransactionLogs = (): string[] => {
     const logs = get(key);
@@ -31,13 +32,13 @@ export const useTadingLogStore = (exchange: Exchange) => {
     if (isArray.success) {
       isArray.data.forEach((item) => {
         prevLogs.push(item);
-        if (prevLogs.length > maxItemCount) {
+        if (prevLogs.length > MAX_TRADING_LOG_LINE_COUNT) {
           prevLogs.shift();
         }
       });
     } else {
       prevLogs.push(log as string);
-      if (prevLogs.length > maxItemCount) {
+      if (prevLogs.length > MAX_TRADING_LOG_LINE_COUNT) {
         prevLogs.shift();
       }
     }

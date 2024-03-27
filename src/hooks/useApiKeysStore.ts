@@ -4,6 +4,7 @@ import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateExchangeApiKeys } from '@/components/api/desktopClient.ts';
 import { toast } from '@/components/ui/use-toast.ts';
+import { buildBackendErrorMessage } from '@/helper/error.ts';
 
 const useUpdateExchangeApiKey = (exchange: Exchange) => {
   const client = useQueryClient();
@@ -17,12 +18,12 @@ const useUpdateExchangeApiKey = (exchange: Exchange) => {
           title: responseDto.message,
         });
       } else {
-        toast({
-          title: responseDto.message,
-        });
+        const errorMessage = buildBackendErrorMessage(responseDto);
+        throw new Error(errorMessage);
       }
     },
-    onError: (error) => {
+    onError: (error: Error) => {
+      console.error('[UPDATE EXCHANGE API KEYS ERROR]', error.message);
       throw new Error(error.message);
     },
     onSettled: () => {
@@ -47,7 +48,7 @@ async function initExchangeApiKeys(exchanges: ({ exchange: Exchange } & Exchange
   }
 }
 
-export const useApiKeysStore = (exchange: Exchange) => {
+export const useApiKeysStore = (exchange: Exchange, onError?: (message: string) => void) => {
   const settingsStore = useLocalStorage();
   const { API_KEY, SECRET } = buildLocalStorageKeys(exchange);
   const keys: ExchangeApiKeys = {
@@ -66,6 +67,12 @@ export const useApiKeysStore = (exchange: Exchange) => {
       secret: updated.secret,
     });
   };
+
+  if (mutation.isError) {
+    if (onError) {
+      onError(mutation.error.message);
+    }
+  }
 
   return { keys, updateApiKeys };
 };
@@ -87,6 +94,11 @@ function buildLocalStorageKeys(exchange: Exchange) {
         API_KEY: 'UPBIT_API_KEY',
         SECRET: 'UPBIT_SECRET',
       };
+    case 'bitget':
+      return {
+        API_KEY: 'BITGET_API_KEY',
+        SECRET: 'BITGET_SECRET',
+      };
   }
 }
 
@@ -94,14 +106,16 @@ export const useInitExchangeApiKeys = () => {
   const { keys: binanceKeys } = useApiKeysStore('binance');
   const { keys: bithumbKeys } = useApiKeysStore('bithumb');
   const { keys: upbitKeys } = useApiKeysStore('upbit');
+  const { keys: bitgetKeys } = useApiKeysStore('bitget');
 
   return useMutation({
-    mutationKey: ['initExchangeApiKeys', binanceKeys, bithumbKeys, upbitKeys],
+    mutationKey: ['initExchangeApiKeys', binanceKeys, bithumbKeys, upbitKeys, bitgetKeys],
     mutationFn: () =>
       initExchangeApiKeys([
         { exchange: 'binance', ...binanceKeys },
         { exchange: 'bithumb', ...bithumbKeys },
         { exchange: 'upbit', ...upbitKeys },
+        { exchange: 'bitget', ...bitgetKeys },
       ]),
   });
 };

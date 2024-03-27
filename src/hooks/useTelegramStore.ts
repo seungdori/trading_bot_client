@@ -7,7 +7,12 @@ import { useUpdateTelegramId } from '@/hooks/useUpdateTelegramId.ts';
 
 const TELEGRAN_ID_KEY = 'TELEGRAM_ID';
 
-export const useTelegramStore = (exchange: Exchange) => {
+type TelegramStoreErrorHandlers = {
+  onIdUpdateError?: (message: string) => void;
+  onTokenUpdateError?: (message: string) => void;
+};
+
+export const useTelegramStore = (exchange: Exchange, errorHandlers?: TelegramStoreErrorHandlers) => {
   const settingsStore = useLocalStorage();
   const { TOKEN_KEY } = buildLocalStorageKey(exchange);
   const telegramId = settingsStore.get(TELEGRAN_ID_KEY) ?? '';
@@ -25,6 +30,19 @@ export const useTelegramStore = (exchange: Exchange) => {
     tokenMutation.mutate({ exchange, token: updated });
   };
 
+  if (idMutation.isError) {
+    if (errorHandlers?.onIdUpdateError) {
+      errorHandlers.onIdUpdateError(idMutation.error.message);
+    }
+  }
+
+  if (tokenMutation.isError) {
+    console.log('[TOKEN MUTATION ERROR]', tokenMutation.error);
+    if (errorHandlers?.onTokenUpdateError) {
+      errorHandlers.onTokenUpdateError(tokenMutation.error.message);
+    }
+  }
+
   return { telegramId, token, updateId, updateToken };
 };
 
@@ -41,6 +59,10 @@ function buildLocalStorageKey(exchange: Exchange) {
     case 'bithumb':
       return {
         TOKEN_KEY: 'BITHUMB_TELEGRAM_TOKEN',
+      };
+    case 'bitget':
+      return {
+        TOKEN_KEY: 'BITGET_TELEGRAM_TOKEN',
       };
   }
 }
@@ -61,14 +83,16 @@ export const useInitTelegramTokens = () => {
   const { token: binanceToken } = useTelegramStore('binance');
   const { token: bithumbToken } = useTelegramStore('bithumb');
   const { token: upbitToken } = useTelegramStore('upbit');
+  const { token: bitgetToken } = useTelegramStore('bitget');
 
   return useMutation({
-    mutationKey: ['initTelegramTokens', binanceToken, bithumbToken, upbitToken],
+    mutationKey: ['initTelegramTokens', binanceToken, bithumbToken, upbitToken, bitgetToken],
     mutationFn: () =>
       initTelegramTokens([
         { exchange: 'binance', token: binanceToken },
         { exchange: 'bithumb', token: bithumbToken },
         { exchange: 'upbit', token: upbitToken },
+        { exchange: 'bitget', token: bitgetToken },
       ]),
   });
 };

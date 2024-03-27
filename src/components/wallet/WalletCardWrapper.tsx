@@ -7,6 +7,7 @@ import { toast } from '@/components/ui/use-toast.ts';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
 import { formatNum } from '@/lib/format.ts';
 import { z } from 'zod';
+import { EXCHANGE } from '@/constants/exchange.ts';
 
 type Props = { className?: string };
 
@@ -15,7 +16,7 @@ export default function WalletCardWrapper({ className }: Props) {
   const { isLoading, data: wallet, isError, error } = useWallet({ exchange });
 
   if (isError) {
-    toast({ title: '거래소 조회 실패', description: error.message });
+    toast({ title: '거래소 조회에 실패했습니다.', description: error.message, variant: 'destructive' });
     return (
       <div className="flex w-full h-full items-center justify-center">
         <p>Failed to load wallet</p>
@@ -54,11 +55,13 @@ export default function WalletCardWrapper({ className }: Props) {
 function buildExchangeName(exchange: Exchange) {
   switch (exchange) {
     case 'binance':
-      return '바이낸스';
+      return EXCHANGE.BINANCE.NAME;
     case 'bithumb':
-      return '빗썸';
+      return EXCHANGE.BITHUMB.NAME;
     case 'upbit':
-      return '업비트';
+      return EXCHANGE.UPBIT.NAME;
+    case 'bitget':
+      return EXCHANGE.BITGET.NAME;
     default:
       throw new Error('Invalid exchange');
   }
@@ -88,16 +91,23 @@ function formatBalance(balance: number, exchange: Exchange): string {
         precision: 1,
         currencySymbol: '₩',
       });
+    case 'bitget':
+      return formatNum({
+        num: balance,
+        precision: 1,
+        currencySymbol: 'USDT',
+      });
   }
 }
 
 function buildBalanceDescription(exchange: Exchange) {
   switch (exchange) {
     case 'binance':
+    case 'bitget':
       return '보유 USDT';
-    case 'upbit':
-      return '보유 KRW';
+
     case 'bithumb':
+    case 'upbit':
       return '보유 KRW';
   }
 }

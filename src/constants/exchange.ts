@@ -11,6 +11,10 @@ export const EXCHANGE = {
     NAME: '업비트',
     EXCHANGE: 'upbit',
   },
+  BITGET: {
+    NAME: '비트겟',
+    EXCHANGE: 'bitget',
+  },
 } as const;
 
 export const DEFAULT_EXCHANGE = EXCHANGE.UPBIT.EXCHANGE;
