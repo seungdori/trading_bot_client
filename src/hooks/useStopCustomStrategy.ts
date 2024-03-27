@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { stopCustomStrategy } from '@/components/api/desktopClient.ts';
 import { toast } from '@/components/ui/use-toast.ts';
 import { Exchange } from '@/types/exchangeTypes.ts';
-import { CustomStrategy } from '@/store/strategyStore.ts';
+import { CustomStrategy } from '@/types/backendTypes.ts';
 
 export const useStopCustomStrategy = ({ exchange, strategy }: { exchange: Exchange; strategy: CustomStrategy }) => {
   return useMutation({
