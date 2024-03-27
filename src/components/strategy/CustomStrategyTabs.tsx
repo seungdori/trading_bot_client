@@ -29,11 +29,12 @@ export default function CustomStrategyTabs({ className, strategies }: Props) {
         });
       }}
     >
+      {/*Todo: Fix*/}
+      {/*<TabsList className={cn(`grid w-full grid-cols-${strategies.length}`)}>*/}
       <TabsList className={cn(`grid w-full grid-cols-${4}`)}>
-        {/*<TabsList className={cn(`grid w-full grid-cols-${strategies.length}`)}>*/}
         {strategies.map((strategy) => (
-          <TabsTrigger key={strategy} value={strategy}>
-            {strategy}
+          <TabsTrigger key={strategy} value={strategy} className="col-span-1">
+            <span>{strategy}</span>
           </TabsTrigger>
         ))}
       </TabsList>
