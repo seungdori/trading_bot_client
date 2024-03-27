@@ -15,6 +15,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import BinanceLogo from '@/assets/binance.svg';
 import BithumbLogo from '@/assets/bithumb.svg';
 import UpbitLogo from '@/assets/upbit.svg';
+import BitgetLogo from '@/assets/bitget.svg';
 import { ExchangeApiKeysSchema } from '@/schemas/settingsSchema.ts';
 import { useApiKeysStore } from '@/hooks/useApiKeysStore.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
@@ -22,11 +23,14 @@ import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
 export default function ApiKeysSettings() {
   const id = useId();
   const { exchange, setExchange } = useExchangeStore(id);
+  const onApiKeyUpdateFail = (message: string) => {
+    toast({ title: 'Failed to update api keys', description: <p className="whitespace-pre-wrapp">{message}</p> });
+  };
   const [showApiKeys, setShowApiKeys] = useQueryParam('showApiKeys', withDefault(BooleanParam, false));
   const {
     keys: { apiKey, secret },
     updateApiKeys,
-  } = useApiKeysStore(exchange);
+  } = useApiKeysStore(exchange, onApiKeyUpdateFail);
   const form = useForm<ExchangeApiKeys>({
     resolver: zodResolver(ExchangeApiKeysSchema),
     defaultValues: { apiKey, secret },
@@ -50,10 +54,8 @@ export default function ApiKeysSettings() {
       <CardContent className="grid gap-6">
         <RadioGroup
           defaultValue={exchange}
-          onValueChange={(selectedValue) => {
-            setExchange(selectedValue as Exchange);
-          }}
-          className="grid grid-cols-3 gap-4"
+          onValueChange={(selectedValue) => setExchange(selectedValue as Exchange)}
+          className="grid grid-cols-4 gap-4"
         >
           <div>
             <RadioGroupItem value="binance" id={`binance-${id}`} className="peer sr-only" />
@@ -83,6 +85,16 @@ export default function ApiKeysSettings() {
             >
               <img src={UpbitLogo} className="h-10 m-2" />
               <span>Upbit</span>
+            </Label>
+          </div>
+          <div>
+            <RadioGroupItem value="bitget" id={`bitget-${id}`} className="peer sr-only" />
+            <Label
+              htmlFor={`bitget-${id}`}
+              className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+            >
+              <img src={BitgetLogo} className="h-10 m-2" />
+              <span>Bitget</span>
             </Label>
           </div>
         </RadioGroup>

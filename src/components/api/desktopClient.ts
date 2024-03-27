@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { Body, fetch } from '@tauri-apps/api/http';
-import { BinanceStateStore, CustomStrategy, EnterStrategy, ExchangeStateStore } from '@/store/strategyStore.ts';
+import { BinanceStateStore, ExchangeStateStore } from '@/store/strategyStore.ts';
 import { Exchange, Wallet } from '@/types/exchangeTypes.ts';
 import {
   DESKTOP_BACKEND_BASE_URL,
@@ -26,13 +26,15 @@ import {
   TelegramTokenDto,
   TelegramTokenRequest,
   TestFeatureRequest,
-  UpbitPositionsResponse,
   User,
   WalletResponse,
   WinRate,
+  EnterStrategy,
+  CustomStrategy,
 } from '@/types/backendTypes.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
 import { convertFileSrc } from '@tauri-apps/api/tauri';
+import { buildBackendErrorMessage } from '@/helper/error.ts';
 
 /**
  * @description 로컬 백엔드 health check.
@@ -133,21 +135,26 @@ export async function login(args: z.infer<typeof LoginSchema>) {
  * @description 로컬 백엔드에 거래소 api key, secret 업데이트 요청.
  */
 export async function updateExchangeApiKeys({ exchange, apiKey, secret }: { exchange: Exchange } & ExchangeApiKeys) {
+  const endpoint = new URL('/exchange/keys', DESKTOP_BACKEND_BASE_URL);
   const dto: ExchangeRequest = {
     exchange_name: exchange,
     api_key: apiKey,
     secret_key: secret,
   };
 
-  const endpoint = new URL('/exchange/keys', DESKTOP_BACKEND_BASE_URL);
-  const response = await fetch<ResponseDto<unknown>>(endpoint.href, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: Body.json(dto),
-  });
+  try {
+    const response = await fetch<ResponseDto<unknown>>(endpoint.href, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: Body.json(dto),
+    });
 
-  const responseDto = response.data;
-  return responseDto;
+    const responseDto = response.data;
+    return responseDto;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
 }
 
 export async function startAiSearch({
@@ -188,9 +195,8 @@ export async function fetchTradingData({
   symbols,
 }: {
   exchange: Exchange;
-  symbols: UpbitPositionsResponse['currency'][];
+  symbols: string[];
 }): Promise<z.infer<typeof TradingDataResponseSchema>[]> {
-  // Todo: 상장폐지 심볼 처리
   const endpoint = new URL(`/trading/${exchange}`, DESKTOP_BACKEND_BASE_URL);
   const queryParams = JSON.stringify(symbols);
   endpoint.searchParams.set('symbols', queryParams);
@@ -207,10 +213,8 @@ export async function fetchTradingData({
   if (responseDto.success) {
     return responseDto.data;
   } else {
-    // Todo: handle error
-    // throw new Error(backendResponse.message);
-    throw new Error(responseDto.message);
-    // return [];
+    const errorMessage = buildBackendErrorMessage(responseDto);
+    throw new Error(errorMessage);
   }
 }
 
@@ -228,12 +232,13 @@ export async function fetchPositions(exchange: Exchange): Promise<PositionsRespo
     const dto: ResponseDto<PositionsResponse[]> = response.data;
     console.log(`[${exchange} POSITION DTO]`, dto);
 
-    if (!dto.success) {
-      return [];
+    if (dto.success) {
+      const positions = dto.data;
+      return positions;
+    } else {
+      const errorMessage = buildBackendErrorMessage(dto);
+      throw new Error(errorMessage);
     }
-
-    const positions = dto.data;
-    return positions;
   } catch (e) {
     console.error(`[${exchange} POSITION DTO ERROR]`, e);
     throw e;
@@ -533,29 +538,35 @@ export async function getAiSearchProgress(
 export async function fetchWalletFromBackend(exchange: Exchange): Promise<Wallet> {
   const endpoint = new URL(`/exchange/${exchange}/wallet`, DESKTOP_BACKEND_BASE_URL);
 
-  const response = await fetch<ResponseDto<WalletResponse>>(endpoint.href, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-  }).catch((e) => {
-    console.error('[FETCH WALLET FROM BACKEND]', e);
+  try {
+    const response = await fetch<ResponseDto<WalletResponse>>(endpoint.href, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    }).catch((e) => {
+      console.error('[FETCH WALLET FROM BACKEND]', e);
+      throw e;
+    });
+
+    const responseDto = response.data;
+
+    console.log(`[WALLET RESPONSE]`, responseDto);
+
+    if (responseDto.success) {
+      const wallet = responseDto.data;
+      return {
+        exchange: wallet.exchange_name,
+        totalBalance: wallet.total_balance,
+        walletBalance: wallet.wallet_balance,
+        totalUnrealizedProfit: wallet.total_unrealized_profit,
+      };
+    } else {
+      console.error('[FETCH WALLET FROM BACKEND ERROR]', responseDto.message);
+      const errorMessage = buildBackendErrorMessage(responseDto);
+      throw new Error(errorMessage);
+    }
+  } catch (e) {
+    console.error(e);
     throw e;
-  });
-
-  const responseDto = response.data;
-
-  console.log(`[WALLET RESPONSE]`, responseDto);
-
-  if (responseDto.success) {
-    const wallet = responseDto.data;
-    return {
-      exchange: wallet.exchange_name,
-      totalBalance: wallet.total_balance,
-      walletBalance: wallet.wallet_balance,
-      totalUnrealizedProfit: wallet.total_unrealized_profit,
-    };
-  } else {
-    console.error('[FETCH WALLET FROM BACKEND ERROR]', responseDto.message);
-    throw new Error(responseDto.message);
   }
 }
 
