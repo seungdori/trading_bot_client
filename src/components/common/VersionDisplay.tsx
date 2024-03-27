@@ -6,13 +6,14 @@ export default function VersionDisplay() {
   const backendVersion = useBackendVersionCheck();
 
   return (
-    <div className="flex flex-col space-y-1">
-      <p>
+    <p>
+      <span>
         Client version: {clientVersion.isLoading ? 'Loading...' : clientVersion.data ? clientVersion.data : 'Unknown'}
-      </p>
-      <p>
+      </span>
+      <br />
+      <span>
         Core version: {backendVersion.isLoading ? 'Loading...' : backendVersion.data ? backendVersion.data : 'Unknown'}
-      </p>
-    </div>
+      </span>
+    </p>
   );
 }
