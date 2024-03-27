@@ -143,6 +143,10 @@ function buildTotalUnrealizedProfit({
     case 'bithumb':
       return null;
 
+    case 'bitget':
+      // Todo: Impl
+      return null;
+
     default:
       return null;
   }
@@ -157,6 +161,7 @@ function buildTotalBalance({ exchange, wallet }: { exchange: Exchange; wallet: W
   const totalBalance = validTotalBalance.data;
   switch (exchange) {
     case 'binance':
+    case 'bitget':
       return formatNum({
         num: totalBalance,
         precision: 1,
