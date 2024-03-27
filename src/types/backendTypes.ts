@@ -22,7 +22,7 @@ import {
 } from '@/schemas/backendSchema.ts';
 import { z } from 'zod';
 import { Exchange } from '@/types/exchangeTypes.ts';
-import { CustomStrategy, EnterStrategy } from '@/store/strategyStore.ts';
+import { CustomStrategySchema, EnterStrategySchema } from '@/schemas/exchangeSchema.ts';
 
 type ResponseDtoSuccess<T> = {
   success: true;
@@ -77,6 +77,10 @@ export type WinRate = z.infer<typeof WinRateSchema>;
 export type AiSearchProgressResponse = z.infer<typeof AiSearchProgressResponseSchema>;
 
 export type WalletResponse = z.infer<typeof WalletResponseSchema>;
+
+export type EnterStrategy = z.infer<typeof EnterStrategySchema>;
+
+export type CustomStrategy = z.infer<typeof CustomStrategySchema>;
 
 export type BotStateKeyArgs = { exchange: Exchange; enterStrategy: EnterStrategy; customStrategy: CustomStrategy };
 

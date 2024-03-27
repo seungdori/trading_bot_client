@@ -1,16 +1,15 @@
-import { z } from 'zod';
-import { CustomStrategySchema, EnterStrategySchema } from '@/schemas/exchangeSchema.ts';
 import { createEnumParam, NumberParam, useQueryParams, withDefault } from 'use-query-params';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
-
-export type EnterStrategy = z.infer<typeof EnterStrategySchema>;
-export type CustomStrategy = z.infer<typeof CustomStrategySchema>;
+import {
+  CustomStrategist,
+  DEFAULT_ENTER_SYMBOL_AMOUNT,
+  DEFAULT_ENTER_SYMBOL_COUNT,
+  DEFAULT_LEVERAGE,
+  EnterStrategist,
+} from '@/constants/backend.ts';
+import { CustomStrategy, EnterStrategy } from '@/types/backendTypes.ts';
 
 const LEVERAGE_KEY = 'leverage';
-const DEFAULT_LEVERAGE = 10;
-
-const DEFAULT_ENTER_SYMBOL_AMOUNT = 500;
-const DEFAULT_ENTER_SYMBOL_COUNT = 10;
 
 export function saveLeverage(leverage: number) {
   localStorage.setItem(LEVERAGE_KEY, leverage.toString());
@@ -26,9 +25,6 @@ export function defaultLeverage(): number {
   saveLeverage(DEFAULT_LEVERAGE);
   return DEFAULT_LEVERAGE;
 }
-
-export const CustomStrategist = ['전략1', '전략2', '전략3'] as const;
-export const EnterStrategist = ['long', 'short', 'long-short'] as const;
 
 export const useBinanceStateStore = () => {
   const [query, setQuery] = useQueryParams({

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { Body, fetch } from '@tauri-apps/api/http';
-import { BinanceStateStore, CustomStrategy, EnterStrategy, ExchangeStateStore } from '@/store/strategyStore.ts';
+import { BinanceStateStore, ExchangeStateStore } from '@/store/strategyStore.ts';
 import { Exchange, Wallet } from '@/types/exchangeTypes.ts';
 import {
   DESKTOP_BACKEND_BASE_URL,
@@ -29,6 +29,8 @@ import {
   User,
   WalletResponse,
   WinRate,
+  EnterStrategy,
+  CustomStrategy,
 } from '@/types/backendTypes.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
 import { convertFileSrc } from '@tauri-apps/api/tauri';

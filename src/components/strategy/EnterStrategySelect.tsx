@@ -75,6 +75,7 @@ export default function EnterStrategySelect({ className }: Props) {
     syncStatusWithServer();
   }, [aiSearchProgressQuery.data, aiSearchStatusStore]);
 
+  const disableShortPosition = exchange === 'bithumb' || exchange === 'upbit'; // Todo: Impl
   const isSearchButtonActive = aiSearchStatusStore.status === 'started' || aiSearchStatusStore.status === 'progressing';
   const isSearchCompleted = aiSearchStatusStore.status === 'completed';
 
@@ -108,13 +109,13 @@ export default function EnterStrategySelect({ className }: Props) {
                       </FormItem>
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="short" disabled={exchange !== 'binance'} />
+                          <RadioGroupItem value="short" disabled={disableShortPosition} />
                         </FormControl>
                         <FormLabel className="font-normal">숏 진입전략</FormLabel>
                       </FormItem>
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="long-short" disabled={exchange !== 'binance'} />
+                          <RadioGroupItem value="long-short" disabled={disableShortPosition} />
                         </FormControl>
                         <FormLabel className="font-normal">롱/숏 진입전략</FormLabel>
                       </FormItem>

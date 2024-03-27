@@ -1,4 +1,3 @@
-import { CustomStrategist, CustomStrategy } from '@/store/strategyStore.ts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx';
 import { cn } from '@/lib/utils.ts';
 import CustomStrategyContent from '@/components/strategy/CustomStrategyContent.tsx';
@@ -6,6 +5,8 @@ import { useStrategyStore } from '@/hooks/useStrategyStore.ts';
 import StartFeatureButton from '@/components/strategy/StartFeatureButton.tsx';
 import StopFeatureButton from '@/components/strategy/StopFeatureButton.tsx';
 import TestFeatureButton from '@/components/strategy/TestFeatureButton.tsx';
+import { CustomStrategist } from '@/constants/backend.ts';
+import { CustomStrategy } from '@/types/backendTypes.ts';
 
 type Strategies = typeof CustomStrategist;
 
@@ -28,7 +29,8 @@ export default function CustomStrategyTabs({ className, strategies }: Props) {
         });
       }}
     >
-      <TabsList className={cn(`grid w-full grid-cols-${strategies.length}`)}>
+      <TabsList className={cn(`grid w-full grid-cols-${4}`)}>
+        {/*<TabsList className={cn(`grid w-full grid-cols-${strategies.length}`)}>*/}
         {strategies.map((strategy) => (
           <TabsTrigger key={strategy} value={strategy}>
             {strategy}
