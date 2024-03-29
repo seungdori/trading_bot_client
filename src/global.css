@@ -75,7 +75,12 @@
   }
 }
 
-html body {
+html body div#root {
   margin: 0;
   padding: 0;
+  height: 100%;
+}
+
+textarea {
+  resize: none;
 }
