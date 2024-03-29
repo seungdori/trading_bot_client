@@ -71,6 +71,7 @@ export const ExchangeApiKeyRequestSchema = z.object({
   exchange_name: z.string(),
   api_key: z.string(),
   secret_key: z.string(),
+  password: z.string().nullish(),
 });
 
 export const StartAiSearchRequestSchema = z.object({

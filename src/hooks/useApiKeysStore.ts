@@ -50,21 +50,24 @@ async function initExchangeApiKeys(exchanges: ({ exchange: Exchange } & Exchange
 
 export const useApiKeysStore = (exchange: Exchange, onError?: (message: string) => void) => {
   const settingsStore = useLocalStorage();
-  const { API_KEY, SECRET } = buildLocalStorageKeys(exchange);
+  const { API_KEY, SECRET, PASSWORD } = buildLocalStorageKeys(exchange);
   const keys: ExchangeApiKeys = {
     apiKey: settingsStore.get(API_KEY) ?? '',
     secret: settingsStore.get(SECRET) ?? '',
+    password: settingsStore.get(PASSWORD) ?? '',
   };
   const mutation = useUpdateExchangeApiKey(exchange);
 
   const updateApiKeys = (updated: ExchangeApiKeys) => {
     settingsStore.set(API_KEY, updated.apiKey);
     settingsStore.set(SECRET, updated.secret);
+    settingsStore.set(PASSWORD, updated.password ?? '');
 
     mutation.mutate({
       exchange,
       apiKey: updated.apiKey,
       secret: updated.secret,
+      password: updated.password,
     });
   };
 
@@ -83,21 +86,25 @@ function buildLocalStorageKeys(exchange: Exchange) {
       return {
         API_KEY: 'BINANCE_API_KEY',
         SECRET: 'BINANCE_SECRET',
+        PASSWORD: 'BINANCE_PASSWORD',
       };
     case 'bithumb':
       return {
         API_KEY: 'BITHUMB_API_KEY',
         SECRET: 'BITHUMB_SECRET',
+        PASSWORD: 'BITHUMB_PASSWORD',
       };
     case 'upbit':
       return {
         API_KEY: 'UPBIT_API_KEY',
         SECRET: 'UPBIT_SECRET',
+        PASSWORD: 'UPBIT_PASSWORD',
       };
     case 'bitget':
       return {
         API_KEY: 'BITGET_API_KEY',
         SECRET: 'BITGET_SECRET',
+        PASSWORD: 'BITGET_PASSWORD',
       };
   }
 }

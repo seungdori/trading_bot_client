@@ -24,27 +24,28 @@ export default function ApiKeysSettings() {
   const id = useId();
   const { exchange, setExchange } = useExchangeStore(id);
   const onApiKeyUpdateFail = (message: string) => {
-    toast({ title: 'Failed to update api keys', description: <p className="whitespace-pre-wrapp">{message}</p> });
+    toast({ title: 'Failed to update credentials', description: <p className="whitespace-pre-wrapp">{message}</p> });
   };
   const [showApiKeys, setShowApiKeys] = useQueryParam('showApiKeys', withDefault(BooleanParam, false));
   const {
-    keys: { apiKey, secret },
+    keys: { apiKey, secret, password },
     updateApiKeys,
   } = useApiKeysStore(exchange, onApiKeyUpdateFail);
   const form = useForm<ExchangeApiKeys>({
     resolver: zodResolver(ExchangeApiKeysSchema),
-    defaultValues: { apiKey, secret },
+    defaultValues: { apiKey, secret, password },
   });
 
   const onSubmit = (inputs: ExchangeApiKeys) => {
     updateApiKeys(inputs);
-    toast({ title: 'API Keys saved!' });
+    toast({ title: 'Credentials saved!' });
   };
 
   useEffect(() => {
-    form.reset({ apiKey, secret });
-  }, [apiKey, secret]);
+    form.reset({ apiKey, secret, password });
+  }, [apiKey, secret, password]);
 
+  const passwordRequired = exchange === 'bitget';
   return (
     <Card>
       <CardHeader>
@@ -100,7 +101,7 @@ export default function ApiKeysSettings() {
         </RadioGroup>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-rows-3 gap-2">
               <FormField
                 control={form.control}
                 name="apiKey"
@@ -136,6 +137,28 @@ export default function ApiKeysSettings() {
                         autoCapitalize="none"
                         autoCorrect="off"
                         value={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem className="space-y-3 w-full">
+                    <Label htmlFor="password">PASSWORD</Label>
+                    <FormControl>
+                      <Input
+                        id="password"
+                        type={showApiKeys ? 'text' : 'password'}
+                        placeholder="PASSWORD"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        disabled={!passwordRequired}
+                        value={field.value ?? ''}
                         onChange={field.onChange}
                       />
                     </FormControl>
