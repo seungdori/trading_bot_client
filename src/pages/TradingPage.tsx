@@ -6,22 +6,44 @@ import ExchangePanel from '@/components/strategy/ExchangePanel.tsx';
 
 export default function TradingPage() {
   return (
-    <main className="md:grid md:grid-cols-12 sm:flex sm:flex-col sm:space-y-4 w-full h-full gap-2">
-      <section className="col-span-3">
-        <WalletCardWrapper className="h-full" />
+    <main className="flex flex-col w-full h-full space-y-2">
+      <section className="grid grid-cols-12 space-x-2">
+        <section className="col-span-3">
+          <WalletCardWrapper className="h-full" />
+        </section>
+        <section className="col-span-6">
+          <StrategyPanel className="h-full" />
+        </section>
+        <section className="col-span-3">
+          <CustomStrategyWrapper className="w-full h-full" />
+        </section>
       </section>
-      <section className="col-span-6">
-        <StrategyPanel className="h-full" />
-      </section>
-      <section className="col-span-3">
-        <CustomStrategyWrapper className="h-full" />
-      </section>
-      <section className="col-span-9">
-        <DataTablesWrapper className="h-full" />
-      </section>
-      <section className="col-span-3">
-        <ExchangePanel className="h-full" />
+
+      <section className="grid grid-cols-12 flex-1 space-x-2">
+        <section className="col-span-9">
+          <DataTablesWrapper className="flex flex-col w-full h-full" />
+        </section>
+        <section className="col-span-3">
+          <ExchangePanel className="h-full" />
+        </section>
       </section>
     </main>
+    // <main className="md:grid md:grid-cols-12 sm:flex sm:flex-col sm:space-y-4 w-full h-full gap-2">
+    //   <section className="col-span-3">
+    //     <WalletCardWrapper className="h-full" />
+    //   </section>
+    //   <section className="col-span-6">
+    //     <StrategyPanel className="h-full" />
+    //   </section>
+    //   <section className="col-span-3">
+    //     <CustomStrategyWrapper className="h-full" />
+    //   </section>
+    //   <section className="col-span-9">
+    //     <DataTablesWrapper className="h-full" />
+    //   </section>
+    //   <section className="col-span-3">
+    //     <ExchangePanel className="h-full" />
+    //   </section>
+    // </main>
   );
 }
