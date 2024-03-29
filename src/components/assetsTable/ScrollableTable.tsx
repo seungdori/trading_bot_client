@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils.ts';
 type Props = { className?: string; children?: React.ReactNode };
 export default function ScrollableTable({ className, children }: Props) {
   return (
-    <ScrollArea className={cn('rounded-md border', className)}>
+    <ScrollArea className={cn('rounded-md border h-full', className)}>
       {children}
       <ScrollBar orientation="horizontal" />
       <ScrollBar orientation="vertical" />

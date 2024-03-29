@@ -33,9 +33,10 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
   });
 
   return (
-    <div className="w-full">
+    // Table max height
+    <div className="max-h-[35vh] w-full">
       <div className="rounded-md border">
-        <div className="h-[30vh] md:h-[40vh] relative overflow-auto">
+        <div className="relative overflow-auto">
           <Table>
             <TableHeader className="sticky top-0 bg-secondary">
               {table.getHeaderGroups().map((headerGroup) => (

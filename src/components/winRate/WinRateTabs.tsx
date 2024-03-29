@@ -3,6 +3,7 @@ import { WinRateTab } from '@/types/tableTypes.ts';
 import WinRateTableWrapper from '@/components/winRate/WinRateTableWrapper.tsx';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
 import { Exchange } from '@/types/exchangeTypes.ts';
+import { EXCHANGE } from '@/constants/exchange.ts';
 
 export default function WinRateTabs({ className }: { className?: string }) {
   const { exchange } = useExchangeStore();
@@ -18,19 +19,24 @@ function buildTabs(exchange: Exchange): {
     defaultId: exchange,
     tabs: [
       {
-        id: 'binance',
-        displayName: '바이낸스',
+        id: EXCHANGE.BINANCE.EXCHANGE,
+        displayName: EXCHANGE.BINANCE.NAME,
         component: <WinRateTableWrapper exchange="binance" />,
       },
       {
-        id: 'bithumb',
-        displayName: '빗썸',
+        id: EXCHANGE.BITHUMB.EXCHANGE,
+        displayName: EXCHANGE.BITHUMB.NAME,
         component: <WinRateTableWrapper exchange="bithumb" />,
       },
       {
-        id: 'upbit',
-        displayName: '업비트',
+        id: EXCHANGE.UPBIT.EXCHANGE,
+        displayName: EXCHANGE.UPBIT.NAME,
         component: <WinRateTableWrapper exchange="upbit" />,
+      },
+      {
+        id: EXCHANGE.BITGET.EXCHANGE,
+        displayName: EXCHANGE.BITGET.NAME,
+        component: <WinRateTableWrapper exchange="bitget" />,
       },
     ],
   };

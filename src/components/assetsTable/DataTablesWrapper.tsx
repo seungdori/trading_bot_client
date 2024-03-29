@@ -23,7 +23,7 @@ function buildTabs(): {
       {
         id: 'history',
         displayName: '거래 기록',
-        component: <TransactionLogWrapper className="" />,
+        component: <TransactionLogWrapper />,
       },
       {
         id: 'assets',
