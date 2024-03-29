@@ -11,7 +11,7 @@ export default function TransactionLogWrapper({ className }: Props) {
 
   return (
     <TransactionLog className={className} content={log}>
-      <div className="grid grid-cols-2 w-full space-x-2">
+      <div className="grid grid-cols-2 w-full h-full space-x-2">
         <ClipboardCopyButton text={log} />
         <LogClearDialog action={clear} />
       </div>
