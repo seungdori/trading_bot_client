@@ -134,12 +134,18 @@ export async function login(args: z.infer<typeof LoginSchema>) {
 /**
  * @description 로컬 백엔드에 거래소 api key, secret 업데이트 요청.
  */
-export async function updateExchangeApiKeys({ exchange, apiKey, secret }: { exchange: Exchange } & ExchangeApiKeys) {
+export async function updateExchangeApiKeys({
+  exchange,
+  apiKey,
+  secret,
+  password,
+}: { exchange: Exchange } & ExchangeApiKeys) {
   const endpoint = new URL('/exchange/keys', DESKTOP_BACKEND_BASE_URL);
   const dto: ExchangeRequest = {
     exchange_name: exchange,
     api_key: apiKey,
     secret_key: secret,
+    password,
   };
 
   try {
