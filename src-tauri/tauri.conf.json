@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "trading_bot_client",
-    "version": "0.3.3"
+    "version": "0.3.4"
   },
   "tauri": {
     "allowlist": {
@@ -47,7 +47,7 @@
       {
         "title": "trading_bot_client",
         "width": 1024,
-        "height": 1024,
+        "height": 900,
         "resizable": true,
         "additionalBrowserArgs": "--disable-web-security"
       }
