@@ -3,7 +3,6 @@ import WalletCard from '@/components/wallet/WalletCard.tsx';
 import { useWallet } from '@/hooks/useWallet.ts';
 import { Exchange, Wallet } from '@/types/exchangeTypes.ts';
 import { Icons } from '@/components/common/Icons.tsx';
-import { toast } from '@/components/ui/use-toast.ts';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
 import { formatNum } from '@/lib/format.ts';
 import { z } from 'zod';
@@ -16,10 +15,11 @@ export default function WalletCardWrapper({ className }: Props) {
   const { isLoading, data: wallet, isError, error } = useWallet({ exchange });
 
   if (isError) {
-    toast({ title: '거래소 조회에 실패했습니다.', description: error.message, variant: 'destructive' });
     return (
-      <div className="flex w-full h-full items-center justify-center">
-        <p>Failed to load wallet</p>
+      <div className="container flex flex-col w-full h-full items-center justify-center space-y-2">
+        <p className="w-full font-bold">거래소 조회에 실패했습니다</p>
+        <p className="w-full font-semibold">상세 정보</p>
+        <p className="w-full text-xs whitespace-pre-wrap">{error.message}</p>
       </div>
     );
   }
