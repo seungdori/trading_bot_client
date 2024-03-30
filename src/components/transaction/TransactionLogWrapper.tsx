@@ -2,6 +2,7 @@ import { useTradingLog } from '@/hooks/useTransactionLog.ts';
 import TransactionLog from '@/components/transaction/TransactionLog.tsx';
 import LogClearDialog from '@/components/transaction/LogClearDialog.tsx';
 import ClipboardCopyButton from '@/components/transaction/ClipboardCopyButton.tsx';
+import { cn } from '@/lib/utils.ts';
 
 type Props = { className?: string };
 
@@ -10,7 +11,7 @@ export default function TransactionLogWrapper({ className }: Props) {
   const { log, clear } = useTradingLog({ exchange: 'binance', delimiter: '\n', defaultMessage: 'Trading log' });
 
   return (
-    <TransactionLog className={className} content={log}>
+    <TransactionLog className={cn('h-full', className)} content={log}>
       <div className="grid grid-cols-2 w-full h-full space-x-2">
         <ClipboardCopyButton text={log} />
         <LogClearDialog action={clear} />

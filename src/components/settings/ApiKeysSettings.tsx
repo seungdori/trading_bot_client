@@ -19,8 +19,11 @@ import BitgetLogo from '@/assets/bitget.svg';
 import { ExchangeApiKeysSchema } from '@/schemas/settingsSchema.ts';
 import { useApiKeysStore } from '@/hooks/useApiKeysStore.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
+import { cn } from '@/lib/utils.ts';
 
-export default function ApiKeysSettings() {
+type Props = { className?: string };
+
+export default function ApiKeysSettings({ className }: Props) {
   const id = useId();
   const { exchange, setExchange } = useExchangeStore(id);
   const onApiKeyUpdateFail = (message: string) => {
@@ -47,7 +50,7 @@ export default function ApiKeysSettings() {
 
   const passwordRequired = exchange === 'bitget';
   return (
-    <Card>
+    <Card className={cn(className)}>
       <CardHeader>
         <CardTitle>Exchange api keys</CardTitle>
         <CardDescription>Set exchange api key & api secret</CardDescription>
@@ -101,7 +104,7 @@ export default function ApiKeysSettings() {
         </RadioGroup>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
-            <div className="grid grid-rows-3 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <FormField
                 control={form.control}
                 name="apiKey"

@@ -14,6 +14,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import TelegramLogo from '@/assets/telegram.svg';
 import { useTelegramStore } from '@/hooks/useTelegramStore.ts';
 import { z } from 'zod';
+import { cn } from '@/lib/utils.ts';
 
 export const TelegramIdSchema = z.object({
   telegramId: z.string(),
@@ -21,7 +22,9 @@ export const TelegramIdSchema = z.object({
 
 export type TelegramId = z.infer<typeof TelegramIdSchema>;
 
-export default function TelegramIdSettings() {
+type Props = { className?: string };
+
+export default function TelegramIdSettings({ className }: Props) {
   const id = useId();
   const { exchange } = useExchangeStore(id);
   const [showTelegramId, setShowTelegramId] = useQueryParam('showTelegramId', withDefault(BooleanParam, false));
@@ -41,7 +44,7 @@ export default function TelegramIdSettings() {
   }, [telegramId]);
 
   return (
-    <Card>
+    <Card className={cn(className)}>
       <CardHeader>
         <CardTitle>Telegram id settings</CardTitle>
         <CardDescription>Set telegram id</CardDescription>

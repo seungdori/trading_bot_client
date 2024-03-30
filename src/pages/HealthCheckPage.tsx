@@ -10,8 +10,8 @@ export default function HealthCheckPage() {
 
   if (isPending) {
     return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+      <div className="flex flex-col items-center justify-center h-screen">
+        <Icons.spinner className="h-4 w-4 animate-spin" />
         <p className="mt-4 text-lg font-bold">자동매매 프로그램을 시작 중입니다...</p>
       </div>
     );
@@ -22,8 +22,8 @@ export default function HealthCheckPage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-full">
-      <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+    <div className="flex flex-col items-center justify-center h-screen">
+      <Icons.spinner className="h-4 w-4 animate-spin" />
       <p className="mt-4 text-lg font-bold">자동매매 프로그램을 실행중입니다...</p>
     </div>
   );
