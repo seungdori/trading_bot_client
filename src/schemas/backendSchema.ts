@@ -125,12 +125,21 @@ export const WinRateSchema = z.object({
   total_win_rate: z.number(),
 });
 
+export const AISearchStatus = z.union([
+  z.literal('stopped'),
+  z.literal('started'),
+  z.literal('progress'),
+  z.literal('completed'),
+  z.literal('error'),
+]);
+
 export const AiSearchProgressResponseSchema = z.object({
   exchange_name: ExchangeSchema,
   enter_strategy: EnterStrategySchema,
   current_progress_symbol: z.string(),
   completed_symbol_count: z.number(),
   total_symbol_count: z.number(),
+  status: AISearchStatus,
 });
 
 export const WalletResponseSchema = z.object({
