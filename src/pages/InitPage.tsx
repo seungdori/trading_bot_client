@@ -44,7 +44,7 @@ export default function InitPage() {
 
   if (updateCheckQuery.isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-full">
+      <div className="flex flex-col items-center justify-center h-screen">
         <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
         <p className="mt-4 text-lg font-bold">Checking update...</p>
       </div>
@@ -56,19 +56,17 @@ export default function InitPage() {
   }
 
   return (
-    <>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <Icons.spinner className="h-4 w-4 animate-spin" />
+      <p className="mt-4 text-lg font-bold">업데이트중...</p>
+      <p className="font-semibold">업데이트가 완료될때까지 프로그램을 종료하지 마세요.</p>
+      <p className="font-semibold">업데이트가 완료되면 자동 재시작됩니다.</p>
       {updateCheckQuery.data?.shouldUpdate ? (
         <UpdateDialog
           version={updateCheckQuery.data.manifest?.version}
           description={updateCheckQuery.data.manifest?.body}
         />
       ) : null}
-      <div className="flex flex-col items-center justify-center h-full">
-        <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-        <p className="mt-4 text-lg font-bold">업데이트중...</p>
-        <p className="font-semibold">업데이트가 완료될때까지 프로그램을 종료하지 마세요.</p>
-        <p className="font-semibold">업데이트가 완료되면 자동 재시작됩니다.</p>
-      </div>
-    </>
+    </div>
   );
 }

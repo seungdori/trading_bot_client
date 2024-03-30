@@ -18,7 +18,7 @@ export default function WalletCardContent({
 }: Props) {
   return (
     <div className={className}>
-      <CardContent className="flex flex-col justify-center space-y-2 p-6">
+      <CardContent className="flex flex-col justify-center space-y-2">
         {/*총 잔고*/}
         <div className="text-xl font-bold">{totalBalance}</div>
         <div className="text-sm font-medium text-gray-500 dark:text-gray-400">총 잔고</div>

@@ -46,8 +46,8 @@
     "windows": [
       {
         "title": "trading_bot_client",
-        "width": 1024,
-        "height": 900,
+        "minWidth": 1024,
+        "minHeight": 900,
         "resizable": true,
         "additionalBrowserArgs": "--disable-web-security"
       }

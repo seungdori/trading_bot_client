@@ -5,10 +5,13 @@ import { Link } from 'react-router-dom';
 import VersionDisplay from '@/components/common/VersionDisplay.tsx';
 import { CONTACT_DEVELOPER_EMAIL } from '@/constants/developer.ts';
 import RestartSystemCoreButton from '@/components/settings/RestartSystemCoreButton.tsx';
+import { cn } from '@/lib/utils.ts';
 
-export default function SystemSettings() {
+type Props = { className?: string };
+
+export default function SystemSettings({ className }: Props) {
   return (
-    <Card>
+    <Card className={cn(className)}>
       <CardHeader>
         <CardTitle>System settings</CardTitle>
         <CardDescription>

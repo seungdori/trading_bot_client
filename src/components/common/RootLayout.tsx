@@ -9,7 +9,7 @@ export default function RootLayout() {
   const hideNavbar = HIDE_NAVBAR_PAGES.includes(pathname);
 
   return (
-    <div className="container w-full h-screen space-y-4">
+    <div className="container w-full max-h-fit space-y-4">
       {!hideNavbar && (
         <Navbar
           routes={Object.values(EXCHANGE).map((exchange) => ({

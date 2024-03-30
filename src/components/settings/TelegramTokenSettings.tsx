@@ -19,8 +19,11 @@ import BitgetLogo from '@/assets/bitget.svg';
 import { TelegramTokenSchema } from '@/schemas/settingsSchema.ts';
 import { TelegramToken } from '@/types/settingsTypes.ts';
 import { useTelegramStore } from '@/hooks/useTelegramStore.ts';
+import { cn } from '@/lib/utils.ts';
 
-export default function TelegramTokenSettings() {
+type Props = { className?: string };
+
+export default function TelegramTokenSettings({ className }: Props) {
   const id = useId();
   const { exchange, setExchange } = useExchangeStore(id);
   const [showTelegramToken, setShowTelegramToken] = useQueryParam(
@@ -50,7 +53,7 @@ export default function TelegramTokenSettings() {
   }, [token]);
 
   return (
-    <Card>
+    <Card className={cn(className)}>
       <CardHeader>
         <CardTitle>Telegram tokens</CardTitle>
         <CardDescription>Set telegram token</CardDescription>

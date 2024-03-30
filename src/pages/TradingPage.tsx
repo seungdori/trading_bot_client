@@ -19,8 +19,8 @@ export default function TradingPage() {
         </section>
       </section>
 
-      <section className="grid grid-cols-12 flex-1 space-x-2">
-        <section className="col-span-9">
+      <section className="max-h-[45vh] grid grid-cols-12 flex-1 space-x-2">
+        <section className="h-full col-span-9">
           <DataTablesWrapper className="flex flex-col w-full h-full" />
         </section>
         <section className="col-span-3">
@@ -28,22 +28,5 @@ export default function TradingPage() {
         </section>
       </section>
     </main>
-    // <main className="md:grid md:grid-cols-12 sm:flex sm:flex-col sm:space-y-4 w-full h-full gap-2">
-    //   <section className="col-span-3">
-    //     <WalletCardWrapper className="h-full" />
-    //   </section>
-    //   <section className="col-span-6">
-    //     <StrategyPanel className="h-full" />
-    //   </section>
-    //   <section className="col-span-3">
-    //     <CustomStrategyWrapper className="h-full" />
-    //   </section>
-    //   <section className="col-span-9">
-    //     <DataTablesWrapper className="h-full" />
-    //   </section>
-    //   <section className="col-span-3">
-    //     <ExchangePanel className="h-full" />
-    //   </section>
-    // </main>
   );
 }
