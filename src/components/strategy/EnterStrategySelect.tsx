@@ -53,7 +53,9 @@ export default function EnterStrategySelect({ className }: Props) {
   const isProgressing = aiSearchProgressQuery.data && aiSearchProgressQuery.data.status === 'progress';
   const isError = aiSearchProgressQuery.isError || aiSearchProgressQuery.data?.status === 'error';
   // const isCompleted = aiSearchProgressQuery.data && aiSearchProgressQuery.data.status === 'completed';
-  // const isStopped = aiSearchProgressQuery.data && aiSearchProgressQuery.data.status === 'stopped';
+  // const isStopped = aiSearchProgr
+  //
+  // essQuery.data && aiSearchProgressQuery.data.status === 'stopped';
   const isSearchButtonDisabled = isStarted || isProgressing;
   const disableShortPosition = exchange === 'bithumb' || exchange === 'upbit'; // Todo: Impl
 

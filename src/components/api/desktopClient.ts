@@ -11,9 +11,11 @@ import {
 } from '@/schemas/backendSchema.ts';
 import {
   AiSearchProgressResponse,
-  BotStateKeyDto,
   BotState,
   BotStateKeyArgs,
+  BotStateKeyDto,
+  CustomStrategy,
+  EnterStrategy,
   ExchangeRequest,
   PositionsResponse,
   ResponseDto,
@@ -23,14 +25,13 @@ import {
   StartAiSearchRequest,
   StartFeatureRequest,
   StopFeatureRequest,
+  SymbolAccessList,
   TelegramTokenDto,
   TelegramTokenRequest,
   TestFeatureRequest,
   User,
   WalletResponse,
   WinRate,
-  EnterStrategy,
-  CustomStrategy,
 } from '@/types/backendTypes.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
 import { convertFileSrc } from '@tauri-apps/api/tauri';
@@ -632,6 +633,78 @@ export async function clearBotErrorState(args: BotStateKeyArgs) {
     }
   } catch (e) {
     console.error('[CLEAR BOT STATE ERROR CATCH]', e);
+    throw e;
+  }
+}
+
+export async function getSymbolAccessList({ type }: Pick<SymbolAccessList, 'type'>) {
+  const endpoint = new URL(`/trading/symbols/access/${type}`, DESKTOP_BACKEND_BASE_URL);
+  try {
+    const response = await fetch<ResponseDto<SymbolAccessList>>(endpoint.href, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    const responseDto = response.data;
+
+    if (responseDto.success) {
+      return responseDto.data;
+    } else {
+      const errorMessage = buildBackendErrorMessage(responseDto);
+      throw new Error(errorMessage);
+    }
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+export async function addSymbolAccessList(args: SymbolAccessList) {
+  const endpoint = new URL(`/trading/symbols/access`, DESKTOP_BACKEND_BASE_URL);
+  const dto: SymbolAccessList = args;
+
+  try {
+    const response = await fetch<ResponseDto<SymbolAccessList>>(endpoint.href, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: Body.json(dto),
+    });
+
+    const responseDto = response.data;
+
+    if (responseDto.success) {
+      return responseDto.data;
+    } else {
+      const errorMessage = buildBackendErrorMessage(responseDto);
+      throw new Error(errorMessage);
+    }
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+export async function deleteSymbolAccessList(args: SymbolAccessList) {
+  const endpoint = new URL(`/trading/symbols/access`, DESKTOP_BACKEND_BASE_URL);
+  const dto: SymbolAccessList = args;
+
+  try {
+    const response = await fetch<ResponseDto<SymbolAccessList>>(endpoint.href, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: Body.json(dto),
+    });
+
+    const responseDto = response.data;
+
+    if (responseDto.success) {
+      return responseDto.data;
+    } else {
+      const errorMessage = buildBackendErrorMessage(responseDto);
+      throw new Error(errorMessage);
+    }
+  } catch (e) {
+    console.error(e);
     throw e;
   }
 }
