@@ -172,3 +172,8 @@ export const BotStateSchema = BotKeyStateSchema.extend({
   is_running: z.boolean(),
   error: BotStateErrorSchema.nullable(),
 });
+
+export const SymbolAccessListSchema = z.object({
+  type: z.union([z.literal('whitelist'), z.literal('blacklist')]),
+  symbols: z.array(z.string()),
+});

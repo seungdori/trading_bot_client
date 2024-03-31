@@ -13,6 +13,7 @@ import {
   StartAiSearchRequestSchema,
   StartFeatureRequestSchema,
   StopFeatureRequestSchema,
+  SymbolAccessListSchema,
   TelegramTokenRequestSchema,
   TestFeatureRequestSchema,
   UpbitPositionsResponseSchema,
@@ -87,3 +88,5 @@ export type BotStateKeyArgs = { exchange: Exchange; enterStrategy: EnterStrategy
 export type BotStateKeyDto = z.infer<typeof BotKeyStateSchema>;
 
 export type BotState = z.infer<typeof BotStateSchema>;
+
+export type SymbolAccessList = z.infer<typeof SymbolAccessListSchema>;
