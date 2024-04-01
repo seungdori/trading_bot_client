@@ -77,6 +77,7 @@ export const ExchangeApiKeyRequestSchema = z.object({
 export const StartAiSearchRequestSchema = z.object({
   exchange_name: ExchangeSchema,
   enter_strategy: z.string(),
+  custom_strategy: z.string(),
 });
 
 export const StartFeatureRequestSchema = z.object({

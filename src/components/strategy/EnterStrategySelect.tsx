@@ -21,9 +21,9 @@ type Props = { className?: string };
 
 export default function EnterStrategySelect({ className }: Props) {
   const { exchange, store, setStore } = useStrategyStore();
-  const { enterStrategy } = store;
+  const { enterStrategy, customStrategy } = store;
   const aiSearchMutation = useStartAiSearch(exchange);
-  const aiSearchProgressQuery = useAiSearchProgress(exchange, enterStrategy);
+  const aiSearchProgressQuery = useAiSearchProgress({ exchange, enterStrategy, customStrategy });
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -53,9 +53,7 @@ export default function EnterStrategySelect({ className }: Props) {
   const isProgressing = aiSearchProgressQuery.data && aiSearchProgressQuery.data.status === 'progress';
   const isError = aiSearchProgressQuery.isError || aiSearchProgressQuery.data?.status === 'error';
   // const isCompleted = aiSearchProgressQuery.data && aiSearchProgressQuery.data.status === 'completed';
-  // const isStopped = aiSearchProgr
-  //
-  // essQuery.data && aiSearchProgressQuery.data.status === 'stopped';
+  // const isStopped = aiSearchProgressQuery.data && aiSearchProgressQuery.data.status === 'stopped';
   const isSearchButtonDisabled = isStarted || isProgressing;
   const disableShortPosition = exchange === 'bithumb' || exchange === 'upbit'; // Todo: Impl
 
