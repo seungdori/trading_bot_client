@@ -173,6 +173,7 @@ export async function startAiSearch({
   const dto: StartAiSearchRequest = {
     exchange_name: exchange,
     enter_strategy: store.enterStrategy,
+    custom_strategy: store.customStrategy,
   };
 
   const endpoint = new URL('/feature/ai/search/start', DESKTOP_BACKEND_BASE_URL);
@@ -522,8 +523,13 @@ export async function backendVersionCheck(): Promise<string> {
 export async function getAiSearchProgress(
   exchange: Exchange,
   enterStrategy: EnterStrategy,
+  customStrategy: CustomStrategy,
 ): Promise<AiSearchProgressResponse> {
-  const endpoint = new URL(`/feature/ai/search/${exchange}/${enterStrategy}/progress`, DESKTOP_BACKEND_BASE_URL);
+  console.log('GET AI SEARCH PROGRESS', customStrategy);
+  const endpoint = new URL(
+    `/feature/ai/search/${exchange}/${enterStrategy}/${customStrategy}/progress`,
+    DESKTOP_BACKEND_BASE_URL,
+  );
 
   try {
     const response = await fetch<ResponseDto<AiSearchProgressResponse>>(endpoint.href, {
