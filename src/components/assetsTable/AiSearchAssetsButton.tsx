@@ -1,13 +1,30 @@
 import { Button } from '@/components/ui/button.tsx';
-import { Exchange } from '@/types/exchangeTypes.ts';
-import { Link } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
+import { useStrategyStore } from '@/hooks/useStrategyStore.ts';
+import { usePrevUrlStore } from '@/store/prevUrlStore.ts';
 
-type Props = { exchange: Exchange };
+export default function AiSearchAssetsButton() {
+  const navigate = useNavigate();
+  const {
+    exchange,
+    store: { enterStrategy, customStrategy },
+  } = useStrategyStore();
+  const { key, buildCurrentUrl } = usePrevUrlStore();
 
-export default function AiSearchAssetsButton({ exchange }: Props) {
-  return (
-    <Button asChild>
-      <Link to={`/winRate?exchange=${exchange}`}>AI 탐색 종목</Link>
-    </Button>
-  );
+  const handleBackClicked = () => {
+    const currentUrl = buildCurrentUrl();
+    const params = {
+      exchange,
+      enterStrategy,
+      customStrategy,
+      [key]: currentUrl,
+    };
+
+    navigate({
+      pathname: '/winRate',
+      search: `?${createSearchParams(params)}`,
+    });
+  };
+
+  return <Button onClick={handleBackClicked}>AI 탐색 종목</Button>;
 }

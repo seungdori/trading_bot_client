@@ -6,14 +6,23 @@ import WinRateTable from '@/components/winRate/WinRateTable.tsx';
 import ShowCoinChartButton from '@/components/winRate/ShowCoinChartButton.tsx';
 import { cn } from '@/lib/utils.ts';
 import { Button } from '@/components/ui/button.tsx';
+import { useStrategyStore } from '@/hooks/useStrategyStore.ts';
 
 export default function WinRateTableWrapper({ exchange, className }: { exchange: Exchange; className?: string }) {
-  const { isLoading, data } = useWinRates(exchange);
+  const {
+    store: { customStrategy, enterStrategy },
+  } = useStrategyStore();
+  const { isLoading, data } = useWinRates({ exchange, customStrategy, enterStrategy });
   const [imageUrl] = useQueryParam('coinChartImageUrl');
 
   return (
     <section className={cn('w-full h-full space-y-4', className)}>
-      <WinRateTable exchange={exchange} assetsData={data ?? []} />
+      <WinRateTable
+        exchange={exchange}
+        customStrategy={customStrategy}
+        enterStrategy={enterStrategy}
+        assetsData={data ?? []}
+      />
       {isLoading ? (
         <Button disabled className="w-full">
           <p className="flex flex-col justify-center items-center">
@@ -22,7 +31,7 @@ export default function WinRateTableWrapper({ exchange, className }: { exchange:
           </p>
         </Button>
       ) : (
-        <ShowCoinChartButton exchange={exchange} />
+        <ShowCoinChartButton exchange={exchange} customStrategy={customStrategy} enterStrategy={enterStrategy} />
       )}
 
       {/*Hack. revalidate the tauri image cache*/}

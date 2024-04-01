@@ -16,12 +16,15 @@ type Props = {
 };
 
 export default function CustomStrategyTabs({ className, strategies }: Props) {
-  const { setStore } = useStrategyStore();
+  const {
+    store: { customStrategy },
+    setStore,
+  } = useStrategyStore();
 
   return (
     <Tabs
       className={className}
-      defaultValue={strategies[0]}
+      defaultValue={customStrategy}
       onValueChange={(value) => {
         console.log(`[TAB VALUE CHANGED]`, value);
         setStore({

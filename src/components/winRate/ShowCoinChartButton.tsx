@@ -6,10 +6,13 @@ import { toast } from '@/components/ui/use-toast.ts';
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button.tsx';
 import { Icons } from '@/components/common/Icons.tsx';
+import { CustomStrategy, EnterStrategy } from '@/types/backendTypes.ts';
 
-export default function ShowCoinChartButton({ exchange }: { exchange: Exchange }) {
-  const { selectedCoin } = useSelectedCoinStore(exchange);
-  const showCoinChartMutation = useCreateChartImage(exchange);
+type Props = { exchange: Exchange; customStrategy: CustomStrategy; enterStrategy: EnterStrategy };
+
+export default function ShowCoinChartButton(props: Props) {
+  const { selectedCoin } = useSelectedCoinStore(props);
+  const showCoinChartMutation = useCreateChartImage(props);
   const [_, setImageUrl] = useQueryParam('coinChartImageUrl');
 
   const handleShowCoinChart = () => {
@@ -19,7 +22,6 @@ export default function ShowCoinChartButton({ exchange }: { exchange: Exchange }
     }
 
     showCoinChartMutation.mutate({
-      exchange,
       coin: { symbol: selectedCoin },
     });
   };
