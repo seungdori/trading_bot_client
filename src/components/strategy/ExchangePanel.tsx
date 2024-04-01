@@ -15,7 +15,7 @@ export default function ExchangePanel({ className }: Props) {
 
   return (
     <Card className={cn('container w-full flex flex-col justify-evenly p-4 space-y-4', className)}>
-      <AiSearchAssetsButton exchange={exchange} />
+      <AiSearchAssetsButton />
       <CoinSellButton exchange={exchange} />
       <AllCoinSellButton exchange={exchange} />
       <Button disabled>새로 고침</Button>

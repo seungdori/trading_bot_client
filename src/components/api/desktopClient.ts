@@ -462,12 +462,24 @@ export async function updateTeleramToken({ exchange, token }: { exchange: Exchan
 /**
  * @description 선택한 코인의 차트 이미지 생성 요청.
  * @param exchange - 거래소 이름.
+ * @param enterStrategy - 사용자가 설정한 진입 전략 이름. (e.g. 'long')
+ * @param customStrategy - 사용자가 설정한 전략 이름. (e.g. '전략1')
  * @param coin - 차트 이미지를 생성할 코인.
  * @returns ResponseDTO<차트 이미지 url>.
  */
-export async function createChartImage({ exchange, coin }: { exchange: Exchange; coin: SellCoin }): Promise<string> {
+export async function createChartImage({
+  exchange,
+  enterStrategy,
+  customStrategy,
+  coin,
+}: {
+  exchange: Exchange;
+  enterStrategy: EnterStrategy;
+  customStrategy: CustomStrategy;
+  coin: SellCoin;
+}): Promise<string> {
   const dto: SellCoin = coin;
-  const endpoint = new URL(`/trading/${exchange}/chart`, DESKTOP_BACKEND_BASE_URL);
+  const endpoint = new URL(`/trading/${exchange}/${enterStrategy}/${customStrategy}/chart`, DESKTOP_BACKEND_BASE_URL);
   const response = await fetch<ResponseDto<string>>(endpoint.href, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -483,8 +495,16 @@ export async function createChartImage({ exchange, coin }: { exchange: Exchange;
   }
 }
 
-export async function getWinRates(exchange: Exchange) {
-  const endpoint = new URL(`/trading/${exchange}/winrate`, DESKTOP_BACKEND_BASE_URL);
+export async function getWinRates({
+  exchange,
+  enterStrategy,
+  customStrategy,
+}: {
+  exchange: Exchange;
+  enterStrategy: EnterStrategy;
+  customStrategy: CustomStrategy;
+}): Promise<WinRate[]> {
+  const endpoint = new URL(`/trading/${exchange}/${enterStrategy}/${customStrategy}/winrate`, DESKTOP_BACKEND_BASE_URL);
 
   try {
     const response = await fetch<ResponseDto<WinRate[]>>(endpoint.href, {

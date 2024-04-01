@@ -4,14 +4,19 @@ import DataTable from '@/components/assetsTable/DataTable.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { ArrowUpDown } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
-import { WinRate } from '@/types/backendTypes.ts';
+import { CustomStrategy, EnterStrategy, WinRate } from '@/types/backendTypes.ts';
 import { useSelectedCoinStore } from '@/store/selectedCoinStore.ts';
 import { Exchange } from '@/types/exchangeTypes.ts';
 
-type Props = { exchange: Exchange; assetsData: WinRate[] };
+type Props = {
+  exchange: Exchange;
+  enterStrategy: EnterStrategy;
+  customStrategy: CustomStrategy;
+  assetsData: WinRate[];
+};
 
-export default function WinRateTable({ exchange, assetsData }: Props) {
-  const { selectedCoin, setSelectedCoin } = useSelectedCoinStore(exchange);
+export default function WinRateTable(props: Props) {
+  const { selectedCoin, setSelectedCoin } = useSelectedCoinStore(props);
   const columnsDef: ColumnDef<WinRate>[] = [
     {
       id: 'select',
@@ -77,7 +82,7 @@ export default function WinRateTable({ exchange, assetsData }: Props) {
 
   return (
     <ScrollableTable>
-      <DataTable columns={columnsDef} data={assetsData} />
+      <DataTable columns={columnsDef} data={props.assetsData} />
     </ScrollableTable>
   );
 }
