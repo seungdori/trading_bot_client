@@ -9,7 +9,8 @@ type Props = {
 
 export default function TransactionLog({ className, content, children }: Props) {
   return (
-    <RemovableTextArea className={className} placeholder="Trading log" value={content} disabled>
+    <RemovableTextArea className={className} placeholder="Trading log" value={content} disabled
+    >
       {children}
     </RemovableTextArea>
   );
