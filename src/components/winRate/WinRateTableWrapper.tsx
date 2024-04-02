@@ -16,7 +16,7 @@ export default function WinRateTableWrapper({ exchange, className }: { exchange:
   const [imageUrl] = useQueryParam('coinChartImageUrl');
 
   return (
-    <section className={cn('w-full h-full space-y-4', className)}>
+    <section className={cn('w-full h-full space-y-4 flex flex-col', className)}>
       <WinRateTable
         exchange={exchange}
         customStrategy={customStrategy}
