@@ -12,6 +12,7 @@ import { toast } from '@/components/ui/use-toast.ts';
 import { Icons } from '@/components/common/Icons.tsx';
 import { useAiSearchProgress } from '@/hooks/useAiSearchProgress.ts';
 import AiSearchProgress from '@/components/strategy/AiSearchProgress.tsx';
+import { useEffect } from 'react';
 
 const FormSchema = z.object({
   type: EnterStrategySchema,
@@ -56,6 +57,16 @@ export default function EnterStrategySelect({ className }: Props) {
   // const isStopped = aiSearchProgressQuery.data && aiSearchProgressQuery.data.status === 'stopped';
   const isSearchButtonDisabled = isStarted || isProgressing;
   const disableShortPosition = exchange === 'bithumb' || exchange === 'upbit'; // Todo: Impl
+
+  useEffect(() => {
+    if (disableShortPosition) {
+      if (enterStrategy !== 'long') {
+        setStore({
+          enterStrategy: 'long',
+        });
+      }
+    }
+  }, [disableShortPosition]);
 
   return (
     <div className={className}>

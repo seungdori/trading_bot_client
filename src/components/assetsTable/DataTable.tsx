@@ -62,25 +62,6 @@ export default function DataTable<TData, TValue>({ columns, data }: DataTablePro
                 </TableRow>
               ))}
             </TableBody>
-            {/*<TableBody>*/}
-            {/*  {table.getRowModel().rows?.length ? (*/}
-            {/*    table.getRowModel().rows.map((row) => (*/}
-            {/*      <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>*/}
-            {/*        {row.getVisibleCells().map((cell) => (*/}
-            {/*          <TableCell key={cell.id} className="text-center">*/}
-            {/*            {flexRender(cell.column.columnDef.cell, cell.getContext())}*/}
-            {/*          </TableCell>*/}
-            {/*        ))}*/}
-            {/*      </TableRow>*/}
-            {/*    ))*/}
-            {/*  ) : (*/}
-            {/*    <TableRow>*/}
-            {/*      <TableCell colSpan={columns.length} className="h-24 text-center">*/}
-            {/*        <TableSkeleton />*/}
-            {/*      </TableCell>*/}
-            {/*    </TableRow>*/}
-            {/*  )}*/}
-            {/*</TableBody>*/}
           </Table>
         </div>
       </div>
