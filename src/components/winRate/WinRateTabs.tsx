@@ -3,18 +3,19 @@ import { WinRateTab } from '@/types/tableTypes.ts';
 import WinRateTableWrapper from '@/components/winRate/WinRateTableWrapper.tsx';
 import { Exchange } from '@/types/exchangeTypes.ts';
 import { EXCHANGE } from '@/constants/exchange.ts';
+import { useExchangeStore } from '@/store/exchangeStore.ts';
 
 type Props = {
-  exchange: Exchange;
   className?: string;
 };
 
-export default function WinRateTabs({ exchange, className }: Props) {
-  const tabs = buildTabs({ exchange });
+export default function WinRateTabs({ className }: Props) {
+  const { exchange } = useExchangeStore();
+  const tabs = buildTabs(exchange);
   return <InfoTabs className={className} defaultTableId={tabs.defaultId} tables={tabs.tabs} renderBackButton />;
 }
 
-function buildTabs({ exchange }: Pick<Props, 'exchange'>): {
+function buildTabs(exchange: Exchange): {
   defaultId: WinRateTab['id'];
   tabs: WinRateTab[];
 } {
