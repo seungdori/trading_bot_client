@@ -1,6 +1,6 @@
 export const EnterStrategist = ['long', 'short', 'long-short'] as const;
 
-export const CustomStrategist = ['그리드', '트랜드', '전략3'] as const;
+export const CustomStrategist = ['트랜드', '그리드', '전략3'] as const;
 
 export const DEFAULT_LEVERAGE = 5;
 
