@@ -8,7 +8,7 @@ type Props = {
   children?: ReactNode;
 };
 
-export default function TransactionLog({ className, content }: Props) {
+export default function TransactionLog({ className, content, children }: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -19,12 +19,15 @@ export default function TransactionLog({ className, content }: Props) {
   }, [content]); // content가 변경될 때마다 useEffect 실행
 
   return (
-    <RemovableTextArea
-      className={className}
-      placeholder="Trading log"
-      value={content}
-      disabled
-      ref={textAreaRef}
-    />
+    <div>
+      <RemovableTextArea
+        className={className}
+        placeholder="Trading log"
+        value={content}
+        disabled
+        ref={textAreaRef}
+      />
+      {children}
+    </div>
   );
 }

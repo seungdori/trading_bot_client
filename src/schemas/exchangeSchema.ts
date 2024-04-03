@@ -17,7 +17,7 @@ export const ExchangeSchema = z.union([
 
 export const EnterStrategySchema = z.union([z.literal('long'), z.literal('short'), z.literal('long-short')]);
 
-export const CustomStrategySchema = z.union([z.literal('전략1'), z.literal('전략2'), z.literal('전략3')]);
+export const CustomStrategySchema = z.union([z.literal('트랜드'), z.literal('그리드'), z.literal('전략3')]);
 
 export const EnterSymbolSchema = z.object({
   enterSymbolCount: z.number(),

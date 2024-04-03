@@ -463,7 +463,7 @@ export async function updateTeleramToken({ exchange, token }: { exchange: Exchan
  * @description 선택한 코인의 차트 이미지 생성 요청.
  * @param exchange - 거래소 이름.
  * @param enterStrategy - 사용자가 설정한 진입 전략 이름. (e.g. 'long')
- * @param customStrategy - 사용자가 설정한 전략 이름. (e.g. '전략1')
+ * @param customStrategy - 사용자가 설정한 전략 이름. (e.g. '트랜드')
  * @param coin - 차트 이미지를 생성할 코인.
  * @returns ResponseDTO<차트 이미지 url>.
  */

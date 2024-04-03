@@ -24,7 +24,7 @@ function buildColumDef(props: Props): ColumnDef<VidyaStrategyColum>[] | ColumnDe
   const { selectedCoin, setSelectedCoin } = useSelectedCoinStore(props);
 
   switch (props.customStrategy) {
-    case '전략1':
+    case '트랜드':
       const vidyaStrategyColumnsDef: ColumnDef<VidyaStrategyColum>[] = [
         {
           id: 'select',
@@ -138,7 +138,7 @@ function buildColumDef(props: Props): ColumnDef<VidyaStrategyColum>[] | ColumnDe
       ];
       return vidyaStrategyColumnsDef;
 
-    case '전략2':
+    case '그리드':
       const gridStrategyColumnsDef: ColumnDef<GridStrategyColum>[] = [
         {
           id: 'select',
@@ -300,10 +300,10 @@ function renderWinRateTable(props: Props) {
   const columnsDef = buildColumDef(props);
 
   switch (props.customStrategy) {
-    case '전략1':
+    case '트랜드':
       return <DataTable columns={columnsDef as ColumnDef<VidyaStrategyColum>[]} data={props.assetsData} />;
 
-    case '전략2':
+    case '그리드':
       return <DataTable columns={columnsDef as ColumnDef<GridStrategyColum>[]} data={props.assetsData} />;
 
     // Todo: Impl after

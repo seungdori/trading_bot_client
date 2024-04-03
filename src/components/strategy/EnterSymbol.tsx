@@ -74,7 +74,7 @@ export default function EnterSymbol({ className }: Props) {
                       <Input
                         id="enterSymbolAmount"
                         type="number"
-                        placeholder="종목당 투입금"
+                        placeholder="주문당 투입금"
                         autoCapitalize="none"
                         autoCorrect="off"
                         value={enterSymbolAmount.toString()}
@@ -101,13 +101,13 @@ function buildEnterSymbolLabel(exchange: Exchange): string {
   switch (exchange) {
     case 'binance':
     case 'bitget':
-      return '종목당 투입금 $';
+      return '주문당 투입금 $';
 
     case 'bithumb':
     case 'upbit':
-      return '종목당 투입금 ₩';
+      return '주문당 투입금 ₩';
 
     default:
-      return '종목당 투입금 ₩';
+      return '주문당 투입금 ₩';
   }
 }
