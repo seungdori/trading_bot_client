@@ -19,15 +19,15 @@ export default function TransactionLog({ className, content, children }: Props) 
   }, [content]); // content가 변경될 때마다 useEffect 실행
 
   return (
-    <div>
+    <div className={`flex ${className}`}>
       <RemovableTextArea
-        className={className}
+        className="flex-grow"
         placeholder="Trading log"
         value={content}
         disabled
         ref={textAreaRef}
       />
-      {children}
+      <div className="ml-2">{children}</div>
     </div>
   );
 }
