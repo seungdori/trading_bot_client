@@ -53,7 +53,7 @@ export const useTradingLog = ({
   useEffect(() => {
     if (lastMessage !== null) {
       append(lastMessage.data);
-      setLog((prev) => lastMessage.data + delimiter + prev); //<-- 순서 뒤집기
+      setLog((prev) => prev + delimiter + lastMessage.data);
     }
   }, [lastMessage]);
 
