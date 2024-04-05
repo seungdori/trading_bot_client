@@ -78,7 +78,7 @@ export const useBithumbStateStore = () => {
 export type BithumbStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
   ReturnType<typeof useBithumbStateStore>;
 
-export const useBitgetStateStore = () => {
+export const useOkxStateStore = () => {
   const [query, setQuery] = useQueryParams({
     leverage: withDefault(NumberParam, defaultLeverage()),
     enterStrategy: withDefault(createEnumParam<EnterStrategy>([...EnterStrategist]), 'long' as const),
@@ -93,7 +93,7 @@ export const useBitgetStateStore = () => {
   };
 };
 
-export type BitgetStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
-  ReturnType<typeof useBitgetStateStore>;
+export type OkxStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
+  ReturnType<typeof useOkxStateStore>;
 
-export type ExchangeStateStore = BinanceStateStore | UpbitStateStore | BithumbStateStore | BitgetStateStore;
+export type ExchangeStateStore = BinanceStateStore | UpbitStateStore | BithumbStateStore | OkxStateStore;
