@@ -267,7 +267,7 @@ export async function startCustomStrategy({
     enter_strategy: store.enterStrategy,
     enter_symbol_amount: store.enterSymbolAmount,
     enter_symbol_count: store.enterSymbolCount,
-    leverage: exchange === 'binance' ? (store as BinanceStateStore['store']).leverage : undefined,
+    leverage: exchange === 'binance' || exchange === 'okx'  ? (store as BinanceStateStore['store']).leverage : undefined,
   };
 
   console.log(`[START CUSTOM STRATEGY DTO]`, dto);
