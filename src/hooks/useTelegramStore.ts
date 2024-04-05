@@ -83,16 +83,16 @@ export const useInitTelegramTokens = () => {
   const { token: binanceToken } = useTelegramStore('binance');
   const { token: bithumbToken } = useTelegramStore('bithumb');
   const { token: upbitToken } = useTelegramStore('upbit');
-  const { token: okxToken } = useTelegramStore('okx');
+  const { token: bitgetToken } = useTelegramStore('okx');
 
   return useMutation({
-    mutationKey: ['initTelegramTokens', binanceToken, bithumbToken, upbitToken, okxToken],
+    mutationKey: ['initTelegramTokens', binanceToken, bithumbToken, upbitToken, bitgetToken],
     mutationFn: () =>
       initTelegramTokens([
         { exchange: 'binance', token: binanceToken },
         { exchange: 'bithumb', token: bithumbToken },
         { exchange: 'upbit', token: upbitToken },
-        { exchange: 'okx', token: okxToken },
+        { exchange: 'okx', token: bitgetToken },
       ]),
   });
 };
