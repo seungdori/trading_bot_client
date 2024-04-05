@@ -12,7 +12,7 @@ export const EXCHANGE = {
     EXCHANGE: 'upbit',
   },
   OKX: {
-    NAME: '비트겟',
+    NAME: 'OKX',
     EXCHANGE: 'okx',
   },
 } as const;
