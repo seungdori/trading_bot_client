@@ -18,31 +18,33 @@ function isCustomStrategy(value: any): value is CustomStrategy {
   return Object.values(CustomStrategist).includes(value);
 }
 
-const LEVERAGE_KEY = 'leverage';
 
-export function saveLeverage(leverage: number) {
-  localStorage.setItem(LEVERAGE_KEY, leverage.toString());
+
+export function saveLeverage(exchangeName: string, leverage: number) {
+  const leverageKey = `${exchangeName}Leverage`; // 동적 키 생성
+  localStorage.setItem(leverageKey, leverage.toString());
 }
 
-export function defaultLeverage(): number {
-  const leverage = localStorage.getItem(LEVERAGE_KEY);
+export function defaultLeverage(exchangeName: string): number {
+  const leverageKey = `${exchangeName}Leverage`;
+  const leverage = localStorage.getItem(leverageKey);
 
-  if (leverage) {
-    return +leverage;
+  if (leverage !== null) {
+    return parseInt(leverage);
+  } else {
+    const defaultLeverageValue = DEFAULT_LEVERAGE;
+    localStorage.setItem(leverageKey, defaultLeverageValue.toString());
+    return defaultLeverageValue;
   }
-
-  saveLeverage(DEFAULT_LEVERAGE);
-  return DEFAULT_LEVERAGE;
 }
-
 export const useBinanceStateStore = () => {
-  // 초기 상태를 localStorage에서 로드
+  const exchangeName = 'binance'; 
   const initialValues = {
-    leverage: parseInt(localStorage.getItem('binanceLeverage') ?? '') || defaultLeverage(),
-    enterStrategy: isEnterStrategy(localStorage.getItem('binanceEnterStrategy')) ? localStorage.getItem('binanceEnterStrategy') : 'long',
-    customStrategy: isCustomStrategy(localStorage.getItem('binanceCustomStrategy')) ? localStorage.getItem('binanceCustomStrategy') : '트랜드',
-    enterSymbolAmount: parseInt(localStorage.getItem('binanceEnterSymbolAmount') ?? '') || DEFAULT_ENTER_SYMBOL_AMOUNT,
-    enterSymbolCount: parseInt(localStorage.getItem('binanceEnterSymbolCount') ?? '') || DEFAULT_ENTER_SYMBOL_COUNT,
+    leverage: parseInt(localStorage.getItem(`${exchangeName}Leverage`) ?? '') || defaultLeverage(exchangeName),
+    enterStrategy: isEnterStrategy(localStorage.getItem(`${exchangeName}EnterStrategy`)) ? localStorage.getItem(`${exchangeName}EnterStrategy`) : 'long',
+    customStrategy: isCustomStrategy(localStorage.getItem(`${exchangeName}CustomStrategy`)) ? localStorage.getItem(`${exchangeName}CustomStrategy`) : '트랜드',
+    enterSymbolAmount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolAmount`) ?? '') || DEFAULT_ENTER_SYMBOL_AMOUNT,
+    enterSymbolCount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolCount`) ?? '') || DEFAULT_ENTER_SYMBOL_COUNT,
   };
 
   const [query, setQuery] = useQueryParams({
@@ -52,13 +54,13 @@ export const useBinanceStateStore = () => {
     enterSymbolAmount: withDefault(NumberParam, initialValues.enterSymbolAmount),
     enterSymbolCount: withDefault(NumberParam, initialValues.enterSymbolCount),
   });
-  // 상태가 변경될 때마다 localStorage에 저장
+
   useEffect(() => {
-    localStorage.setItem('binanceLeverage', query.leverage.toString());
-    localStorage.setItem('binanceEnterStrategy', query.enterStrategy);
-    localStorage.setItem('binanceCustomStrategy', query.customStrategy);
-    localStorage.setItem('binanceEnterSymbolAmount', query.enterSymbolAmount.toString());
-    localStorage.setItem('binanceEnterSymbolCount', query.enterSymbolCount.toString());
+    localStorage.setItem(`${exchangeName}Leverage`, query.leverage.toString());
+    localStorage.setItem(`${exchangeName}EnterStrategy`, query.enterStrategy);
+    localStorage.setItem(`${exchangeName}CustomStrategy`, query.customStrategy);
+    localStorage.setItem(`${exchangeName}EnterSymbolAmount`, query.enterSymbolAmount.toString());
+    localStorage.setItem(`${exchangeName}EnterSymbolCount`, query.enterSymbolCount.toString());
   }, [query]);
 
   return {
@@ -71,26 +73,29 @@ export type BinanceStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setEx
   ReturnType<typeof useBinanceStateStore>;
 
 export const useUpbitStateStore = () => {
-  // 초기 상태를 localStorage에서 로드하거나, 없으면 기본 상수 사용
+  const exchangeName = 'upbit'; // 업비트를 위한 거래소 이름 설정
   const initialValues = {
-    enterStrategy: localStorage.getItem('upbitEnterStrategy') ?? 'long',
-    customStrategy: localStorage.getItem('upbitCustomStrategy') ?? '트랜드',
-    enterSymbolAmount: parseInt(localStorage.getItem('upbitEnterSymbolAmount') ?? DEFAULT_ENTER_SYMBOL_AMOUNT.toString()),
-    enterSymbolCount: parseInt(localStorage.getItem('upbitEnterSymbolCount') ?? DEFAULT_ENTER_SYMBOL_COUNT.toString()),
+    leverage: parseInt(localStorage.getItem(`${exchangeName}Leverage`) ?? '') || defaultLeverage(exchangeName),
+    enterStrategy: isEnterStrategy(localStorage.getItem(`${exchangeName}EnterStrategy`)) ? localStorage.getItem(`${exchangeName}EnterStrategy`) : 'long',
+    customStrategy: isCustomStrategy(localStorage.getItem(`${exchangeName}CustomStrategy`)) ? localStorage.getItem(`${exchangeName}CustomStrategy`) : '트랜드',
+    enterSymbolAmount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolAmount`) ?? '') || DEFAULT_ENTER_SYMBOL_AMOUNT,
+    enterSymbolCount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolCount`) ?? '') || DEFAULT_ENTER_SYMBOL_COUNT,
   };
+
   const [query, setQuery] = useQueryParams({
-    enterStrategy: withDefault(createEnumParam<EnterStrategy>([...EnterStrategist]), initialValues.enterStrategy as EnterStrategy) ,
+    leverage: withDefault(NumberParam, initialValues.leverage),
+    enterStrategy: withDefault(createEnumParam<EnterStrategy>([...EnterStrategist]), initialValues.enterStrategy as EnterStrategy),
     customStrategy: withDefault(createEnumParam<CustomStrategy>([...CustomStrategist]), initialValues.customStrategy as CustomStrategy),
     enterSymbolAmount: withDefault(NumberParam, initialValues.enterSymbolAmount),
     enterSymbolCount: withDefault(NumberParam, initialValues.enterSymbolCount),
   });
-  
-  // 상태가 변경될 때마다 localStorage에 저장
+
   useEffect(() => {
-    localStorage.setItem('upbitEnterStrategy', query.enterStrategy);
-    localStorage.setItem('upbitCustomStrategy', query.customStrategy);
-    localStorage.setItem('upbitEnterSymbolAmount', query.enterSymbolAmount.toString());
-    localStorage.setItem('upbitEnterSymbolCount', query.enterSymbolCount.toString());
+    localStorage.setItem(`${exchangeName}Leverage`, query.leverage.toString());
+    localStorage.setItem(`${exchangeName}EnterStrategy`, query.enterStrategy);
+    localStorage.setItem(`${exchangeName}CustomStrategy`, query.customStrategy);
+    localStorage.setItem(`${exchangeName}EnterSymbolAmount`, query.enterSymbolAmount.toString());
+    localStorage.setItem(`${exchangeName}EnterSymbolCount`, query.enterSymbolCount.toString());
   }, [query]);
 
   return {
@@ -103,12 +108,13 @@ export type UpbitStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExch
   ReturnType<typeof useUpbitStateStore>;
 
 export const useBithumbStateStore = () => {
+  const exchangeName = 'bithumb'; // 거래소 이름 설정
   // localStorage에서 값을 불러오되, null이면 기본값을 사용
   const initialValues = {
-    enterStrategy: localStorage.getItem('bithumbEnterStrategy') ?? 'long',
-    customStrategy: localStorage.getItem('bithumbCustomStrategy') ?? '트랜드',
-    enterSymbolAmount: parseInt(localStorage.getItem('bithumbEnterSymbolAmount') ?? DEFAULT_ENTER_SYMBOL_AMOUNT.toString()),
-    enterSymbolCount: parseInt(localStorage.getItem('bithumbEnterSymbolCount') ?? DEFAULT_ENTER_SYMBOL_COUNT.toString()),
+    enterStrategy: localStorage.getItem(`${exchangeName}EnterStrategy`) ?? 'long',
+    customStrategy: localStorage.getItem(`${exchangeName}CustomStrategy`) ?? '트랜드',
+    enterSymbolAmount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolAmount`) ?? DEFAULT_ENTER_SYMBOL_AMOUNT.toString()),
+    enterSymbolCount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolCount`) ?? DEFAULT_ENTER_SYMBOL_COUNT.toString()),
   };
   const [query, setQuery] = useQueryParams({
     enterStrategy: withDefault(createEnumParam<EnterStrategy>([...EnterStrategist]), initialValues.enterStrategy as EnterStrategy),
@@ -118,11 +124,12 @@ export const useBithumbStateStore = () => {
   });
   // 상태가 변경될 때마다 localStorage에 저장
   useEffect(() => {
-    localStorage.setItem('bithumbEnterStrategy', query.enterStrategy);
-    localStorage.setItem('bithumbCustomStrategy', query.customStrategy);
-    localStorage.setItem('bithumbEnterSymbolAmount', query.enterSymbolAmount.toString());
-    localStorage.setItem('bithumbEnterSymbolCount', query.enterSymbolCount.toString());
+    localStorage.setItem(`${exchangeName}EnterStrategy`, query.enterStrategy);
+    localStorage.setItem(`${exchangeName}CustomStrategy`, query.customStrategy);
+    localStorage.setItem(`${exchangeName}EnterSymbolAmount`, query.enterSymbolAmount.toString());
+    localStorage.setItem(`${exchangeName}EnterSymbolCount`, query.enterSymbolCount.toString());
   }, [query]);
+
   return {
     store: query,
     setStore: setQuery,
@@ -133,12 +140,14 @@ export type BithumbStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setEx
   ReturnType<typeof useBithumbStateStore>;
 
 export const useBitgetStateStore = () => {
+  const exchangeName = 'bitget';
+
   const initialValues = {
-    leverage: parseInt(localStorage.getItem('bitgetLeverage') ?? '') || defaultLeverage(),
-    enterStrategy: isEnterStrategy(localStorage.getItem('bitgetEnterStrategy')) ? localStorage.getItem('bitgetEnterStrategy') : 'long',
-    customStrategy: isCustomStrategy(localStorage.getItem('bitgetCustomStrategy')) ? localStorage.getItem('bitgetCustomStrategy') : '트랜드',
-    enterSymbolAmount: parseInt(localStorage.getItem('bitgetEnterSymbolAmount') ?? '') || DEFAULT_ENTER_SYMBOL_AMOUNT,
-    enterSymbolCount: parseInt(localStorage.getItem('bitgetEnterSymbolCount') ?? '') || DEFAULT_ENTER_SYMBOL_COUNT,
+    leverage: parseInt(localStorage.getItem(`${exchangeName}Leverage`) ?? '') || defaultLeverage(exchangeName),
+    enterStrategy: isEnterStrategy(localStorage.getItem(`${exchangeName}EnterStrategy`)) ? localStorage.getItem(`${exchangeName}EnterStrategy`) : 'long',
+    customStrategy: isCustomStrategy(localStorage.getItem(`${exchangeName}CustomStrategy`)) ? localStorage.getItem(`${exchangeName}CustomStrategy`) : '트랜드',
+    enterSymbolAmount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolAmount`) ?? '') || DEFAULT_ENTER_SYMBOL_AMOUNT,
+    enterSymbolCount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolCount`) ?? '') || DEFAULT_ENTER_SYMBOL_COUNT,
   };
 
   const [query, setQuery] = useQueryParams({
@@ -148,13 +157,15 @@ export const useBitgetStateStore = () => {
     enterSymbolAmount: withDefault(NumberParam, initialValues.enterSymbolAmount),
     enterSymbolCount: withDefault(NumberParam, initialValues.enterSymbolCount),
   });
+
   useEffect(() => {
-    localStorage.setItem('bitgetLeverage', query.leverage.toString());
-    localStorage.setItem('bitgetEnterStrategy', query.enterStrategy);
-    localStorage.setItem('bitgetCustomStrategy', query.customStrategy);
-    localStorage.setItem('bitgetEnterSymbolAmount', query.enterSymbolAmount.toString());
-    localStorage.setItem('bitgetEnterSymbolCount', query.enterSymbolCount.toString());
+    localStorage.setItem(`${exchangeName}Leverage`, query.leverage.toString());
+    localStorage.setItem(`${exchangeName}EnterStrategy`, query.enterStrategy);
+    localStorage.setItem(`${exchangeName}CustomStrategy`, query.customStrategy);
+    localStorage.setItem(`${exchangeName}EnterSymbolAmount`, query.enterSymbolAmount.toString());
+    localStorage.setItem(`${exchangeName}EnterSymbolCount`, query.enterSymbolCount.toString());
   }, [query]);
+
   return {
     store: query,
     setStore: setQuery,
