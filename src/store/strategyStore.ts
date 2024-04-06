@@ -21,7 +21,7 @@ function isCustomStrategy(value: any): value is CustomStrategy {
 
 
 export function saveLeverage(exchangeName: string, leverage: number) {
-  const leverageKey = `${exchangeName}Leverage`; // 동적 키 생성
+  const leverageKey = `${exchangeName}Leverage`;
   localStorage.setItem(leverageKey, leverage.toString());
 }
 
@@ -38,7 +38,7 @@ export function defaultLeverage(exchangeName: string): number {
   }
 }
 export const useBinanceStateStore = () => {
-  const exchangeName = 'binance'; 
+  const exchangeName = 'binance';
   const initialValues = {
     leverage: parseInt(localStorage.getItem(`${exchangeName}Leverage`) ?? '') || defaultLeverage(exchangeName),
     enterStrategy: isEnterStrategy(localStorage.getItem(`${exchangeName}EnterStrategy`)) ? localStorage.getItem(`${exchangeName}EnterStrategy`) : 'long',
@@ -54,6 +54,7 @@ export const useBinanceStateStore = () => {
     enterSymbolAmount: withDefault(NumberParam, initialValues.enterSymbolAmount),
     enterSymbolCount: withDefault(NumberParam, initialValues.enterSymbolCount),
   });
+
 
   useEffect(() => {
     localStorage.setItem(`${exchangeName}Leverage`, query.leverage.toString());
@@ -73,7 +74,7 @@ export type BinanceStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setEx
   ReturnType<typeof useBinanceStateStore>;
 
 export const useUpbitStateStore = () => {
-  const exchangeName = 'upbit'; // 업비트를 위한 거래소 이름 설정
+  const exchangeName = 'upbit';
   const initialValues = {
     leverage: parseInt(localStorage.getItem(`${exchangeName}Leverage`) ?? '') || defaultLeverage(exchangeName),
     enterStrategy: isEnterStrategy(localStorage.getItem(`${exchangeName}EnterStrategy`)) ? localStorage.getItem(`${exchangeName}EnterStrategy`) : 'long',
@@ -108,13 +109,12 @@ export type UpbitStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExch
   ReturnType<typeof useUpbitStateStore>;
 
 export const useBithumbStateStore = () => {
-  const exchangeName = 'bithumb'; // 거래소 이름 설정
-  // localStorage에서 값을 불러오되, null이면 기본값을 사용
+  const exchangeName = 'bithumb';
   const initialValues = {
-    enterStrategy: localStorage.getItem(`${exchangeName}EnterStrategy`) ?? 'long',
-    customStrategy: localStorage.getItem(`${exchangeName}CustomStrategy`) ?? '트랜드',
-    enterSymbolAmount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolAmount`) ?? DEFAULT_ENTER_SYMBOL_AMOUNT.toString()),
-    enterSymbolCount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolCount`) ?? DEFAULT_ENTER_SYMBOL_COUNT.toString()),
+    enterStrategy: isEnterStrategy(localStorage.getItem(`${exchangeName}EnterStrategy`)) ? localStorage.getItem(`${exchangeName}EnterStrategy`) : 'long',
+    customStrategy: isCustomStrategy(localStorage.getItem(`${exchangeName}CustomStrategy`)) ? localStorage.getItem(`${exchangeName}CustomStrategy`) : '트랜드',
+    enterSymbolAmount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolAmount`) ?? '') || DEFAULT_ENTER_SYMBOL_AMOUNT,
+    enterSymbolCount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolCount`) ?? '') || DEFAULT_ENTER_SYMBOL_COUNT,
   };
   const [query, setQuery] = useQueryParams({
     enterStrategy: withDefault(createEnumParam<EnterStrategy>([...EnterStrategist]), initialValues.enterStrategy as EnterStrategy),
@@ -122,7 +122,6 @@ export const useBithumbStateStore = () => {
     enterSymbolAmount: withDefault(NumberParam, initialValues.enterSymbolAmount),
     enterSymbolCount: withDefault(NumberParam, initialValues.enterSymbolCount),
   });
-  // 상태가 변경될 때마다 localStorage에 저장
   useEffect(() => {
     localStorage.setItem(`${exchangeName}EnterStrategy`, query.enterStrategy);
     localStorage.setItem(`${exchangeName}CustomStrategy`, query.customStrategy);
@@ -135,6 +134,7 @@ export const useBithumbStateStore = () => {
     setStore: setQuery,
   };
 };
+
 
 export type BithumbStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
   ReturnType<typeof useBithumbStateStore>;
