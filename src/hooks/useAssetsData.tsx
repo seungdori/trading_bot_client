@@ -74,7 +74,7 @@ export const useAssetsData = (): { isLoading: boolean; assets: Asset[] } => {
         isLoading: false,
         assets: buildBithumbAssets(positionsQuery.data as BithumbPositionsResponse[], tradingDataQuery.data ?? []),
       };
-    case 'okx':
+    case 'bitget':
       return {
         isLoading: false,
         assets: buildOkxAssets(positionsQuery.data as OkxPositionsResponse[], tradingDataQuery.data ?? []),
@@ -95,7 +95,7 @@ export function buildMarketSymbols(exchange: Exchange, positions?: PositionsResp
       return buildBithumbSymbols(positions as BithumbPositionsResponse[]);
     case 'upbit':
       return buildUpbitSymbols(positions as UpbitPositionsResponse[]);
-    case 'okx':
+    case 'bitget':
       return buildOkxSymbols(positions as UpbitPositionsResponse[]);
     default:
       return [];

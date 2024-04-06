@@ -6,7 +6,7 @@ export const BithumbExchangeSchema = z.literal('bithumb');
 
 export const UpbitExchangeSchema = z.literal('upbit');
 
-export const OkxExchangeSchema = z.literal('okx');
+export const OkxExchangeSchema = z.literal('bitget');
 
 export const ExchangeSchema = z.union([
   BinanceExchangeSchema,

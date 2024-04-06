@@ -9,5 +9,5 @@ export function cachePositions() {
   useFetchPositions('binance', CACHE_INTERVAL);
   useFetchPositions('upbit', CACHE_INTERVAL);
   useFetchPositions('bithumb', CACHE_INTERVAL);
-  useFetchPositions('okx', CACHE_INTERVAL);
+  useFetchPositions('bitget', CACHE_INTERVAL);
 }

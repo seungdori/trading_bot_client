@@ -15,7 +15,7 @@ export type Bithumb = z.infer<typeof BithumbExchangeSchema>;
 
 export type Upbit = z.infer<typeof UpbitExchangeSchema>;
 
-export type Okx = z.infer<typeof OkxExchangeSchema>;
+export type Bitget = z.infer<typeof OkxExchangeSchema>;
 
 export type Exchange = z.infer<typeof ExchangeSchema>;
 

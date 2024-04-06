@@ -11,9 +11,9 @@ export const EXCHANGE = {
     NAME: '업비트',
     EXCHANGE: 'upbit',
   },
-  OKX: {
-    NAME: 'OKX',
-    EXCHANGE: 'okx',
+  BITGET: {
+    NAME: 'BITGET',
+    EXCHANGE: 'bitget',
   },
 } as const;
 
