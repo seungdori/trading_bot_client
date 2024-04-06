@@ -15,7 +15,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import BinanceLogo from '@/assets/binance.svg';
 import BithumbLogo from '@/assets/bithumb.svg';
 import UpbitLogo from '@/assets/upbit.svg';
-import OkxLogo from '@/assets/bitget.svg';
+import BitgetLogo from '@/assets/bitget.svg';
 import { ExchangeApiKeysSchema } from '@/schemas/settingsSchema.ts';
 import { useApiKeysStore } from '@/hooks/useApiKeysStore.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
@@ -97,7 +97,7 @@ export default function ApiKeysSettings({ className }: Props) {
               htmlFor={`bitget-${id}`}
               className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
             >
-              <img src={OkxLogo} className="h-10 m-2" />
+              <img src={BitgetLogo} className="h-10 m-2" />
               <span>Bitget</span>
             </Label>
           </div>

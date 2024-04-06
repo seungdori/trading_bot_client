@@ -4,7 +4,7 @@ import { fetchPositions } from '@/components/api/desktopClient.ts';
 import { useQuery } from '@tanstack/react-query';
 import {
   BinancePositionsResponse,
-  OkxPositionsResponse,
+  BitgetPositionsResponse,
   BithumbPositionsResponse,
   PositionsResponse,
   UpbitPositionsResponse,
@@ -77,7 +77,7 @@ export const useAssetsData = (): { isLoading: boolean; assets: Asset[] } => {
     case 'bitget':
       return {
         isLoading: false,
-        assets: buildOkxAssets(positionsQuery.data as OkxPositionsResponse[], tradingDataQuery.data ?? []),
+        assets: buildBitgetAssets(positionsQuery.data as BitgetPositionsResponse[], tradingDataQuery.data ?? []),
       };
     default:
       return {
@@ -96,7 +96,7 @@ export function buildMarketSymbols(exchange: Exchange, positions?: PositionsResp
     case 'upbit':
       return buildUpbitSymbols(positions as UpbitPositionsResponse[]);
     case 'bitget':
-      return buildOkxSymbols(positions as UpbitPositionsResponse[]);
+      return buildBitgetSymbols(positions as UpbitPositionsResponse[]);
     default:
       return [];
   }
@@ -116,17 +116,17 @@ export function buildUpbitSymbols(positions?: UpbitPositionsResponse[]): string[
 }
 
 // Todo: Impl
-function buildOkxSymbol(currency: string) {
+function buildBitgetSymbol(currency: string) {
   return currency;
 }
 
 // Todo: Impl
-export function buildOkxSymbols(positions?: UpbitPositionsResponse[]): string[] {
+export function buildBitgetSymbols(positions?: UpbitPositionsResponse[]): string[] {
   if (!positions) {
     return [];
   }
 
-  return positions.map((position) => buildOkxSymbol(position.currency));
+  return positions.map((position) => buildBitgetSymbol(position.currency));
 }
 
 function buildBinanceSymbol(symbol: string) {
@@ -270,7 +270,7 @@ function buildBithumbAssets(
 }
 
 // Todo: Impl
-function buildOkxAssets(
+function buildBitgetAssets(
   positions: BithumbPositionsResponse[],
   tradingData: z.infer<typeof TradingDataResponseSchema>[],
 ): Asset[] {

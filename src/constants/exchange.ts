@@ -12,7 +12,7 @@ export const EXCHANGE = {
     EXCHANGE: 'upbit',
   },
   BITGET: {
-    NAME: 'BITGET',
+    NAME: '비트겟',
     EXCHANGE: 'bitget',
   },
 } as const;
