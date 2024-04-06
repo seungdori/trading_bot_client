@@ -13,13 +13,13 @@ const MAX_LEVERAGE = 20;
 export default function LeveragePanel({ className, ...props }: SliderProps) {
   const { store, setStore } = useBinanceStateStore();
   const [leverage, setLeverage] = useState(store.leverage);
-  const isLeverageUpdated = store.leverage === leverage;
+  const isLeverageUpdated = store.leverage !== leverage;
 
-  const handleApplyLeverage = () => {
-    setStore({ leverage });
-    saveLeverage(leverage);
-  };
-
+const handleApplyLeverage = () => {
+  setStore({ leverage });
+  saveLeverage('binance', leverage);
+};
+  
   return (
     <div className="p-4 space-y-2 w-full h-full flex flex-col justify-around">
       <p>레버리지 : {leverage}</p>
@@ -32,7 +32,7 @@ export default function LeveragePanel({ className, ...props }: SliderProps) {
         className={cn('w-full', className)}
         {...props}
       />
-      <Button className="w-full" disabled={isLeverageUpdated} onClick={handleApplyLeverage}>
+      <Button className="w-full" disabled={!isLeverageUpdated} onClick={handleApplyLeverage}>
         레버리지 적용
       </Button>
     </div>
