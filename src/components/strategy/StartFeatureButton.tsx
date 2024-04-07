@@ -87,7 +87,14 @@ export default function StartFeatureButton({ className }: Props) {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>매매를 시작 하시겠습니까?</AlertDialogTitle>
-          <AlertDialogDescription>매매 시작 버튼을 누르면 자동 매매를 시작합니다.</AlertDialogDescription>
+          <AlertDialogDescription>
+            매매 시작 버튼을 누르면 다음 조건으로 자동 매매를 시작합니다:
+            <ul className="mt-2 ml-4 list-disc text-sm text-muted-foreground">
+              <li>거래소: {exchange}</li>
+              <li>전략: {store.customStrategy}</li>
+              <li>매매 방향: {store.enterStrategy}</li>
+            </ul>
+        </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>닫기</AlertDialogCancel>
