@@ -1,7 +1,7 @@
 import {
   AiSearchProgressResponseSchema,
   BinancePositionsResponseSchema,
-  bitgetPositionsResponseSchema,
+  okxPositionsResponseSchema,
   BithumbPositionsResponseSchema,
   BotKeyStateSchema,
   BotStateSchema,
@@ -47,7 +47,7 @@ export type UpbitPositionsResponse = z.infer<typeof UpbitPositionsResponseSchema
 
 export type BithumbPositionsResponse = z.infer<typeof BithumbPositionsResponseSchema>;
 
-export type bitgetPositionsResponse = z.infer<typeof bitgetPositionsResponseSchema>;
+export type okxPositionsResponse = z.infer<typeof okxPositionsResponseSchema>;
 
 export type PositionsResponse = z.infer<typeof PositionsResponseSchema>;
 
