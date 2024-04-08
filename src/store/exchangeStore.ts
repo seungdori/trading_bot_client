@@ -2,7 +2,7 @@ import { createEnumParam, useQueryParam, withDefault } from 'use-query-params';
 import { Exchange } from '@/types/exchangeTypes.ts';
 
 const ExchangeParam = withDefault(
-  createEnumParam<Exchange>(['binance', 'upbit', 'bithumb', 'okx']),
+  createEnumParam<Exchange>(['binance', 'upbit', 'bithumb', 'bitget']),
   'binance' as const,
   false,
 );

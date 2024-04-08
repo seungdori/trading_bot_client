@@ -139,8 +139,8 @@ export const useBithumbStateStore = () => {
 export type BithumbStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
   ReturnType<typeof useBithumbStateStore>;
 
-export const useOkxStateStore = () => {
-  const exchangeName = 'okx';
+export const usebitgetStateStore = () => {
+  const exchangeName = 'bitget';
 
   const initialValues = {
     leverage: parseInt(localStorage.getItem(`${exchangeName}Leverage`) ?? '') || defaultLeverage(exchangeName),
@@ -172,7 +172,7 @@ export const useOkxStateStore = () => {
   };
 };
 
-export type OkxStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
-  ReturnType<typeof useOkxStateStore>;
+export type bitgetStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
+  ReturnType<typeof usebitgetStateStore>;
 
-export type ExchangeStateStore = BinanceStateStore | UpbitStateStore | BithumbStateStore | OkxStateStore;
+export type ExchangeStateStore = BinanceStateStore | UpbitStateStore | BithumbStateStore | bitgetStateStore;

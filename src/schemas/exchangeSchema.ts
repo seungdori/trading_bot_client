@@ -6,13 +6,13 @@ export const BithumbExchangeSchema = z.literal('bithumb');
 
 export const UpbitExchangeSchema = z.literal('upbit');
 
-export const OkxExchangeSchema = z.literal('okx');
+export const bitgetExchangeSchema = z.literal('bitget');
 
 export const ExchangeSchema = z.union([
   BinanceExchangeSchema,
   BithumbExchangeSchema,
   UpbitExchangeSchema,
-  OkxExchangeSchema,
+  bitgetExchangeSchema,
 ]);
 
 export const EnterStrategySchema = z.union([z.literal('long'), z.literal('short'), z.literal('long-short')]);

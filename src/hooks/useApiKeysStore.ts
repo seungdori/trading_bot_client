@@ -100,11 +100,11 @@ function buildLocalStorageKeys(exchange: Exchange) {
         SECRET: 'UPBIT_SECRET',
         PASSWORD: 'UPBIT_PASSWORD',
       };
-    case 'okx':
+    case 'bitget':
       return {
-        API_KEY: 'OKX_API_KEY',
-        SECRET: 'OKX_SECRET',
-        PASSWORD: 'OKX_PASSWORD',
+        API_KEY: 'bitget_API_KEY',
+        SECRET: 'bitget_SECRET',
+        PASSWORD: 'bitget_PASSWORD',
       };
   }
 }
@@ -113,16 +113,16 @@ export const useInitExchangeApiKeys = () => {
   const { keys: binanceKeys } = useApiKeysStore('binance');
   const { keys: bithumbKeys } = useApiKeysStore('bithumb');
   const { keys: upbitKeys } = useApiKeysStore('upbit');
-  const { keys: okxKeys } = useApiKeysStore('okx');
+  const { keys: bitgetKeys } = useApiKeysStore('bitget');
 
   return useMutation({
-    mutationKey: ['initExchangeApiKeys', binanceKeys, bithumbKeys, upbitKeys, okxKeys],
+    mutationKey: ['initExchangeApiKeys', binanceKeys, bithumbKeys, upbitKeys, bitgetKeys],
     mutationFn: () =>
       initExchangeApiKeys([
         { exchange: 'binance', ...binanceKeys },
         { exchange: 'bithumb', ...bithumbKeys },
         { exchange: 'upbit', ...upbitKeys },
-        { exchange: 'okx', ...okxKeys },
+        { exchange: 'bitget', ...bitgetKeys },
       ]),
   });
 };
