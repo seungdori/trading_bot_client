@@ -15,7 +15,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import BinanceLogo from '@/assets/binance.svg';
 import BithumbLogo from '@/assets/bithumb.svg';
 import UpbitLogo from '@/assets/upbit.svg';
-import okxLogo from '@/assets/okx.svg';
+import bitgetLogo from '@/assets/bitget.svg';
 import { ExchangeApiKeysSchema } from '@/schemas/settingsSchema.ts';
 import { useApiKeysStore } from '@/hooks/useApiKeysStore.ts';
 import { ExchangeApiKeys } from '@/types/settingsTypes.ts';
@@ -48,7 +48,7 @@ export default function ApiKeysSettings({ className }: Props) {
     form.reset({ apiKey, secret, password });
   }, [apiKey, secret, password]);
 
-  const passwordRequired = exchange === 'okx';
+  const passwordRequired = exchange === 'bitget';
   return (
     <Card className={cn(className)}>
       <CardHeader>
@@ -92,13 +92,13 @@ export default function ApiKeysSettings({ className }: Props) {
             </Label>
           </div>
           <div>
-            <RadioGroupItem value="okx" id={`okx-${id}`} className="peer sr-only" />
+            <RadioGroupItem value="bitget" id={`bitget-${id}`} className="peer sr-only" />
             <Label
-              htmlFor={`okx-${id}`}
+              htmlFor={`bitget-${id}`}
               className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
             >
-              <img src={okxLogo} className="h-10 m-2" />
-              <span>Okx</span>
+              <img src={bitgetLogo} className="h-10 m-2" />
+              <span>Bitget</span>
             </Label>
           </div>
         </RadioGroup>
