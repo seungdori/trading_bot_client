@@ -4,7 +4,7 @@ import { fetchPositions } from '@/components/api/desktopClient.ts';
 import { useQuery } from '@tanstack/react-query';
 import {
   BinancePositionsResponse,
-  okxPositionsResponse,
+  bitgetPositionsResponse,
   BithumbPositionsResponse,
   PositionsResponse,
   UpbitPositionsResponse,
@@ -74,10 +74,10 @@ export const useAssetsData = (): { isLoading: boolean; assets: Asset[] } => {
         isLoading: false,
         assets: buildBithumbAssets(positionsQuery.data as BithumbPositionsResponse[], tradingDataQuery.data ?? []),
       };
-    case 'okx':
+    case 'bitget':
       return {
         isLoading: false,
-        assets: buildokxAssets(positionsQuery.data as okxPositionsResponse[], tradingDataQuery.data ?? []),
+        assets: buildbitgetAssets(positionsQuery.data as bitgetPositionsResponse[], tradingDataQuery.data ?? []),
       };
     default:
       return {
@@ -95,8 +95,8 @@ export function buildMarketSymbols(exchange: Exchange, positions?: PositionsResp
       return buildBithumbSymbols(positions as BithumbPositionsResponse[]);
     case 'upbit':
       return buildUpbitSymbols(positions as UpbitPositionsResponse[]);
-    case 'okx':
-      return buildokxSymbols(positions as UpbitPositionsResponse[]);
+    case 'bitget':
+      return buildbitgetSymbols(positions as UpbitPositionsResponse[]);
     default:
       return [];
   }
@@ -116,17 +116,17 @@ export function buildUpbitSymbols(positions?: UpbitPositionsResponse[]): string[
 }
 
 // Todo: Impl
-function buildokxSymbol(currency: string) {
+function buildbitgetSymbol(currency: string) {
   return currency;
 }
 
 // Todo: Impl
-export function buildokxSymbols(positions?: UpbitPositionsResponse[]): string[] {
+export function buildbitgetSymbols(positions?: UpbitPositionsResponse[]): string[] {
   if (!positions) {
     return [];
   }
 
-  return positions.map((position) => buildokxSymbol(position.currency));
+  return positions.map((position) => buildbitgetSymbol(position.currency));
 }
 
 function buildBinanceSymbol(symbol: string) {
@@ -270,7 +270,7 @@ function buildBithumbAssets(
 }
 
 // Todo: Impl
-function buildokxAssets(
+function buildbitgetAssets(
   positions: BithumbPositionsResponse[],
   tradingData: z.infer<typeof TradingDataResponseSchema>[],
 ): Asset[] {

@@ -100,7 +100,7 @@ export default function EnterSymbol({ className }: Props) {
 function buildEnterSymbolLabel(exchange: Exchange): string {
   switch (exchange) {
     case 'binance':
-    case 'okx':
+    case 'bitget':
       return '주문당 투입금 $';
 
     case 'bithumb':
