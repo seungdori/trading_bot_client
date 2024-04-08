@@ -24,7 +24,7 @@ export const useTradingLog = ({
       console.error(`Reconnect stopped after [${numAttempts}] attempts`);
       toast({
         title: '로그 불러오기 실패',
-        description: `프로그램을 재시작 해주세요. Reconnect stopped after [${numAttempts}] attempts`,
+        description: `인터넷 연결을 확인해주세요.`,
         duration: Infinity,
         draggable: false,
       });
