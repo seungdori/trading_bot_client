@@ -2,7 +2,7 @@ import { z } from 'zod';
 import {
   AssetsSchemaWithKey,
   BinanceExchangeSchema,
-  bitgetExchangeSchema,
+  okxExchangeSchema,
   BithumbExchangeSchema,
   ExchangeSchema,
   UpbitExchangeSchema,
@@ -15,7 +15,7 @@ export type Bithumb = z.infer<typeof BithumbExchangeSchema>;
 
 export type Upbit = z.infer<typeof UpbitExchangeSchema>;
 
-export type Bitget = z.infer<typeof bitgetExchangeSchema>;
+export type Okx = z.infer<typeof okxExchangeSchema>;
 
 export type Exchange = z.infer<typeof ExchangeSchema>;
 
