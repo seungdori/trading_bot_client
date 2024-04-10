@@ -10,12 +10,13 @@ export default function TableSkeleton() {
       </div>
       {/* Table Row Skeletons */}
       <div className="space-y-2">
-        {Array.from({ length: 5 }, (_, index) => (
+        {Array.from({ length: 6 }, (_, index) => (
           <div key={index} className="grid grid-cols-8 gap-4">
             <Skeleton className="col-span-2 h-4 rounded" />
             <Skeleton className="col-span-3 h-4 rounded" />
             <Skeleton className="col-span-2 h-4 rounded" />
             <Skeleton className="col-span-1 h-4 rounded" />
+            <Skeleton className="col-span-1 h-5 rounded" />
           </div>
         ))}
       </div>

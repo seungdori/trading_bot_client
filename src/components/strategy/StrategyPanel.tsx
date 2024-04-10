@@ -10,7 +10,9 @@ type Props = { className?: string };
 export default function StrategyPanel({ className }: Props) {
   const { exchange } = useStrategyStore();
 
-  const renderLeveragePanel = exchange === 'binance' || exchange === 'bitget';
+  const renderLeveragePanel = exchange === 'binance' || exchange === 'bitget' || exchange === 'okx';
+  console.log('Exchange in StrategyPanel:', exchange);
+  console.log('Should render LeveragePanel:', renderLeveragePanel);
   return (
     <Card className={cn('container w-full flex flex-col space-y-2', className)}>
       <EnterStrategySelect className="w-full p-4" />

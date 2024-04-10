@@ -9,6 +9,7 @@ import { useExchangeStore } from '@/store/exchangeStore.ts';
 
 export const useStrategyStore = () => {
   const { exchange } = useExchangeStore();
+  console.log('Current exchange:', exchange);
 
   const binanceStrategyStore = useBinanceStateStore();
   const bithumbStrategyStore = useBithumbStateStore();
