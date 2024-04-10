@@ -172,7 +172,7 @@ export const useBitgetStateStore = () => {
   };
 };
 
-export type bitgetStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
+export type BitgetStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
   ReturnType<typeof useBitgetStateStore>;
 
 
@@ -209,10 +209,10 @@ export const useOkxStateStore = () => {
   };
 };
 
-export type okxStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
+export type OkxStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
   ReturnType<typeof useOkxStateStore>;
 
 
 
 
-export type ExchangeStateStore = BinanceStateStore | UpbitStateStore | BithumbStateStore | bitgetStateStore | okxStateStore;
+export type ExchangeStateStore = BinanceStateStore | UpbitStateStore | BithumbStateStore | BitgetStateStore | OkxStateStore;

@@ -62,11 +62,11 @@ function buildLocalStorageKey(exchange: Exchange) {
       };
     case 'bitget':
       return {
-        TOKEN_KEY: 'bitget_TELEGRAM_TOKEN',
+        TOKEN_KEY: 'BITGET_TELEGRAM_TOKEN',
       };
     case 'okx':
       return {
-        TOKEN_KEY: 'okx_TELEGRAM_TOKEN',
+        TOKEN_KEY: 'OKX_TELEGRAM_TOKEN',
       };
   }
 }
