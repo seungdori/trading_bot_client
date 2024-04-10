@@ -40,7 +40,7 @@ type TabListProps = {
 function TabList({ tables, className }: TabListProps) {
   return (
     <div className={className}>
-      <TabsList className={cn(`w-full flex-1 min-w-[400px] grid grid-cols-${tables.length}`)}>
+      <TabsList className={cn(`w-full flex-1 min-w-[400px] grid grid-cols-5`)}>
         {tables.map((table) => (
           <TabsTrigger key={table.id} value={table.id}>
             {table.displayName}
@@ -56,7 +56,7 @@ function TabListWithBackButton({ tables, className }: TabListProps) {
     <div className={className}>
       {/*Spacing*/}
       <div className="flex-1"></div>
-      <TabsList className={cn(`flex-1 w-full grid grid-cols-${tables.length}`)}>
+      <TabsList className={cn(`flex-1 w-full grid grid-cols-5`)}>
         {tables.map((table) => (
           <TabsTrigger key={table.id} value={table.id}>
             {table.displayName}
