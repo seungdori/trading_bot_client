@@ -139,7 +139,7 @@ export const useBithumbStateStore = () => {
 export type BithumbStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
   ReturnType<typeof useBithumbStateStore>;
 
-export const usebitgetStateStore = () => {
+export const useBitgetStateStore = () => {
   const exchangeName = 'bitget';
 
   const initialValues = {
@@ -173,10 +173,10 @@ export const usebitgetStateStore = () => {
 };
 
 export type bitgetStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
-  ReturnType<typeof usebitgetStateStore>;
+  ReturnType<typeof useBitgetStateStore>;
 
 
-export const useokxStateStore = () => {
+export const useOkxStateStore = () => {
   const exchangeName = 'okx';
 
   const initialValues = {
@@ -210,7 +210,7 @@ export const useokxStateStore = () => {
 };
 
 export type okxStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
-  ReturnType<typeof useokxStateStore>;
+  ReturnType<typeof useOkxStateStore>;
 
 
 

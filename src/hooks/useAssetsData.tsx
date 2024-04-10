@@ -78,12 +78,12 @@ export const useAssetsData = (): { isLoading: boolean; assets: Asset[] } => {
     case 'bitget':
       return {
         isLoading: false,
-        assets: buildbitgetAssets(positionsQuery.data as BitgetPositionsResponse[], tradingDataQuery.data ?? []),
+        assets: buildBitgetAssets(positionsQuery.data as BitgetPositionsResponse[], tradingDataQuery.data ?? []),
       };
     case 'okx':
       return {
         isLoading: false,
-        assets: buildokxAssets(positionsQuery.data as OkxPositionsResponse[], tradingDataQuery.data ?? []),
+        assets: buildOkxAssets(positionsQuery.data as OkxPositionsResponse[], tradingDataQuery.data ?? []),
       };
     default:
       return {
@@ -102,9 +102,9 @@ export function buildMarketSymbols(exchange: Exchange, positions?: PositionsResp
     case 'upbit':
       return buildUpbitSymbols(positions as UpbitPositionsResponse[]);
     case 'bitget':
-      return buildbitgetSymbols(positions as UpbitPositionsResponse[]);
+      return buildBitgetSymbols(positions as BitgetPositionsResponse[]);
     case 'okx':
-      return buildokxSymbols(positions as UpbitPositionsResponse[]);
+      return buildOkxSymbols(positions as OkxPositionsResponse[]);
     default:
       return [];
   }
@@ -124,31 +124,31 @@ export function buildUpbitSymbols(positions?: UpbitPositionsResponse[]): string[
 }
 
 // Todo: Impl
-function buildbitgetSymbol(currency: string) {
+function buildBitgetSymbol(currency: string) {
   return currency;
 }
 
 // Todo: Impl
-export function buildbitgetSymbols(positions?: BitgetPositionsResponse[]): string[] {
+export function buildBitgetSymbols(positions?: BitgetPositionsResponse[]): string[] {
   if (!positions) {
     return [];
   }
 
-  return positions.map((position) => buildbitgetSymbol(position.currency));
+  return positions.map((position) => buildBitgetSymbol(position.currency));
 }
 
 // Todo: Impl
-function buildokxSymbol(currency: string) {
+function buildOkxSymbol(currency: string) {
   return currency;
 }
 
 // Todo: Impl
-export function buildokxSymbols(positions?: OkxPositionsResponse[]): string[] {
+export function buildOkxSymbols(positions?: OkxPositionsResponse[]): string[] {
   if (!positions) {
     return [];
   }
 
-  return positions.map((position) => buildokxSymbol(position.currency));
+  return positions.map((position) => buildOkxSymbol(position.currency));
 }
 
 function buildBinanceSymbol(symbol: string) {
@@ -292,7 +292,7 @@ function buildBithumbAssets(
 }
 
 // Todo: Impl
-function buildbitgetAssets(
+function buildBitgetAssets(
   positions: BitgetPositionsResponse[],
   tradingData: z.infer<typeof TradingDataResponseSchema>[],
 ): Asset[] {
@@ -351,7 +351,7 @@ function buildbitgetAssets(
 }
 
 // Todo: Impl
-function buildokxAssets(
+function buildOkxAssets(
   positions: OkxPositionsResponse[],
   tradingData: z.infer<typeof TradingDataResponseSchema>[],
 ): Asset[] {
