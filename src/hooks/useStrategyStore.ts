@@ -1,9 +1,9 @@
 import {
   useBinanceStateStore,
-  usebitgetStateStore,
+  useBitgetStateStore,
   useBithumbStateStore,
   useUpbitStateStore,
-  useokxStateStore,
+  useOkxStateStore,
 } from '@/store/strategyStore.ts';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
 
@@ -13,8 +13,8 @@ export const useStrategyStore = () => {
   const binanceStrategyStore = useBinanceStateStore();
   const bithumbStrategyStore = useBithumbStateStore();
   const upbitStrategyStore = useUpbitStateStore();
-  const bitgetStrategyStore = usebitgetStateStore();
-  const okxStrategyStore = useokxStateStore();
+  const bitgetStrategyStore = useBitgetStateStore();
+  const okxStrategyStore = useOkxStateStore();
 
   switch (exchange) {
     case 'binance':
