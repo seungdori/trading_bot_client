@@ -4,7 +4,8 @@ import { fetchPositions } from '@/components/api/desktopClient.ts';
 import { useQuery } from '@tanstack/react-query';
 import {
   BinancePositionsResponse,
-  bitgetPositionsResponse,
+  BitgetPositionsResponse,
+  OkxPositionsResponse,
   BithumbPositionsResponse,
   PositionsResponse,
   UpbitPositionsResponse,
@@ -77,7 +78,12 @@ export const useAssetsData = (): { isLoading: boolean; assets: Asset[] } => {
     case 'bitget':
       return {
         isLoading: false,
-        assets: buildbitgetAssets(positionsQuery.data as bitgetPositionsResponse[], tradingDataQuery.data ?? []),
+        assets: buildbitgetAssets(positionsQuery.data as BitgetPositionsResponse[], tradingDataQuery.data ?? []),
+      };
+    case 'okx':
+      return {
+        isLoading: false,
+        assets: buildokxAssets(positionsQuery.data as OkxPositionsResponse[], tradingDataQuery.data ?? []),
       };
     default:
       return {
@@ -97,6 +103,8 @@ export function buildMarketSymbols(exchange: Exchange, positions?: PositionsResp
       return buildUpbitSymbols(positions as UpbitPositionsResponse[]);
     case 'bitget':
       return buildbitgetSymbols(positions as UpbitPositionsResponse[]);
+    case 'okx':
+      return buildokxSymbols(positions as UpbitPositionsResponse[]);
     default:
       return [];
   }
@@ -121,12 +129,26 @@ function buildbitgetSymbol(currency: string) {
 }
 
 // Todo: Impl
-export function buildbitgetSymbols(positions?: UpbitPositionsResponse[]): string[] {
+export function buildbitgetSymbols(positions?: BitgetPositionsResponse[]): string[] {
   if (!positions) {
     return [];
   }
 
   return positions.map((position) => buildbitgetSymbol(position.currency));
+}
+
+// Todo: Impl
+function buildokxSymbol(currency: string) {
+  return currency;
+}
+
+// Todo: Impl
+export function buildokxSymbols(positions?: OkxPositionsResponse[]): string[] {
+  if (!positions) {
+    return [];
+  }
+
+  return positions.map((position) => buildokxSymbol(position.currency));
 }
 
 function buildBinanceSymbol(symbol: string) {
@@ -271,7 +293,66 @@ function buildBithumbAssets(
 
 // Todo: Impl
 function buildbitgetAssets(
-  positions: BithumbPositionsResponse[],
+  positions: BitgetPositionsResponse[],
+  tradingData: z.infer<typeof TradingDataResponseSchema>[],
+): Asset[] {
+  const tradingDataWithKey = tradingData.reduce(
+    (acc, item) => {
+      return {
+        ...acc,
+        [item.symbol]: item,
+      };
+    },
+    {} as Record<string, z.infer<typeof TradingDataResponseSchema>>,
+  );
+
+  const assets: Asset[] = positions.map((coin) => {
+    const key = coin.currency;
+    const coinName = coin.currency;
+    const amount = coin.balance;
+    const currentPrice = coin.current_price;
+    const initPrice = 0;
+    const rateOfReturn = 0;
+    const value = Math.abs(+amount * currentPrice);
+
+    const validatedTradingData = TradingDataSchema.safeParse(tradingData);
+    if (validatedTradingData.success) {
+      return {
+        key,
+        amount,
+        coinName,
+        currentPrice,
+        initPrice,
+        rateOfReturn,
+        sellPrice: tradingDataWithKey[key].long_sl_price.toFixed(2),
+        tp1: tradingDataWithKey[key].long_tp1_price.toFixed(2),
+        tp2: tradingDataWithKey[key].long_tp2_price.toFixed(2),
+        tp3: tradingDataWithKey[key].long_tp3_price.toFixed(2),
+        value,
+      };
+    } else {
+      return {
+        key,
+        amount,
+        coinName,
+        currentPrice,
+        initPrice,
+        rateOfReturn,
+        sellPrice: '',
+        tp1: '',
+        tp2: '',
+        tp3: '',
+        value,
+      };
+    }
+  });
+
+  return assets;
+}
+
+// Todo: Impl
+function buildokxAssets(
+  positions: OkxPositionsResponse[],
   tradingData: z.infer<typeof TradingDataResponseSchema>[],
 ): Asset[] {
   const tradingDataWithKey = tradingData.reduce(

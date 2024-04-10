@@ -42,6 +42,11 @@ function buildTabs(exchange: Exchange): {
         displayName: EXCHANGE.BITGET.NAME,
         component: <WinRateTableWrapper exchange="bitget" />,
       },
+      {
+        id: EXCHANGE.OKX.EXCHANGE,
+        displayName: EXCHANGE.OKX.NAME,
+        component: <WinRateTableWrapper exchange="okx" />,
+      },
     ],
   };
 }

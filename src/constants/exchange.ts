@@ -15,6 +15,10 @@ export const EXCHANGE = {
     NAME: 'BITGET',
     EXCHANGE: 'bitget',
   },
+  OKX: {
+    NAME: 'OKX',
+    EXCHANGE: 'okx',
+  },
 } as const;
 
 export const DEFAULT_EXCHANGE = EXCHANGE.UPBIT.EXCHANGE;

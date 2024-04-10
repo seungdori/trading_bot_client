@@ -62,6 +62,8 @@ function buildExchangeName(exchange: Exchange) {
       return EXCHANGE.UPBIT.NAME;
     case 'bitget':
       return EXCHANGE.BITGET.NAME;
+    case 'okx':
+      return EXCHANGE.OKX.NAME;
     default:
       throw new Error('Invalid exchange');
   }
@@ -97,6 +99,12 @@ function formatBalance(balance: number, exchange: Exchange): string {
         precision: 1,
         currencySymbol: 'USDT',
       });
+    case 'okx':
+      return formatNum({
+        num: balance,
+        precision: 1,
+        currencySymbol: 'USDT',
+      });
   }
 }
 
@@ -104,6 +112,7 @@ function buildBalanceDescription(exchange: Exchange) {
   switch (exchange) {
     case 'binance':
     case 'bitget':
+    case 'okx':
       return '보유 USDT';
 
     case 'bithumb':
@@ -146,6 +155,9 @@ function buildTotalUnrealizedProfit({
     case 'bitget':
       // Todo: Impl
       return null;
+    case 'okx':
+      // Todo: Impl
+      return null;
 
     default:
       return null;
@@ -162,6 +174,7 @@ function buildTotalBalance({ exchange, wallet }: { exchange: Exchange; wallet: W
   switch (exchange) {
     case 'binance':
     case 'bitget':
+    case 'okx':
       return formatNum({
         num: totalBalance,
         precision: 1,
