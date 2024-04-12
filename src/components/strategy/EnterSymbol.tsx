@@ -48,6 +48,8 @@ export default function EnterSymbol({ className }: Props) {
                         id="enterSymbolCount"
                         type="number"
                         placeholder="진입 종목 개수"
+                        min="1"
+                        max="10"
                         autoCapitalize="none"
                         autoCorrect="off"
                         value={enterSymbolCount.toString()}

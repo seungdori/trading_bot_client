@@ -36,5 +36,5 @@ function buildProgressPercentage(completedSymbolCount: number, totalSymbolCount:
     return 0;
   }
 
-  return Math.floor((completedSymbolCount / totalSymbolCount) * 100);
+  return Math.round((completedSymbolCount / totalSymbolCount) * 100);
 }
