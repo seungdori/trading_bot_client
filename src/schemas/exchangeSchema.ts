@@ -10,12 +10,21 @@ export const BitgetExchangeSchema = z.literal('bitget');
 
 export const OkxExchangeSchema = z.literal('okx');
 
+export const OkxSpotExchangeSchema = z.literal('okx_spot');
+
+export const BinanceSpotExchangeSchema = z.literal('binance_spot');
+
+export const BitgetSpotExchangeSchema = z.literal('bitget_spot');
+
 export const ExchangeSchema = z.union([
   BinanceExchangeSchema,
   BithumbExchangeSchema,
   UpbitExchangeSchema,
   BitgetExchangeSchema,
   OkxExchangeSchema,
+  OkxSpotExchangeSchema,
+  BinanceSpotExchangeSchema,
+  BitgetSpotExchangeSchema,
 ]);
 
 export const EnterStrategySchema = z.union([z.literal('long'), z.literal('short'), z.literal('long-short')]);

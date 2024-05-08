@@ -11,4 +11,7 @@ export function cachePositions() {
   useFetchPositions('bithumb', CACHE_INTERVAL);
   useFetchPositions('bitget', CACHE_INTERVAL);
   useFetchPositions('okx', CACHE_INTERVAL);
+  useFetchPositions('okx_spot', CACHE_INTERVAL);
+  useFetchPositions('binance_spot', CACHE_INTERVAL);
+  useFetchPositions('bitget_spot', CACHE_INTERVAL);
 }

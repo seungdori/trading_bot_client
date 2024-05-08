@@ -105,6 +105,12 @@ export function buildMarketSymbols(exchange: Exchange, positions?: PositionsResp
       return buildBitgetSymbols(positions as BitgetPositionsResponse[]);
     case 'okx':
       return buildOkxSymbols(positions as OkxPositionsResponse[]);
+    case 'okx_spot':
+      return buildOkxSymbols(positions as OkxPositionsResponse[]);
+    case 'binance_spot':
+      return buildBinanceSymbols(positions as BinancePositionsResponse[]);
+    case 'bitget_spot':
+      return buildBitgetSymbols(positions as BitgetPositionsResponse[]);
     default:
       return [];
   }
@@ -174,6 +180,8 @@ export function buildBithumbSymbols(positions?: BithumbPositionsResponse[]): str
 
   return positions.map((position) => buildBithumbSymbol(position.currency));
 }
+
+
 
 function buildBinanceAssets(
   positions: BinancePositionsResponse[],

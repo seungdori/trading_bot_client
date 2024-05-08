@@ -4,6 +4,9 @@ import {
   BinanceExchangeSchema,
   BitgetExchangeSchema,
   OkxExchangeSchema,
+  OkxSpotExchangeSchema,
+  BinanceSpotExchangeSchema,
+  BitgetSpotExchangeSchema,
   BithumbExchangeSchema,
   ExchangeSchema,
   UpbitExchangeSchema,
@@ -19,6 +22,12 @@ export type Upbit = z.infer<typeof UpbitExchangeSchema>;
 export type Bitget = z.infer<typeof BitgetExchangeSchema>;
 
 export type Okx = z.infer<typeof OkxExchangeSchema>;
+
+export type OkxSpot = z.infer<typeof OkxSpotExchangeSchema>;
+
+export type BinanceSpot = z.infer<typeof BinanceSpotExchangeSchema>;
+
+export type BitgetSpot = z.infer<typeof BitgetSpotExchangeSchema>;
 
 export type Exchange = z.infer<typeof ExchangeSchema>;
 

@@ -68,6 +68,18 @@ function buildLocalStorageKey(exchange: Exchange) {
       return {
         TOKEN_KEY: 'OKX_TELEGRAM_TOKEN',
       };
+    case 'okx_spot':
+      return {
+        TOKEN_KEY: 'OKX_TELEGRAM_TOKEN',
+      };
+    case 'binance_spot':
+      return {
+        TOKEN_KEY: 'BINANCE_TELEGRAM_TOKEN',
+      };
+    case 'bitget_spot':
+      return {
+        TOKEN_KEY: 'BITGET_TELEGRAM_TOKEN',
+      };
   }
 }
 
@@ -89,6 +101,9 @@ export const useInitTelegramTokens = () => {
   const { token: upbitToken } = useTelegramStore('upbit');
   const { token: bitgetToken } = useTelegramStore('bitget');
   const { token: okxToken } = useTelegramStore('okx');
+  const { token: okxSpotToken } = useTelegramStore('okx_spot');
+  const { token: binanceSpotToken } = useTelegramStore('binance_spot');
+  const { token: bitgetSpotToken } = useTelegramStore('bitget_spot');
 
   return useMutation({
     mutationKey: ['initTelegramTokens', binanceToken, bithumbToken, upbitToken, bitgetToken, okxToken],
@@ -99,6 +114,9 @@ export const useInitTelegramTokens = () => {
         { exchange: 'upbit', token: upbitToken },
         { exchange: 'bitget', token: bitgetToken },
         { exchange: 'okx', token: okxToken },
+        { exchange: 'okx_spot', token: okxSpotToken },
+        { exchange: 'binance_spot', token: binanceSpotToken },
+        { exchange: 'bitget_spot', token: bitgetSpotToken },
       ]),
   });
 };

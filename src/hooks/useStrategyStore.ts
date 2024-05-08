@@ -4,6 +4,9 @@ import {
   useBithumbStateStore,
   useUpbitStateStore,
   useOkxStateStore,
+  useOkxSpotStateStore,
+  useBinancespotStateStore,
+  useBitgetSpotStateStore,
 } from '@/store/strategyStore.ts';
 import { useExchangeStore } from '@/store/exchangeStore.ts';
 
@@ -16,6 +19,9 @@ export const useStrategyStore = () => {
   const upbitStrategyStore = useUpbitStateStore();
   const bitgetStrategyStore = useBitgetStateStore();
   const okxStrategyStore = useOkxStateStore();
+  const okxSpotStrategyStore = useOkxSpotStateStore();
+  const binanceSpotStrategyStore = useBinancespotStateStore();
+  const bitgetSpotStrategyStore = useBitgetSpotStateStore();
 
   switch (exchange) {
     case 'binance':
@@ -28,6 +34,12 @@ export const useStrategyStore = () => {
       return { exchange, ...bitgetStrategyStore };
     case 'okx':
       return { exchange, ...okxStrategyStore };
+    case 'okx_spot':
+      return { exchange, ...okxSpotStrategyStore };
+    case 'binance_spot':
+      return { exchange, ...binanceSpotStrategyStore };
+    case 'bitget_spot':
+      return { exchange, ...bitgetSpotStrategyStore };
     default:
       throw new Error('Exchange not found');
   }

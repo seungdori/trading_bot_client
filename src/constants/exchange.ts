@@ -3,6 +3,10 @@ export const EXCHANGE = {
     NAME: '바이낸스',
     EXCHANGE: 'binance',
   },
+  BINANCE_SPOT: {
+    NAME: '바이낸스 현물',
+    EXCHANGE: 'binance_spot',
+  },
   BITHUMB: {
     NAME: '빗썸',
     EXCHANGE: 'bithumb',
@@ -15,10 +19,19 @@ export const EXCHANGE = {
     NAME: 'BITGET',
     EXCHANGE: 'bitget',
   },
+  BITGET_SPOT: {
+    NAME: 'BITGET 현물',
+    EXCHANGE: 'bitget_spot',
+  },
   OKX: {
     NAME: 'OKX',
     EXCHANGE: 'okx',
   },
+  OKX_SPOT: {
+    NAME: 'OKX현물',
+    EXCHANGE: 'okx_spot',
+  },
+
 } as const;
 
 export const DEFAULT_EXCHANGE = EXCHANGE.UPBIT.EXCHANGE;

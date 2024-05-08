@@ -64,6 +64,12 @@ function buildExchangeName(exchange: Exchange) {
       return EXCHANGE.BITGET.NAME;
     case 'okx':
       return EXCHANGE.OKX.NAME;
+    case 'okx_spot':
+      return EXCHANGE.OKX_SPOT.NAME;
+    case 'binance_spot':
+      return EXCHANGE.BINANCE_SPOT.NAME;
+    case 'bitget_spot':
+      return EXCHANGE.BITGET_SPOT.NAME;
     default:
       throw new Error('Invalid exchange');
   }
@@ -105,6 +111,24 @@ function formatBalance(balance: number, exchange: Exchange): string {
         precision: 1,
         currencySymbol: 'USDT',
       });
+    case 'bitget_spot':
+      return formatNum({
+        num: balance,
+        precision: 1,
+        currencySymbol: 'USDT',
+      });
+    case 'okx_spot':
+      return formatNum({
+        num: balance,
+        precision: 1,
+        currencySymbol: 'USDT',
+      });
+    case 'binance_spot':
+      return formatNum({
+        num: balance,
+        precision: 1,
+        currencySymbol: 'USDT',
+      });
   }
 }
 
@@ -113,6 +137,9 @@ function buildBalanceDescription(exchange: Exchange) {
     case 'binance':
     case 'bitget':
     case 'okx':
+    case 'okx_spot':
+    case 'binance_spot':
+    case 'bitget_spot':
       return '보유 USDT';
 
     case 'bithumb':
@@ -153,11 +180,35 @@ function buildTotalUnrealizedProfit({
       return null;
 
     case 'bitget':
-      // Todo: Impl
-      return null;
+      return formatNum({
+        num: totalUnrealizedProfit,
+        precision: 1,
+        currencySymbol: 'USDT',
+      });
     case 'okx':
-      // Todo: Impl
-      return null;
+      return formatNum({
+        num: totalUnrealizedProfit,
+        precision: 1,
+        currencySymbol: 'USDT',
+      });
+    case 'bitget_spot':
+      return formatNum({
+        num: totalUnrealizedProfit,
+        precision: 1,
+        currencySymbol: 'USDT',
+      });
+    case 'okx_spot':
+      return formatNum({
+        num: totalUnrealizedProfit,
+        precision: 1,
+        currencySymbol: 'USDT',
+      });
+    case 'binance_spot':
+      return formatNum({
+        num: totalUnrealizedProfit,
+        precision: 1,
+        currencySymbol: 'USDT',
+      });
 
     default:
       return null;
@@ -175,6 +226,9 @@ function buildTotalBalance({ exchange, wallet }: { exchange: Exchange; wallet: W
     case 'binance':
     case 'bitget':
     case 'okx':
+    case 'okx_spot':
+    case 'binance_spot':
+    case 'bitget_spot':
       return formatNum({
         num: totalBalance,
         precision: 1,
@@ -187,6 +241,24 @@ function buildTotalBalance({ exchange, wallet }: { exchange: Exchange; wallet: W
         num: totalBalance,
         precision: 1,
         currencySymbol: '₩',
+      });
+    case 'bitget_spot':
+      return formatNum({
+        num: totalBalance,
+        precision: 1,
+        currencySymbol: 'USDT',
+      });
+    case 'okx_spot':
+      return formatNum({
+        num: totalBalance,
+        precision: 1,
+        currencySymbol: 'USDT',
+      });
+    case 'binance_spot':
+      return formatNum({
+        num: totalBalance,
+        precision: 1,
+        currencySymbol: 'USDT',
       });
 
     default:

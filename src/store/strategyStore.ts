@@ -73,6 +73,7 @@ export const useBinanceStateStore = () => {
 export type BinanceStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
   ReturnType<typeof useBinanceStateStore>;
 
+
 export const useUpbitStateStore = () => {
   const exchangeName = 'upbit';
   const initialValues = {
@@ -213,7 +214,111 @@ export const useOkxStateStore = () => {
 export type OkxStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
   ReturnType<typeof useOkxStateStore>;
 
+export const useOkxSpotStateStore = () => {
+  const exchangeName = 'okx_spot';
+  
+
+  const initialValues = {
+    enterStrategy: isEnterStrategy(localStorage.getItem(`${exchangeName}EnterStrategy`)) ? localStorage.getItem(`${exchangeName}EnterStrategy`) : 'long',
+    customStrategy: isCustomStrategy(localStorage.getItem(`${exchangeName}CustomStrategy`)) ? localStorage.getItem(`${exchangeName}CustomStrategy`) : '그리드',
+    enterSymbolAmount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolAmount`) ?? '') || DEFAULT_ENTER_SYMBOL_AMOUNT,
+    enterSymbolCount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolCount`) ?? '') || DEFAULT_ENTER_SYMBOL_COUNT,
+  };
+  console.log('Initial values for OKX_SPOT:', initialValues);
+  const [query, setQuery] = useQueryParams({
+    enterStrategy: withDefault(createEnumParam<EnterStrategy>([...EnterStrategist]), initialValues.enterStrategy as EnterStrategy),
+    customStrategy: withDefault(createEnumParam<CustomStrategy>([...CustomStrategist]), initialValues.customStrategy as CustomStrategy),
+    enterSymbolAmount: withDefault(NumberParam, initialValues.enterSymbolAmount),
+    enterSymbolCount: withDefault(NumberParam, initialValues.enterSymbolCount),
+  });
+
+  useEffect(() => {
+    localStorage.setItem(`${exchangeName}EnterStrategy`, query.enterStrategy);
+    localStorage.setItem(`${exchangeName}CustomStrategy`, query.customStrategy);
+    localStorage.setItem(`${exchangeName}EnterSymbolAmount`, query.enterSymbolAmount.toString());
+    localStorage.setItem(`${exchangeName}EnterSymbolCount`, query.enterSymbolCount.toString());
+  }, [query]);
+
+  return {
+    store: query,
+    setStore: setQuery,
+  };
+};
+
+export type OkxSpotStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
+  ReturnType<typeof useOkxSpotStateStore>;
 
 
+export const useBitgetSpotStateStore = () => {
+  const exchangeName = 'bitget_spot';
+  const initialValues = {
+    leverage: parseInt(localStorage.getItem(`${exchangeName}Leverage`) ?? '') || defaultLeverage(exchangeName),
+    enterStrategy: isEnterStrategy(localStorage.getItem(`${exchangeName}EnterStrategy`)) ? localStorage.getItem(`${exchangeName}EnterStrategy`) : 'long',
+    customStrategy: isCustomStrategy(localStorage.getItem(`${exchangeName}CustomStrategy`)) ? localStorage.getItem(`${exchangeName}CustomStrategy`) : '그리드',
+    enterSymbolAmount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolAmount`) ?? '') || DEFAULT_ENTER_SYMBOL_AMOUNT,
+    enterSymbolCount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolCount`) ?? '') || DEFAULT_ENTER_SYMBOL_COUNT,
+  };
 
-export type ExchangeStateStore = BinanceStateStore | UpbitStateStore | BithumbStateStore | BitgetStateStore | OkxStateStore;
+  const [query, setQuery] = useQueryParams({
+    leverage: withDefault(NumberParam, initialValues.leverage),
+    enterStrategy: withDefault(createEnumParam<EnterStrategy>([...EnterStrategist]), initialValues.enterStrategy as EnterStrategy),
+    customStrategy: withDefault(createEnumParam<CustomStrategy>([...CustomStrategist]), initialValues.customStrategy as CustomStrategy),
+    enterSymbolAmount: withDefault(NumberParam, initialValues.enterSymbolAmount),
+    enterSymbolCount: withDefault(NumberParam, initialValues.enterSymbolCount),
+  });
+
+  useEffect(() => {
+    localStorage.setItem(`${exchangeName}Leverage`, query.leverage.toString());
+    localStorage.setItem(`${exchangeName}EnterStrategy`, query.enterStrategy);
+    localStorage.setItem(`${exchangeName}CustomStrategy`, query.customStrategy);
+    localStorage.setItem(`${exchangeName}EnterSymbolAmount`, query.enterSymbolAmount.toString());
+    localStorage.setItem(`${exchangeName}EnterSymbolCount`, query.enterSymbolCount.toString());
+  }, [query]);
+
+  return {
+    store: query,
+    setStore: setQuery,
+  };
+};
+
+export type BitgetSpotStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
+  ReturnType<typeof useBinanceStateStore>;
+
+
+export const useBinancespotStateStore = () => {
+  const exchangeName = 'binance_spot';
+  const initialValues = {
+    leverage: parseInt(localStorage.getItem(`${exchangeName}Leverage`) ?? '') || defaultLeverage(exchangeName),
+    enterStrategy: isEnterStrategy(localStorage.getItem(`${exchangeName}EnterStrategy`)) ? localStorage.getItem(`${exchangeName}EnterStrategy`) : 'long',
+    customStrategy: isCustomStrategy(localStorage.getItem(`${exchangeName}CustomStrategy`)) ? localStorage.getItem(`${exchangeName}CustomStrategy`) : '그리드',
+    enterSymbolAmount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolAmount`) ?? '') || DEFAULT_ENTER_SYMBOL_AMOUNT,
+    enterSymbolCount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolCount`) ?? '') || DEFAULT_ENTER_SYMBOL_COUNT,
+  };
+
+  const [query, setQuery] = useQueryParams({
+    leverage: withDefault(NumberParam, initialValues.leverage),
+    enterStrategy: withDefault(createEnumParam<EnterStrategy>([...EnterStrategist]), initialValues.enterStrategy as EnterStrategy),
+    customStrategy: withDefault(createEnumParam<CustomStrategy>([...CustomStrategist]), initialValues.customStrategy as CustomStrategy),
+    enterSymbolAmount: withDefault(NumberParam, initialValues.enterSymbolAmount),
+    enterSymbolCount: withDefault(NumberParam, initialValues.enterSymbolCount),
+  });
+
+  useEffect(() => {
+    localStorage.setItem(`${exchangeName}Leverage`, query.leverage.toString());
+    localStorage.setItem(`${exchangeName}EnterStrategy`, query.enterStrategy);
+    localStorage.setItem(`${exchangeName}CustomStrategy`, query.customStrategy);
+    localStorage.setItem(`${exchangeName}EnterSymbolAmount`, query.enterSymbolAmount.toString());
+    localStorage.setItem(`${exchangeName}EnterSymbolCount`, query.enterSymbolCount.toString());
+  }, [query]);
+
+  return {
+    store: query,
+    setStore: setQuery,
+  };
+};
+
+export type BinanceSpotStateStore = Omit<ReturnType<typeof useExchangeStore>, 'setExchange'> &
+  ReturnType<typeof useBinanceStateStore>;
+
+
+export type ExchangeStateStore = BinanceStateStore | UpbitStateStore | BithumbStateStore | BitgetStateStore | OkxStateStore | OkxSpotStateStore | BinanceStateStore | BitgetStateStore;

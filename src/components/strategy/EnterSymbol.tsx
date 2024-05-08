@@ -104,6 +104,9 @@ function buildEnterSymbolLabel(exchange: Exchange): string {
     case 'binance':
     case 'bitget':
     case 'okx':
+    case 'okx_spot':
+    case 'binance_spot':
+    case 'bitget_spot':
       return '주문당 투입금 $';
 
     case 'bithumb':

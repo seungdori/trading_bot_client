@@ -52,6 +52,12 @@ export type BitgetPositionsResponse = z.infer<typeof BitgetPositionsResponseSche
 
 export type OkxPositionsResponse = z.infer<typeof OkxPositionsResponseSchema>;
 
+export type OkxSpotPositionsResponse = z.infer<typeof OkxPositionsResponseSchema>;
+
+export type BinanceSpotPositionsResponse = z.infer<typeof BinancePositionsResponseSchema>;
+
+export type BitgetSpotPositionsResponse = z.infer<typeof BitgetPositionsResponseSchema>;
+
 export type PositionsResponse = z.infer<typeof PositionsResponseSchema>;
 
 export type User = z.infer<typeof UserWithoutPasswordSchema>;
