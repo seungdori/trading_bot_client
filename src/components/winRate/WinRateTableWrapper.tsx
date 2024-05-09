@@ -17,12 +17,15 @@ export default function WinRateTableWrapper({ exchange, className }: { exchange:
 
   return (
     <section className={cn('w-full h-full space-y-4 flex flex-col', className)}>
-      <WinRateTable
-        exchange={exchange}
-        customStrategy={customStrategy}
-        enterStrategy={enterStrategy}
-        assetsData={data ?? []}
-      />
+      {/* 탭 컨테이너에 overflow-y와 max-height 속성을 추가합니다 */}
+      <div className="overflow-y-auto max-h-[400px]">
+        <WinRateTable
+          exchange={exchange}
+          customStrategy={customStrategy}
+          enterStrategy={enterStrategy}
+          assetsData={data ?? []}
+        />
+      </div>
       {isLoading ? (
         <Button disabled className="w-full">
           <p className="flex flex-col justify-center items-center">
