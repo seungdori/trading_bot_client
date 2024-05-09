@@ -113,7 +113,7 @@ export const useBithumbStateStore = () => {
   const exchangeName = 'bithumb';
   const initialValues = {
     enterStrategy: isEnterStrategy(localStorage.getItem(`${exchangeName}EnterStrategy`)) ? localStorage.getItem(`${exchangeName}EnterStrategy`) : 'long',
-    customStrategy: isCustomStrategy(localStorage.getItem(`${exchangeName}CustomStrategy`)) ? localStorage.getItem(`${exchangeName}CustomStrategy`) : '트랜드',
+    customStrategy: isCustomStrategy(localStorage.getItem(`${exchangeName}CustomStrategy`)) ? localStorage.getItem(`${exchangeName}CustomStrategy`) : '그리드',
     enterSymbolAmount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolAmount`) ?? '') || DEFAULT_ENTER_SYMBOL_AMOUNT,
     enterSymbolCount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolCount`) ?? '') || DEFAULT_ENTER_SYMBOL_COUNT,
   };
@@ -146,7 +146,7 @@ export const useBitgetStateStore = () => {
   const initialValues = {
     leverage: parseInt(localStorage.getItem(`${exchangeName}Leverage`) ?? '') || defaultLeverage(exchangeName),
     enterStrategy: isEnterStrategy(localStorage.getItem(`${exchangeName}EnterStrategy`)) ? localStorage.getItem(`${exchangeName}EnterStrategy`) : 'long',
-    customStrategy: isCustomStrategy(localStorage.getItem(`${exchangeName}CustomStrategy`)) ? localStorage.getItem(`${exchangeName}CustomStrategy`) : '트랜드',
+    customStrategy: isCustomStrategy(localStorage.getItem(`${exchangeName}CustomStrategy`)) ? localStorage.getItem(`${exchangeName}CustomStrategy`) : '그리드',
     enterSymbolAmount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolAmount`) ?? '') || DEFAULT_ENTER_SYMBOL_AMOUNT,
     enterSymbolCount: parseInt(localStorage.getItem(`${exchangeName}EnterSymbolCount`) ?? '') || DEFAULT_ENTER_SYMBOL_COUNT,
   };

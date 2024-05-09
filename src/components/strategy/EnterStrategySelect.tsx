@@ -56,7 +56,7 @@ export default function EnterStrategySelect({ className }: Props) {
   // const isCompleted = aiSearchProgressQuery.data && aiSearchProgressQuery.data.status === 'completed';
   // const isStopped = aiSearchProgressQuery.data && aiSearchProgressQuery.data.status === 'stopped';
   const isSearchButtonDisabled = isStarted || isProgressing;
-  const disableShortPosition = exchange === 'bithumb' || exchange === 'upbit'; // Todo: Impl
+  const disableShortPosition = exchange === 'bithumb' || exchange === 'upbit' || exchange === 'binance_spot' || exchange == 'okx_spot' || exchange == 'bitget_spot'; // Todo: Impl
 
   useEffect(() => {
     if (disableShortPosition) {
