@@ -16,7 +16,7 @@ export default function InfoTabs({ defaultTableId, tables, className, renderBack
   return (
     <Tabs
       defaultValue={defaultTableId}
-      className={cn('w-full flex flex-col rounded-lg border bg-card text-card-foreground shadow-sm', className)}
+      className={cn('w-full flex flex-col rounded-lg border bg-card text-card-foreground shadow-sm h-[80px]', className)}
     >
       {renderBackButton ? (
         <TabListWithBackButton tables={tables} className="w-full flex justify-center" />
@@ -40,7 +40,7 @@ type TabListProps = {
 function TabList({ tables, className }: TabListProps) {
   return (
     <div className={className}>
-      <TabsList className={cn(`w-full flex-1 min-w-[400px] grid grid-cols-8`)}>
+      <TabsList className={cn(`w-full flex-1 min-w-[400px] grid grid-cols-4 grid-rows-2`)}>
         {tables.map((table) => (
           <TabsTrigger key={table.id} value={table.id}>
             {table.displayName}
