@@ -16,7 +16,7 @@ export default function InfoTabs({ defaultTableId, tables, className, renderBack
   return (
     <Tabs
       defaultValue={defaultTableId}
-      className={cn('w-full flex flex-col rounded-lg border bg-card text-card-foreground shadow-sm h-[240px]', className)}
+      className={cn('w-full flex flex-col rounded-lg border bg-card text-card-foreground shadow-sm h-[120px]', className)}
     >
       {renderBackButton ? (
         <TabListWithBackButton tables={tables} className="w-full flex justify-center" />
@@ -40,7 +40,7 @@ type TabListProps = {
 function TabList({ tables, className }: TabListProps) {
   return (
     <div className={className}>
-      <TabsList className={cn(`w-full flex-1 min-w-[800px] grid grid-cols-4 grid-rows-2`)}>
+      <TabsList className={cn(`w-full flex-1 min-w-[600px] grid grid-cols-4 grid-rows-2 gaps-5`)}>
         {tables.map((table) => (
           <TabsTrigger key={table.id} value={table.id} className="h-12">
             {table.displayName}
@@ -56,15 +56,15 @@ function TabListWithBackButton({ tables, className }: TabListProps) {
     <div className={className}>
       {/*Spacing*/}
       <div className="flex-1"></div>
-      <TabsList className={cn(`flex-1 w-full min-w-[800px] grid grid-cols-4 grid-rows-2`)}>
+      <TabsList className={cn(`flex-1 w-full min-w-[600px] grid grid-cols-4 grid-rows-2 gaps-5`)}>
         {tables.map((table) => (
           <TabsTrigger key={table.id} value={table.id} className="h-12">
             {table.displayName}
           </TabsTrigger>
         ))}
       </TabsList>
-      <div className="flex-1 flex justify-end">
-        <BackButton className="w-1/4">뒤로가기</BackButton>
+      <div className="w-40 flex justify-end">
+        <BackButton className="w-full">뒤로가기</BackButton>
       </div>
     </div>
   );
