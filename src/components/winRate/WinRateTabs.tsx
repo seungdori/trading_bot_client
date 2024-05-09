@@ -34,7 +34,7 @@ function buildTabs(exchange: Exchange): {
       },
       {
         id: EXCHANGE.BITHUMB.EXCHANGE,
-        displayName: '빗썸',
+        displayName: 'BITHUMB',
         component: <WinRateTableWrapper exchange="bithumb" />,
       },
       {
@@ -44,13 +44,13 @@ function buildTabs(exchange: Exchange): {
       },
       {
         id: EXCHANGE.BITGET.EXCHANGE,
-        displayName: 'BITG.P',
+        displayName: 'BITGET.P',
         component: <WinRateTableWrapper exchange="bitget" />,
       },
 
       {
         id: EXCHANGE.BITGET_SPOT.EXCHANGE,
-        displayName: 'BITG.Spot',
+        displayName: 'BITGET.Spot',
         component: <WinRateTableWrapper exchange="bitget_spot" />,
       },
       {
