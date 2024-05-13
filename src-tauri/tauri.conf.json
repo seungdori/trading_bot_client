@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "trading_bot_client",
-    "version": "0.8.31"
+    "version": "0.8.4"
   },
   "tauri": {
     "allowlist": {
