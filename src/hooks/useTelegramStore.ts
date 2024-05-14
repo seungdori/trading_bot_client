@@ -122,7 +122,7 @@ export const useInitTelegramTokens = () => {
 };
 
 export const useInitTelegramId = () => {
-  const { telegramId } = useTelegramStore('binance'); // any exchange will do
+  const { telegramId } = useTelegramStore('okx'); // any exchange will do
   return useMutation({
     mutationKey: ['initTelegramId', telegramId],
     mutationFn: async () => updateTelegramId(telegramId),

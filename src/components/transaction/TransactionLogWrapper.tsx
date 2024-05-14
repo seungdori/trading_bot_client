@@ -8,7 +8,7 @@ type Props = { className?: string };
 
 export default function TransactionLogWrapper({ className }: Props) {
   // const { exchange } = useExchangeStore(); // Todo: 거래소 마다 로그 확인 요구사항 변경시 사용
-  const { log, clear } = useTradingLog({ exchange: 'binance', delimiter: '\n', defaultMessage: 'Trading log' });
+  const { log, clear } = useTradingLog({ exchange: 'okx', delimiter: '\n', defaultMessage: 'Trading log' });
 
   return (
     <TransactionLog className={cn('h-full', className)} content={log}>

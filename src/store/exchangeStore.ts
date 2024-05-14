@@ -3,7 +3,7 @@ import { Exchange } from '@/types/exchangeTypes.ts';
 
 const ExchangeParam = withDefault(
   createEnumParam<Exchange>(['binance', 'upbit', 'bithumb', 'bitget', 'okx', 'binance_spot', 'bitget_spot', 'okx_spot']),
-  'binance' as const,
+  'okx' as const,
   false,
 );
 

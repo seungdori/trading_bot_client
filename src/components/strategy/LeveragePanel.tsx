@@ -17,7 +17,7 @@ export default function LeveragePanel({ className, ...props }: SliderProps) {
 
 const handleApplyLeverage = () => {
   setStore({ leverage });
-  saveLeverage('binance', leverage);
+  saveLeverage('okx', leverage);
 };
   
   return (

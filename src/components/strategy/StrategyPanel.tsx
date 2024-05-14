@@ -10,7 +10,7 @@ type Props = { className?: string };
 export default function StrategyPanel({ className }: Props) {
   const { exchange } = useStrategyStore();
 
-  const renderLeveragePanel = exchange === 'binance' || exchange === 'bitget' || exchange === 'okx';
+  const renderLeveragePanel = exchange === 'okx';
   console.log('Exchange in StrategyPanel:', exchange);
   console.log('Should render LeveragePanel:', renderLeveragePanel);
   return (

@@ -95,22 +95,10 @@ export const useAssetsData = (): { isLoading: boolean; assets: Asset[] } => {
 
 export function buildMarketSymbols(exchange: Exchange, positions?: PositionsResponse[]): string[] {
   switch (exchange) {
-    case 'binance':
-      return buildBinanceSymbols(positions as BinancePositionsResponse[]);
-    case 'bithumb':
-      return buildBithumbSymbols(positions as BithumbPositionsResponse[]);
-    case 'upbit':
-      return buildUpbitSymbols(positions as UpbitPositionsResponse[]);
-    case 'bitget':
-      return buildBitgetSymbols(positions as BitgetPositionsResponse[]);
     case 'okx':
       return buildOkxSymbols(positions as OkxPositionsResponse[]);
     case 'okx_spot':
       return buildOkxSymbols(positions as OkxPositionsResponse[]);
-    case 'binance_spot':
-      return buildBinanceSymbols(positions as BinancePositionsResponse[]);
-    case 'bitget_spot':
-      return buildBitgetSymbols(positions as BitgetPositionsResponse[]);
     default:
       return [];
   }
