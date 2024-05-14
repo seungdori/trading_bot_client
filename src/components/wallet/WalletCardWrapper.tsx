@@ -214,7 +214,6 @@ function buildTotalUnrealizedProfit({
       return null;
   }
 }
-
 function buildTotalBalance({ exchange, wallet }: { exchange: Exchange; wallet: Wallet | undefined }): string {
   const validTotalBalance = z.number().safeParse(wallet?.totalBalance);
   if (!validTotalBalance.success) {
@@ -241,24 +240,6 @@ function buildTotalBalance({ exchange, wallet }: { exchange: Exchange; wallet: W
         num: totalBalance,
         precision: 1,
         currencySymbol: '₩',
-      });
-    case 'bitget_spot':
-      return formatNum({
-        num: totalBalance,
-        precision: 1,
-        currencySymbol: 'USDT',
-      });
-    case 'okx_spot':
-      return formatNum({
-        num: totalBalance,
-        precision: 1,
-        currencySymbol: 'USDT',
-      });
-    case 'binance_spot':
-      return formatNum({
-        num: totalBalance,
-        precision: 1,
-        currencySymbol: 'USDT',
       });
 
     default:
