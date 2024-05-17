@@ -54,10 +54,22 @@ export default function WalletCardWrapper({ className }: Props) {
 
 function buildExchangeName(exchange: Exchange) {
   switch (exchange) {
+    case 'binance':
+      return EXCHANGE.BINANCE.NAME;
+    case 'bithumb':
+      return EXCHANGE.BITHUMB.NAME;
+    case 'upbit':
+      return EXCHANGE.UPBIT.NAME;
+    case 'bitget':
+      return EXCHANGE.BITGET.NAME;
     case 'okx':
       return EXCHANGE.OKX.NAME;
     case 'okx_spot':
       return EXCHANGE.OKX_SPOT.NAME;
+    case 'binance_spot':
+      return EXCHANGE.BINANCE_SPOT.NAME;
+    case 'bitget_spot':
+      return EXCHANGE.BITGET_SPOT.NAME;
     default:
       throw new Error('Invalid exchange');
   }
@@ -129,6 +141,7 @@ function buildBalanceDescription(exchange: Exchange) {
     case 'binance_spot':
     case 'bitget_spot':
       return '보유 USDT';
+
     case 'bithumb':
     case 'upbit':
       return '보유 KRW';

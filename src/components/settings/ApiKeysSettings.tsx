@@ -12,6 +12,10 @@ import { toast } from '@/components/ui/use-toast.ts';
 import { useEffect, useId } from 'react';
 import { BooleanParam, useQueryParam, withDefault } from 'use-query-params';
 import { Checkbox } from '@/components/ui/checkbox';
+import BinanceLogo from '@/assets/binance.svg';
+import BithumbLogo from '@/assets/bithumb.svg';
+import UpbitLogo from '@/assets/upbit.svg';
+import BitgetLogo from '@/assets/bitget.svg';
 import OkxLogo from '@/assets/okx.svg';
 import { ExchangeApiKeysSchema } from '@/schemas/settingsSchema.ts';
 import { useApiKeysStore } from '@/hooks/useApiKeysStore.ts';
@@ -58,6 +62,46 @@ export default function ApiKeysSettings({ className }: Props) {
           onValueChange={(selectedValue) => setExchange(selectedValue as Exchange)}
           className="grid grid-cols-4 gap-4"
         >
+          <div>
+            <RadioGroupItem value="binance" id={`binance-${id}`} className="peer sr-only" />
+            <Label
+              htmlFor={`binance-${id}`}
+              className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+            >
+              <img src={BinanceLogo} className="h-10 m-2" />
+              <span>Binance</span>
+            </Label>
+          </div>
+          <div>
+            <RadioGroupItem value="bithumb" id={`bithumb-${id}`} className="peer sr-only" />
+            <Label
+              htmlFor={`bithumb-${id}`}
+              className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+            >
+              <img src={BithumbLogo} className="h-10 m-2" />
+              <span>Bithumb</span>
+            </Label>
+          </div>
+          <div>
+            <RadioGroupItem value="upbit" id={`upbit-${id}`} className="peer sr-only" />
+            <Label
+              htmlFor={`upbit-${id}`}
+              className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+            >
+              <img src={UpbitLogo} className="h-10 m-2" />
+              <span>Upbit</span>
+            </Label>
+          </div>
+          <div>
+            <RadioGroupItem value="bitget" id={`bitget-${id}`} className="peer sr-only" />
+            <Label
+              htmlFor={`bitget-${id}`}
+              className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+            >
+              <img src={BitgetLogo} className="h-10 m-2" />
+              <span>Bitget</span>
+            </Label>
+          </div>
           <div>
             <RadioGroupItem value="okx" id={`okx-${id}`} className="peer sr-only" />
             <Label

@@ -15,11 +15,11 @@ export default function LeveragePanel({ className, ...props }: SliderProps) {
   const [leverage, setLeverage] = useState(store.leverage);
   const isLeverageUpdated = store.leverage !== leverage;
 
-const handleApplyLeverage = () => {
-  setStore({ leverage });
-  saveLeverage('okx', leverage);
-};
-  
+  const handleApplyLeverage = () => {
+    setStore({ leverage });
+    saveLeverage('binance', leverage);
+  };
+
   return (
     <div className="p-4 space-y-2 w-full h-full flex flex-col justify-around">
       <p>레버리지 : {leverage}</p>

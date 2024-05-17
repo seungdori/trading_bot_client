@@ -23,6 +23,37 @@ function buildTabs(exchange: Exchange): {
     defaultId: exchange,
     tabs: [
       {
+        id: EXCHANGE.BINANCE.EXCHANGE,
+        displayName: 'Binance.P',
+        component: <WinRateTableWrapper exchange="binance" />,
+      },
+      {
+        id: EXCHANGE.BINANCE_SPOT.EXCHANGE,
+        displayName: 'Binance.Spot',
+        component: <WinRateTableWrapper exchange="binance_spot" />,
+      },
+      {
+        id: EXCHANGE.BITHUMB.EXCHANGE,
+        displayName: '빗썸',
+        component: <WinRateTableWrapper exchange="bithumb" />,
+      },
+      {
+        id: EXCHANGE.UPBIT.EXCHANGE,
+        displayName: '업비트',
+        component: <WinRateTableWrapper exchange="upbit" />,
+      },
+      {
+        id: EXCHANGE.BITGET.EXCHANGE,
+        displayName: 'BITGET.P',
+        component: <WinRateTableWrapper exchange="bitget" />,
+      },
+
+      {
+        id: EXCHANGE.BITGET_SPOT.EXCHANGE,
+        displayName: 'BITGET.Spot',
+        component: <WinRateTableWrapper exchange="bitget_spot" />,
+      },
+      {
         id: EXCHANGE.OKX.EXCHANGE,
         displayName: 'OKX.P',
         component: <WinRateTableWrapper exchange="okx" />,

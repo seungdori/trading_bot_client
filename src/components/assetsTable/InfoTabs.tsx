@@ -39,7 +39,7 @@ type TabListProps = {
 
 function TabList({ tables, className }: TabListProps) {
   return (
-    <div className={className}>
+    <div className={cn(className, 'mb-4')}>
       <TabsList className={cn(`w-full flex-1 min-w-[600px] grid grid-cols-4 grid-rows-2 gaps-10`)}>
         {tables.map((table) => (
           <TabsTrigger key={table.id} value={table.id} className="h-12">

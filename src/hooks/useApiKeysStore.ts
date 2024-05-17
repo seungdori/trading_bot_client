@@ -134,15 +134,27 @@ function buildLocalStorageKeys(exchange: Exchange) {
 }
 
 export const useInitExchangeApiKeys = () => {
+  const { keys: binanceKeys } = useApiKeysStore('binance');
+  const { keys: bithumbKeys } = useApiKeysStore('bithumb');
+  const { keys: upbitKeys } = useApiKeysStore('upbit');
+  const { keys: bitgetKeys } = useApiKeysStore('bitget');
   const { keys: okxKeys } = useApiKeysStore('okx');
   const { keys: okx_spotKeys } = useApiKeysStore('okx_spot');
+  const { keys: bitget_spotKeys } = useApiKeysStore('bitget_spot');
+  const { keys: binance_spotKeys } = useApiKeysStore('binance_spot');
 
   return useMutation({
-    mutationKey: ['initExchangeApiKeys', okxKeys, okx_spotKeys],
+    mutationKey: ['initExchangeApiKeys', binanceKeys, bithumbKeys, upbitKeys, bitgetKeys, okxKeys, okx_spotKeys, bitget_spotKeys, binance_spotKeys],
     mutationFn: () =>
       initExchangeApiKeys([
+        { exchange: 'binance', ...binanceKeys },
+        { exchange: 'bithumb', ...bithumbKeys },
+        { exchange: 'upbit', ...upbitKeys },
+        { exchange: 'bitget', ...bitgetKeys },
         { exchange: 'okx', ...okxKeys },
         { exchange: 'okx_spot', ...okx_spotKeys },
+        { exchange: 'bitget_spot', ...bitget_spotKeys },
+        { exchange: 'binance_spot', ...binance_spotKeys },
       ]),
   });
 };

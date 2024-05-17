@@ -24,7 +24,7 @@ export default function TestFeatureButton({ className }: Props) {
   });
 
   const handleTest = () => {
-    const leverage = exchange === 'okx' ? store.leverage : undefined;
+    const leverage = exchange === 'binance' ? store.leverage : undefined;
     testMutation.mutate({
       exchange,
       leverage,

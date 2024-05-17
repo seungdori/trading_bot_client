@@ -18,7 +18,7 @@ export default function WinRateTableWrapper({ exchange, className }: { exchange:
   return (
     <section className={cn('w-full h-full space-y-4 flex flex-col', className)}>
       {/* 탭 컨테이너에 overflow-y와 max-height 속성을 추가합니다 */}
-      <div className="overflow-y-auto max-h-[400px]">
+      <div className="overflow-y-auto max-h-[500px]">
         <WinRateTable
           exchange={exchange}
           customStrategy={customStrategy}
